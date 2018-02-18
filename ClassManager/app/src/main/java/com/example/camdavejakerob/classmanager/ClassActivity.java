@@ -20,13 +20,13 @@ public class ClassActivity extends AppCompatActivity {
         final ArrayList<Class> classes = new ArrayList<Class>();
 
         // add songs here yo
-        classes.add(new Class("class1", "today", "1pm", 50,"os101"));
+        classes.add(new Class("class1", "today", "1pm","2pm", 50,"os101"));
 
-        classes.add(new Class("class2", "today++", "11pm", 50,"os1021"));
+        classes.add(new Class("class2", "today++", "11pm","2pm",  50,"os1021"));
 
-        classes.add(new Class("class3", "today++", "12pm", 50,"os1031"));
+        classes.add(new Class("class3", "today++", "12pm","2pm",  50,"os1031"));
 
-        classes.add(new Class("class4", "today+", "13pm", 50,"os1041"));
+        classes.add(new Class("class4", "today+", "13pm","2pm",  50,"os1041"));
 
         adapter = new ClassAdapter(this, classes);
         listView = (ListView) findViewById(R.id.classes);
