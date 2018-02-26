@@ -16,10 +16,10 @@ public class ClassActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class);
 
-        // Create a list of songs
+        // Create a list of classes
         final ArrayList<Class> classes = new ArrayList<Class>();
 
-        // add songs here yo
+        // add classes here yo
         classes.add(new Class("class1", "today", "1pm","2pm", 50,"os101"));
 
         classes.add(new Class("class2", "today++", "11pm","2pm",  50,"os1021"));
