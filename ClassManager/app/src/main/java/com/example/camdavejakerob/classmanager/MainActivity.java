@@ -19,8 +19,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // we might want to load all of there info on to a local data base so it can run faster
-        Intent classesIntent = new Intent(MainActivity.this, ClassActivity.class);
-        startActivity(classesIntent);
+//        Intent classesIntent = new Intent(MainActivity.this, ClassActivity.class);
+//        startActivity(classesIntent);
 
 
     }
