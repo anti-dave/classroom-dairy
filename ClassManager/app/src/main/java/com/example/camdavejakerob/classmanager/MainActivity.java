@@ -20,11 +20,51 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final LinearLayout button = findViewById(R.id.inforamtion);
-        button.setOnClickListener(new View.OnClickListener() {
+        final LinearLayout myClassesButton = findViewById(R.id.my_classes);
+        myClassesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent classesIntent = new Intent(MainActivity.this, ClassInfoActivity.class);
+                Intent classesIntent = new Intent(MainActivity.this, ClassActivity.class);
                 startActivity(classesIntent);
+            }
+        });
+
+        final LinearLayout notificationsButton = findViewById(R.id.notifications);
+        notificationsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent notificationsIntent = new Intent(MainActivity.this, InfoActivity.class);
+                startActivity(notificationsIntent);
+            }
+        });
+
+        final LinearLayout settingsButton = findViewById(R.id.settings);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent settingsIntent = new Intent(MainActivity.this, InfoActivity.class);
+                startActivity(settingsIntent);
+            }
+        });
+
+        final LinearLayout messagesButton = findViewById(R.id.messages);
+        messagesButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent messagesIntent = new Intent(MainActivity.this, InfoActivity.class);
+                startActivity(messagesIntent);
+            }
+        });
+
+        final LinearLayout calendarButton = findViewById(R.id.calendar);
+        calendarButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent calendarIntent = new Intent(MainActivity.this, InfoActivity.class);
+                startActivity(calendarIntent);
+            }
+        });
+
+        final LinearLayout infoButton = findViewById(R.id.inforamtion);
+        infoButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent infoIntent = new Intent(MainActivity.this, InfoActivity.class);
+                startActivity(infoIntent);
             }
         });
         // we might want to load all of there info on to a local data base so it can run faster
