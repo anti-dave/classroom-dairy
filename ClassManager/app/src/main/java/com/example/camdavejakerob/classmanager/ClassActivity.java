@@ -1,8 +1,13 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.content.Intent;
+import android.os.TestLooperManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -31,5 +36,13 @@ public class ClassActivity extends AppCompatActivity {
         adapter = new ClassAdapter(this, classes);
         listView = (ListView) findViewById(R.id.classes);
         listView.setAdapter(adapter);
+
+        final TextView dummyButton = findViewById(R.id.dummy);
+        dummyButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent dummyIntent = new Intent(ClassActivity.this, ClassInfoActivity.class);
+                startActivity(dummyIntent); // probaly should pass the class to so we can change the title but this is just a dummy
+            }
+        });
     }
 }
