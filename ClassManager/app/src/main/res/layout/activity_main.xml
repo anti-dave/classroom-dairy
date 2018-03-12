@@ -29,9 +29,9 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_place_holder"
+                app:srcCompat="@drawable/ic_classroom"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"/>
+                android:layout_weight="3"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -54,8 +54,8 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_place_holder"
-                android:layout_weight="1"/>
+                app:srcCompat="@drawable/ic_notifications_black_24dp"
+                android:layout_weight="3"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -88,8 +88,8 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_place_holder"
-                android:layout_weight="1"/>
+                app:srcCompat="@drawable/ic_settings_black_24dp"
+                android:layout_weight="3"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -111,8 +111,8 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_place_holder"
-                android:layout_weight="1"/>
+                app:srcCompat="@drawable/ic_message_black_24dp"
+                android:layout_weight="3"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -146,8 +146,8 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_place_holder"
-                android:layout_weight="1"/>
+                app:srcCompat="@drawable/ic_event_note_black_24dp"
+                android:layout_weight="3"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -169,8 +169,8 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_place_holder"
-                android:layout_weight="1"/>
+                app:srcCompat="@drawable/ic_info_black_24dp"
+                android:layout_weight="3"/>
 
             <TextView
                 android:layout_width="match_parent"
