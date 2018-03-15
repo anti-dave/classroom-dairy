@@ -35,6 +35,14 @@
             android:layout_height="wrap_content"
             android:text="\tAddress: 123 Some St, Lowell Ma"/>
 
+        <!--Rob was here, if i forget to delete this please do, im testing methods here
+        <TextView
+            android:id="@+id/info_activity_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rTest"
+            />-->
+
     </LinearLayout>
 
 </ScrollView>
