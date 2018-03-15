@@ -21,17 +21,21 @@ public class ClassActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class);
 
+        // some dummy data
+        String[] today = {"today"};
+        String[] tomorrow = {"tomorrow"};
+
         // Create a list of classes
         final ArrayList<Class> classes = new ArrayList<Class>();
 
         // add classes here yo
-        classes.add(new Class("class1", "today", "1pm","2pm", 50,"os101"));
+        classes.add(new Class("class1", today, "1pm","2pm","os101", 0));
 
-        classes.add(new Class("class2", "today++", "11pm","2pm",  50,"os1021"));
+        classes.add(new Class("class2", tomorrow, "11pm","2pm","os1021", 0));
 
-        classes.add(new Class("class3", "today++", "12pm","2pm",  50,"os1031"));
+        classes.add(new Class("class3", tomorrow, "12pm","2pm","os1031", 0));
 
-        classes.add(new Class("class4", "today+", "13pm","2pm",  50,"os1041"));
+        classes.add(new Class("class4", today, "13pm","2pm","os1041", 0));
 
         adapter = new ClassAdapter(this, classes);
         listView = (ListView) findViewById(R.id.classes);
