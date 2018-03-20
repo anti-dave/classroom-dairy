@@ -5,8 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class ClassInfoActivity extends AppCompatActivity {
@@ -16,25 +16,51 @@ public class ClassInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_info);
 
-        GridView gridview = (GridView) findViewById(R.id.main_menu);
-        gridview.setAdapter(new ImageAdapter(this));
-
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                Toast.makeText(ClassInfoActivity.this, "" + position,
-                        Toast.LENGTH_SHORT).show();
+        final LinearLayout syllabusButton = findViewById(R.id.syllabus);
+        syllabusButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent classesIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+                startActivity(classesIntent);
             }
         });
 
-        Button ChatButton = findViewById(R.id.chat_button);
-
-        ChatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
+        final LinearLayout attendanceButton = findViewById(R.id.attendance);
+        attendanceButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Intent  syllabusIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+                startActivity( syllabusIntent);
+            }
+        });
 
-                Intent ChatIntent = new Intent(ClassInfoActivity.this, ChatActivity.class);
-                startActivity(ChatIntent);
+        final LinearLayout discussionBoardButton = findViewById(R.id.discussion_board);
+        discussionBoardButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent discussionBoardIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+                startActivity(discussionBoardIntent);
+            }
+        });
+
+        final LinearLayout assignmentsButton = findViewById(R.id.assignments);
+        assignmentsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent assignmentsIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+                startActivity(assignmentsIntent);
+            }
+        });
+
+        final LinearLayout gradesButton = findViewById(R.id.grades);
+        gradesButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent gradesIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+                startActivity(gradesIntent);
+            }
+        });
+
+        final LinearLayout studentsButton = findViewById(R.id.students);
+        studentsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent studentsIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+                startActivity(studentsIntent);
             }
         });
 

@@ -5,28 +5,35 @@ package com.example.camdavejakerob.classmanager;
  */
 
 public class Class {
-    private String Name;
-    private String DaysOfClass; // maybe change this to an array
-    private String StartTime;
-    private String EndTime;
-    private double Length;
-    private String Room;
+    private String mName;
+    private String[] mDaysOfClass; // maybe change this to an array
+    private String mStartTime;
+    private String mEndTime;
+    private String mRoom;
+    private int mEnrolled;
 
-    public Class(String name,String daysOfClass, String startTime, String endTime, double length, String room){
-        Name = name;
-        DaysOfClass = daysOfClass;
-        StartTime = startTime;
-        EndTime = endTime;
-        Length = length;
-        Room = room;
+    public Class(String name,String[] daysOfClass, String startTime, String endTime, String room, int enrolled){
+        mName = name;
+        mDaysOfClass = daysOfClass;
+        mStartTime = startTime;
+        mEndTime = endTime;
+        mRoom = room;
+        mEnrolled = enrolled;
     }
 
-    public String getName(){return Name;}
-    public String getDaysOfClass(){return DaysOfClass;}
-    public String getStartTime(){return StartTime;}
-    public String getEndTime(){return EndTime;}
-    public String GetScheduledTime(){return getDaysOfClass() + " " + getStartTime() + " - " + getEndTime();}
-    public double getLength(){return Length;}
-    public String getRoom(){return Room;}
+    public String getName(){return mName;}
+    public String getStartTime(){return mStartTime;}
+    public String getEndTime(){return mEndTime;}
+    public String getRoom(){return mRoom;}
+    public int getEnrolled(){return mEnrolled;}
+    public String GetSchiheduledTime(){return getDaysOfClass() + " " + getStartTime() + " - " + getEndTime();}
+    public String getDaysOfClass(){
+        String days = "";
 
+        for(int i = 0; i < mDaysOfClass.length; i++){
+            days += mDaysOfClass[i] + " ";
+        }
+
+        return days;
+    }
 }
