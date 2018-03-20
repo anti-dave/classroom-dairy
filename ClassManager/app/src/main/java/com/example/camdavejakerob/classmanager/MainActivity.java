@@ -1,17 +1,20 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -79,10 +82,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Chat Activity
         final LinearLayout messagesButton = findViewById(R.id.messages);
         messagesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent messagesIntent = new Intent(MainActivity.this, InfoActivity.class);
+                Intent messagesIntent = new Intent(MainActivity.this, ChatActivity.class);
                 startActivity(messagesIntent);
             }
         });
@@ -130,5 +134,59 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    } //onActivityResult
+
+    /**
+     * Creates the menu with oncreate.
+     *
+     * @param menu
+     * @return bool on whether it was successful.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_sign_in_dropdown, menu);
+        return true;
+    }//onCreateOptionsMenu
+
+    /**
+     * Logic for when menu is pressed.
+     *
+     * @param item
+     * @return bool on whether it was successful.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_sign_out) {
+            AuthUI.getInstance().signOut(this)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(MainActivity.this,
+                                    "You have been signed out.",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+
+                            // Close activity, isneatd of close activity, make go back
+                            //finish();
+                        }
+                    });
+        }
+        if(item.getItemId() == R.id.action_change_account) {
+            AuthUI.getInstance().signOut(this)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(MainActivity.this,
+                                    "You have been signed out.",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+
+                            // Close activity, isneatd of close activity, make go back
+                            //finish();
+                        }
+                    });
+        }
+        return true;
     }
-}
+
+}//main
