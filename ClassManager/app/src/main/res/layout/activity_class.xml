@@ -1,31 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.camdavejakerob.classmanager.ClassActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.camdavejakerob.classmanager.ClassActivity">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/dummy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="THIS IS DUMMY entry"
+        android:padding="8dp"/>
 
-
-    <LinearLayout
-
+    <ListView
+        android:id="@+id/classes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1">
-        <TextView
-            android:id="@+id/dummy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="THIS IS DUMMY entry"
-            android:padding="8dp"/>
+        />
 
-        <ListView
-            android:id="@+id/classes"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+</LinearLayout>
 
-    </LinearLayout>
-
-</ScrollView>
