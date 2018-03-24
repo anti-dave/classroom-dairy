@@ -1,37 +1,37 @@
 package com.example.camdavejakerob.classmanager;
 
+import java.util.ArrayList;
+
 /**
  * Created by Jake on 2/11/2018.
  */
 
 public class Class {
-    private String mName;
-    private String[] mDaysOfClass; // maybe change this to an array
-    private String mStartTime;
-    private String mEndTime;
-    private String mRoom;
-    private int mEnrolled;
+    private String Name;
+    private ArrayList<String> DaysOfClass;
+    private String StartTime;
+    private String EndTime;
+    private String Room;
+    //private String Instructor; i want to add this but not going to yet because to lazy to fix this
 
-    public Class(String name,String[] daysOfClass, String startTime, String endTime, String room, int enrolled){
-        mName = name;
-        mDaysOfClass = daysOfClass;
-        mStartTime = startTime;
-        mEndTime = endTime;
-        mRoom = room;
-        mEnrolled = enrolled;
+    public Class(String name,ArrayList<String> daysOfClass, String startTime, String endTime, String room){
+        Name = name;
+        DaysOfClass = daysOfClass;
+        StartTime = startTime;
+        EndTime = endTime;
+        Room = room;
     }
 
-    public String getName(){return mName;}
-    public String getStartTime(){return mStartTime;}
-    public String getEndTime(){return mEndTime;}
-    public String getRoom(){return mRoom;}
-    public int getEnrolled(){return mEnrolled;}
+    public String getName(){return Name;}
+    public String getStartTime(){return StartTime;}
+    public String getEndTime(){return EndTime;}
+    public String getRoom(){return Room;}
     public String GetSchiheduledTime(){return getDaysOfClass() + " " + getStartTime() + " - " + getEndTime();}
     public String getDaysOfClass(){
         String days = "";
 
-        for(int i = 0; i < mDaysOfClass.length; i++){
-            days += mDaysOfClass[i] + " ";
+        for(int i = 0; i < DaysOfClass.size(); i++){
+            days += DaysOfClass.get(i) + " ";
         }
 
         return days;
