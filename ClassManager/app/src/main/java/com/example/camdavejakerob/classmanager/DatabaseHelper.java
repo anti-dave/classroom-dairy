@@ -116,7 +116,7 @@ public class DatabaseHelper {
                 if(mUid.isEmpty()){
 
                     //something has gone wrong if uid is empty we should probably handle this in some way... later though
-                    Log.d("ADD USER ERROR", "writeNewUser: could not get uid");
+                    Log.d("ADD USER ERROR", "ClassCreatorActivity: could not get uid");
 
                 } else {
 
