@@ -10,6 +10,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 public class ClassActivity extends AppCompatActivity {
@@ -22,25 +24,12 @@ public class ClassActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class);
 
-        // some dummy data
-        String[] today = {"Today"};
-        String[] tomorrow = {"Tomorrow"};
-
-        // Create a list of classes
-        final ArrayList<Class> classes = new ArrayList<Class>();
-
-        // add classes here yo
-        classes.add(new Class("class1", today, "1pm","2pm","os101"));
-
-        classes.add(new Class("class2", tomorrow, "11pm","2pm","os1021"));
-
-        classes.add(new Class("class3", tomorrow, "12pm","2pm","os1031"));
-
-        classes.add(new Class("class4", today, "13pm","2pm","os1041"));
-
-        adapter = new ClassAdapter(this, classes);
+        //This generates the list view of all classes the user is currently enrolled in.
+        //for right now it is displaying classes that user u0 is enrolled in
+        // in the future we will use FirebaseAuth to get current users id and then call method using that
         listView = (ListView) findViewById(R.id.classes);
-        listView.setAdapter(adapter);
+        DatabaseHelper database = new DatabaseHelper();
+        database.updateListViewUserClasses(this,listView,"u0");
 
         final TextView dummyButton = findViewById(R.id.dummy);
         dummyButton.setOnClickListener(new View.OnClickListener() {

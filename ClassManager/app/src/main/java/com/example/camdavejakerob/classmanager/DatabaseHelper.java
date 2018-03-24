@@ -5,12 +5,14 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +31,12 @@ public class DatabaseHelper {
     private String TAG = "DATABASE_HELPER";
 
     private FirebaseDatabase mDatabase;
+    private FirebaseAuth mAuth;
 
 
     DatabaseHelper(){
         mDatabase = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
 
@@ -65,29 +69,67 @@ public class DatabaseHelper {
     /**
      * updates a list view with all available classes in the database
      *
-     * @param context      Context context, ListView listView
+     * @param context
      * @param listView
      */
-    public void updateListViewListOfClasses(){
+    public void updateListViewListOfClasses(final Context context, final ListView listView){
         mDatabase.getReference(CIDS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 ClassAdapter classAdapter;
                 final ArrayList<Class> classes = new ArrayList<Class>();
+                ArrayList<String> days = new ArrayList<String>();
 
                 for(DataSnapshot classSnapshot: dataSnapshot.getChildren()){
 
-                    Log.d(TAG, "onDataChange: GET LIST OF CLASSES: " + classSnapshot.child(DAYS).getValue());
+                    String name,startTime,endTime,room;
+                    name=classSnapshot.child(CLASS_NAME).getValue().toString();
+                    startTime=classSnapshot.child(TIME_START).getValue().toString();
+                    endTime=classSnapshot.child(TIME_END).getValue().toString();
+                    room=classSnapshot.child(ROOM).getValue().toString();
 
-                    //String name,startTime,endTime,room;
-                    //name=classSnapshot.child(CLASS_NAME).getValue().toString();
-                    //startTime=classSnapshot.child(TIME_START).getValue().toString();
-                    //endTime=classSnapshot.child(TIME_END).getValue().toString();
-                    //room=classSnapshot.child(ROOM).getValue().toString();
-
-                    //classes.add(new Class(name,,startTime,endTime,room));
+                    classes.add(new Class(name,days,startTime,endTime,room));
                 }
+                classAdapter = new ClassAdapter(context,classes);
+                listView.setAdapter(classAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+    }
+
+    /**
+     *
+     * @param context
+     * @param listView
+     * @param uid
+     */
+    public void updateListViewUserClasses(final Context context, final ListView listView, final String uid){
+        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                ClassAdapter classAdapter;
+                final ArrayList<Class> classes = new ArrayList<Class>();
+                ArrayList<String> days = new ArrayList<String>();
+
+                for(DataSnapshot classSnapshot: dataSnapshot.child(UIDS).child(uid).child(CLASSES).getChildren()){
+                    DataSnapshot classData = dataSnapshot.child(CIDS).child(classSnapshot.getKey().toString());
+
+                    String name,startTime,endTime,room;
+                    name=classData.child(CLASS_NAME).getValue().toString();
+                    startTime=classData.child(TIME_START).getValue().toString();
+                    endTime=classData.child(TIME_END).getValue().toString();
+                    room=classData.child(ROOM).getValue().toString();
+                    classes.add(new Class(name,days,startTime,endTime,room));
+                }
+                classAdapter = new ClassAdapter(context,classes);
+                listView.setAdapter(classAdapter);
             }
 
             @Override
@@ -141,7 +183,7 @@ public class DatabaseHelper {
      * This method creates a new class object and then adds it to the Firebase database with a new cid(class id)
      *   then increments the cid in the database for future classes.
      */
-    public void writeNewClass(final String name, final String[] daysOfClass, final String startTime, final String endTime, final String room){
+    public void writeNewClass(final String name, final ArrayList<String> daysOfClass, final String startTime, final String endTime, final String room){
         DatabaseReference cidRef = mDatabase.getReference().child(CUR_CID);
 
         cidRef.addListenerForSingleValueEvent(new ValueEventListener() {

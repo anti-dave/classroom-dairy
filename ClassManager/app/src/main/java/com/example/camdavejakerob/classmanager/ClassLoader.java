@@ -37,8 +37,11 @@ public class ClassLoader extends AsyncTaskLoader<List<Class>> {
         // Create a list of classes
 
         // some dummy data
-        String[] today = {"Today"};
-        String[] tomorrow = {"Tomorrow"};
+        ArrayList<String> today = new ArrayList<String>();
+        today.add("today");
+
+        ArrayList<String> tomorrow = new ArrayList<String>();
+        tomorrow.add("Tomorrow");
 
         final List<Class> classes = new ArrayList<Class>();
 
