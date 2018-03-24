@@ -29,13 +29,13 @@ public class ClassActivity extends AppCompatActivity {
         final ArrayList<Class> classes = new ArrayList<Class>();
 
         // add classes here yo
-        classes.add(new Class("class1", today, "1pm","2pm","os101", 0));
+        classes.add(new Class("class1", today, "1pm","2pm","os101"));
 
-        classes.add(new Class("class2", tomorrow, "11pm","2pm","os1021", 0));
+        classes.add(new Class("class2", tomorrow, "11pm","2pm","os1021"));
 
-        classes.add(new Class("class3", tomorrow, "12pm","2pm","os1031", 0));
+        classes.add(new Class("class3", tomorrow, "12pm","2pm","os1031"));
 
-        classes.add(new Class("class4", today, "13pm","2pm","os1041", 0));
+        classes.add(new Class("class4", today, "13pm","2pm","os1041"));
 
         adapter = new ClassAdapter(this, classes);
         listView = (ListView) findViewById(R.id.classes);

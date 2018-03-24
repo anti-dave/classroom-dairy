@@ -1,6 +1,8 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -9,6 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +53,41 @@ public class DatabaseHelper {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 textView.setText(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+    }
+
+    /**
+     * updates a list view with all available classes in the database
+     *
+     * @param context      Context context, ListView listView
+     * @param listView
+     */
+    public void updateListViewListOfClasses(){
+        mDatabase.getReference(CIDS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                ClassAdapter classAdapter;
+                final ArrayList<Class> classes = new ArrayList<Class>();
+
+                for(DataSnapshot classSnapshot: dataSnapshot.getChildren()){
+
+                    Log.d(TAG, "onDataChange: GET LIST OF CLASSES: " + classSnapshot.child(DAYS).getValue());
+
+                    //String name,startTime,endTime,room;
+                    //name=classSnapshot.child(CLASS_NAME).getValue().toString();
+                    //startTime=classSnapshot.child(TIME_START).getValue().toString();
+                    //endTime=classSnapshot.child(TIME_END).getValue().toString();
+                    //room=classSnapshot.child(ROOM).getValue().toString();
+
+                    //classes.add(new Class(name,,startTime,endTime,room));
+                }
             }
 
             @Override
@@ -103,7 +141,7 @@ public class DatabaseHelper {
      * This method creates a new class object and then adds it to the Firebase database with a new cid(class id)
      *   then increments the cid in the database for future classes.
      */
-    public void writeNewClass(final String name, final String[] daysOfClass, final String startTime, final String endTime, final String room, final int enrolled){
+    public void writeNewClass(final String name, final String[] daysOfClass, final String startTime, final String endTime, final String room){
         DatabaseReference cidRef = mDatabase.getReference().child(CUR_CID);
 
         cidRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -115,7 +153,7 @@ public class DatabaseHelper {
                     //do something
                     Log.d("WRITE_NEW_CLASS", "mCid was empty, sad face");
                 } else {
-                    Class newClass = new Class(name,daysOfClass,startTime,endTime,room,enrolled);
+                    Class newClass = new Class(name,daysOfClass,startTime,endTime,room);
                     DatabaseReference classRef = mDatabase.getReference(CIDS);
                     classRef.child(cid).setValue(newClass);
 

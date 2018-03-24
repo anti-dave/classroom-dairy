@@ -24,7 +24,9 @@ public class InfoActivity extends AppCompatActivity {
         /*
         Rob was here, I am testing some stuff here please feel free to delete it if i forgot to remove it
          */
-        //mDatabase = new DatabaseHelper();
+        mDatabase = new DatabaseHelper();
+
+        mDatabase.updateListViewListOfClasses();
 
         //Assignment assignment = new Assignment("3/29/2018","0","Homework 1", false);
         //mDatabase.writeAssignment("c1",assignment);
