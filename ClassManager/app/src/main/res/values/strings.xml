@@ -17,4 +17,23 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Strings related to Sign in dropdown -->
+    <string name="action_sign_out">Sign Out</string>
+    <string name="action_change_account">Change Account</string>
+
+    <!-- Strings related to Class Activity dropdown -->
+    <string name="action_add_class">Add Class</string>
+    <string name="action_create_class">Add Class</string>
+
+    <!-- Strings related to Class Editor Activity  -->
+    <string name="class_name_hint">Class</string>
+    <string name="class_name_prompt">Class Name</string>
+
+    <!-- Strings related to Class Add List Activity  -->
+    <string name="no_classes">Sorry, no classes offered</string>
+
+    <!-- Utility -->
+    <string name="no_internet_connection">No Internet</string>
+
 </resources>
