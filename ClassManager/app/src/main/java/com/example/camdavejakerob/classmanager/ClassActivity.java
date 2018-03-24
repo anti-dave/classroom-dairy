@@ -12,15 +12,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 
 public class ClassActivity extends AppCompatActivity {
 
-    private ClassAdapter mAdapter;
+    private FirebaseListAdapter<Class> mAdapter;
     private ListView mListView;
+    private DatabaseReference mRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +50,16 @@ public class ClassActivity extends AppCompatActivity {
 
 
         // gets ref to firebase
-        //mRef = firebase.database().ref("u0/" + "classes");//= new Firebase("https://classmanager-38435.firebaseio.com/" + "u0/" + "classes");
+        mRef = FirebaseDatabase.getInstance().getReference();// new Firebase("https://classmanager-38435.firebaseio.com/" + "u0/" + "classes");
         mListView = (ListView) findViewById(R.id.classes);
-//        mAdapter = new FirebaseListAdapter<Class>(this, Class.class, R.layout.activity_class, mRef) {
-//            @Override
-//            protected void populateView(View view, Class myObj, int position) {
-//                //Set the value for the views
-//                ((TextView)view.findViewById(R.id.class_name)).setText(myObj.getName());
-//                //...
-//            }
-//        };
+        mAdapter = new FirebaseListAdapter<Class>(this, Class.class, R.layout.activity_class, mRef) {
+            @Override
+            protected void populateView(View view, Class myObj, int position) {
+                //Set the value for the views
+                ((TextView)view.findViewById(R.id.class_name)).setText(myObj.getName());
+                //...
+            }
+        };
         mListView.setAdapter(mAdapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
