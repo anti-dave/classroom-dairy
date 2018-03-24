@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class ClassActivity extends AppCompatActivity {
 
     private ListView mListView;
-    private DatabaseReference mRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
