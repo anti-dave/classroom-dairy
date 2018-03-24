@@ -29,6 +29,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Classroom Manager\n"
+                android:gravity="center"
+                android:textSize="32sp"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
