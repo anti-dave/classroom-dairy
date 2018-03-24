@@ -31,15 +31,27 @@ public class ClassActivity extends AppCompatActivity {
         DatabaseHelper database = new DatabaseHelper();
         database.updateListViewUserClasses(this,mListView,"u0");
 
-        final TextView dummyButton = findViewById(R.id.dummy);
-        dummyButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent dummyIntent = new Intent(ClassActivity.this, ClassInfoActivity.class);
-                startActivity(dummyIntent); // probaly should pass the class to so we can change the title but this is just a dummy
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                // Create new intent to go to {@link ClassInfoActivity}
+                Intent classIntent = new Intent(ClassActivity.this, ClassInfoActivity.class);
 
+                Toast.makeText(ClassActivity.this, ""+id, Toast.LENGTH_SHORT).show();
+
+                // Form the content URI that represents the specific Restaurant that was clicked on,
+                // by appending the "id" (passed as input to this method) onto the
+                // {@link VisitedRestaurantEntry#CONTENT_URI}.
+//                Uri currentClassUri =
+//                        ContentUris.withAppendedId(ClassActivity.CONTENT_URI, id);
+
+                // Set the URI on the data field of the intent
+//                intent.setData(currentClassUri);
+
+                // Launch the {@link ClassInfoActivity} to display the data for the current class.
+                startActivity(classIntent);
             }
         });
-
     }
 
     /**
