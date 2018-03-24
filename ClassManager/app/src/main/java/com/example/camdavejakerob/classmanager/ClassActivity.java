@@ -6,18 +6,18 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.ArrayList;
+
 
 public class ClassActivity extends AppCompatActivity {
 
-    private ClassAdapter adapter;
-    private ListView listView;
+    private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,17 +27,19 @@ public class ClassActivity extends AppCompatActivity {
         //This generates the list view of all classes the user is currently enrolled in.
         //for right now it is displaying classes that user u0 is enrolled in
         // in the future we will use FirebaseAuth to get current users id and then call method using that
-        listView = (ListView) findViewById(R.id.classes);
+        mListView = (ListView) findViewById(R.id.classes);
         DatabaseHelper database = new DatabaseHelper();
-        database.updateListViewUserClasses(this,listView,"u0");
+        database.updateListViewUserClasses(this,mListView,"u0");
 
         final TextView dummyButton = findViewById(R.id.dummy);
         dummyButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent dummyIntent = new Intent(ClassActivity.this, ClassInfoActivity.class);
                 startActivity(dummyIntent); // probaly should pass the class to so we can change the title but this is just a dummy
+
             }
         });
+
     }
 
     /**
@@ -63,9 +65,9 @@ public class ClassActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.action_add_class) {
             //add class action
             Toast.makeText(ClassActivity.this,
-                                    "Add Class",
-                                    Toast.LENGTH_LONG)
-                                    .show();
+                    "Add Class",
+                    Toast.LENGTH_LONG)
+                    .show();
             Intent addClassIntent = new Intent(ClassActivity.this, ClassCreatorActivity.class);
             startActivity(addClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
 
