@@ -8,4 +8,71 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <!-- Begins the styles in the FORM ACTIVITIES -->
+
+    <!-- theme for the input fields in the form -->
+    <style name="FormInputFieldStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <!-- theme for the short form prompts -->
+    <style name="FormLabelStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+    </style>
+
+    <!-- theme for the short edit texts in the form -->
+    <style name="FormEditTextShortStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+    </style>
+
+    <!-- theme for the note label in the form activities-->
+    <style name="FormLabelNoteStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+    </style>
+
+    <!-- theme for the note paragraph in form activities -->
+    <style name="FormEditTextLongStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:inputType">textMultiLine|textCapSentences</item>
+        <item name="android:minLines">1</item>
+        <item name="android:lines">5</item>
+        <item name="android:maxLines">10</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+
+    <!-- theme for the save button in the form -->
+    <style name="FormSaveButtonStyle">
+        <item name="android:layout_width">@dimen/form_button_width</item>
+        <item name="android:layout_height">@dimen/form_button_height</item>
+    </style>
+
+    <!-- theme for the delete button in the form -->
+    <style name="FormDeleteButtonStyle">
+        <item name="android:layout_width">@dimen/form_button_width</item>
+        <item name="android:layout_height">@dimen/form_button_height</item>
+    </style>
+    <!-- ends the styles used in the FORM ACTIVITIES -->
+
+    <!-- ListView style -->
+    <style name="ListViewStyle" parent="@android:style/Widget.ListView">
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">4dp</item>
+    </style>
+
+
 </resources>

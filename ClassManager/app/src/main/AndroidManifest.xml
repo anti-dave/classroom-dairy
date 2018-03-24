@@ -23,14 +23,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
+
+        <activity
+            android:name=".RegistrationActivity"
+            android:label="@string/title_activity_login" />
+
         <activity android:name=".ClassActivity" />
+
         <activity
             android:name=".ClassInfoActivity"
             android:screenOrientation="portrait" />
+
         <activity android:name=".InfoActivity"></activity>
+
+        <activity android:name=".ChatActivity"></activity>
+
     </application>
 
 </manifest>
