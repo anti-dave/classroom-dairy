@@ -156,6 +156,16 @@
                 android:text="Grades"
                 android:layout_weight="1"/>
 
+
+            <Button
+                android:id="@+id/chat_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/action_chat_button"
+                android:textStyle="bold" />
+
         </LinearLayout>
 
         <LinearLayout

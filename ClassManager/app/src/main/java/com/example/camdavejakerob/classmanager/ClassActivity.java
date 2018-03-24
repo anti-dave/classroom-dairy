@@ -1,13 +1,14 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Intent;
-import android.os.TestLooperManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -22,8 +23,8 @@ public class ClassActivity extends AppCompatActivity {
         setContentView(R.layout.activity_class);
 
         // some dummy data
-        String[] today = {"today"};
-        String[] tomorrow = {"tomorrow"};
+        String[] today = {"Today"};
+        String[] tomorrow = {"Tomorrow"};
 
         // Create a list of classes
         final ArrayList<Class> classes = new ArrayList<Class>();
@@ -49,4 +50,71 @@ public class ClassActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Creates the menu with oncreate.
+     *
+     * @param menu
+     * @return bool on whether it was successful.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_class_activity_dropdown, menu);
+        return true;
+    }//onCreateOptionsMenu
+
+    /**
+     * Logic for when menu is pressed.
+     *
+     * @param item
+     * @return bool on whether it was successful.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_add_class) {
+            //add class action
+            Toast.makeText(ClassActivity.this,
+                                    "Add Class",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+            Intent addClassIntent = new Intent(ClassActivity.this, ClassCreatorActivity.class);
+            startActivity(addClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
+
+        }
+        if(item.getItemId() == R.id.action_create_class) {
+            //add class action
+            Toast.makeText(ClassActivity.this,
+                    "Created Class",
+                    Toast.LENGTH_LONG)
+                    .show();
+            Intent createClassIntent = new Intent(ClassActivity.this, ClassCreatorActivity.class);
+            startActivity(createClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
+
+        }
+        return true;
+    }
+
 }
+
+/*
+addClass(){
+    if student(){
+        addClassCourse()
+    } //else, is teacher
+    else {
+        createClass();
+    }
+}
+
+student(){
+    return;
+}
+
+addClassCourse() {
+
+}
+
+createClass(){
+
+}
+*/
