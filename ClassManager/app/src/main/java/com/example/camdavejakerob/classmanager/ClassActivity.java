@@ -1,6 +1,7 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -31,15 +33,22 @@ public class ClassActivity extends AppCompatActivity {
         DatabaseHelper database = new DatabaseHelper();
         database.updateListViewUserClasses(this,mListView,"u0");
 
-        final TextView dummyButton = findViewById(R.id.dummy);
-        dummyButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent dummyIntent = new Intent(ClassActivity.this, ClassInfoActivity.class);
-                startActivity(dummyIntent); // probaly should pass the class to so we can change the title but this is just a dummy
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
+                // Create new intent to go to {@link ClassInfoActivity}
+                Intent classIntent = new Intent(ClassActivity.this, ClassInfoActivity.class);
+
+                // using the position to get the name of the class clicked on
+                Class currentClass = (Class)adapterView.getItemAtPosition(position);
+                // then pass the class name to the class activity
+                classIntent.putExtra("CURRENT_CLASS",(Parcelable) currentClass);
+
+                // Launch the {@link ClassInfoActivity} to display the data for the current class.
+                startActivity(classIntent);
             }
         });
-
     }
 
     /**
