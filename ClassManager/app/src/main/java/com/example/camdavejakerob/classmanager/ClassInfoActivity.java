@@ -11,10 +11,20 @@ import android.widget.Toast;
 
 public class ClassInfoActivity extends AppCompatActivity {
 
+    private Class mCurrentClass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_info);
+
+        // assigns the currentClass
+        Intent i = getIntent();
+
+        mCurrentClass = (Class) i.getParcelableExtra("CURRENT_CLASS");
+
+        // sets title to selected class name
+        setTitle(mCurrentClass.getName());
 
         final LinearLayout syllabusButton = findViewById(R.id.syllabus);
         syllabusButton.setOnClickListener(new View.OnClickListener() {

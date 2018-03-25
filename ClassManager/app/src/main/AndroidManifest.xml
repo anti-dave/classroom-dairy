@@ -32,15 +32,36 @@
             android:name=".RegistrationActivity"
             android:label="@string/title_activity_login" />
 
-        <activity android:name=".ClassActivity" />
+
+        <activity android:name=".ClassActivity"
+            android:label="Your Classes"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+        </activity>
 
         <activity
             android:name=".ClassInfoActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
 
-        <activity android:name=".InfoActivity"></activity>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ClassActivity"/>
+        </activity>
 
-        <activity android:name=".ChatActivity"></activity>
+        <activity android:name=".InfoActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+        </activity>
+
+        <activity android:name=".ChatActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ClassActivity"/>
+        </activity>
 
     </application>
 

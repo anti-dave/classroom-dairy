@@ -1,6 +1,7 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -34,19 +36,14 @@ public class ClassActivity extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
                 // Create new intent to go to {@link ClassInfoActivity}
                 Intent classIntent = new Intent(ClassActivity.this, ClassInfoActivity.class);
 
-                Toast.makeText(ClassActivity.this, ""+id, Toast.LENGTH_SHORT).show();
-
-                // Form the content URI that represents the specific Restaurant that was clicked on,
-                // by appending the "id" (passed as input to this method) onto the
-                // {@link VisitedRestaurantEntry#CONTENT_URI}.
-//                Uri currentClassUri =
-//                        ContentUris.withAppendedId(ClassActivity.CONTENT_URI, id);
-
-                // Set the URI on the data field of the intent
-//                intent.setData(currentClassUri);
+                // using the position to get the name of the class clicked on
+                Class currentClass = (Class)adapterView.getItemAtPosition(position);
+                // then pass the class name to the class activity
+                classIntent.putExtra("CURRENT_CLASS",(Parcelable) currentClass);
 
                 // Launch the {@link ClassInfoActivity} to display the data for the current class.
                 startActivity(classIntent);
