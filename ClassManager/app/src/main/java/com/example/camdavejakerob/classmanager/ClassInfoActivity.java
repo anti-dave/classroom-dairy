@@ -1,9 +1,12 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -29,8 +32,11 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout syllabusButton = findViewById(R.id.syllabus);
         syllabusButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent classesIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
-                startActivity(classesIntent);
+//                Intent classesIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+//                startActivity(classesIntent);
+               String pdf_url = "https://firebasestorage.googleapis.com/v0/b/classmanager-38435.appspot.com/o/Syllabus_Sample.pdf?alt=media&token=3232f7b8-f732-4b75-b984-a1d7357c85d3";
+               Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdf_url));
+               startActivity(browserIntent);
             }
         });
 
