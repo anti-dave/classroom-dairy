@@ -56,6 +56,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ClassActivity" />
         </activity>
+
+        <activity android:name=".InstructorPromptActivity"
+            android:theme="@style/AppTheme.PopupTheme"
+            ></activity>
+
     </application>
 
 </manifest>
