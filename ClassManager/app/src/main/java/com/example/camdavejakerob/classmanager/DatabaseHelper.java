@@ -1,6 +1,8 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -12,10 +14,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.ref.Reference;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+import static android.support.v4.content.ContextCompat.startActivity;
 
 /**
  * Created by Rob on 3/13/2018.
@@ -24,10 +25,10 @@ import java.util.Map;
 public class DatabaseHelper {
 
     //Strings used frequently for accessing data in Firebase
-    private String CIDS = "cids", UIDS = "uids", CUR_UID = "curUid", CUR_CID = "curCid";
+    private String CIDS = "cids", UIDS = "uids";
     private String ROSTER = "roster", DAYS = "daysOfClass", TIME_END = "endTime", TIME_START = "startTime", CLASS_NAME = "name", ROOM = "room";
-    private String CLASSES = "classes", EMAIL = "email", FIRST = "first", INSTRUCTOR = "instructor", LAST = "last";
-    private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate";
+    private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor";
+    private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades";
     private String TAG = "DATABASE_HELPER";
 
     private FirebaseDatabase mDatabase;
@@ -45,6 +46,8 @@ public class DatabaseHelper {
      *                                  Accessors
      *
      ****************************************************************************************************************/
+
+
 
     /**
      *
@@ -146,14 +149,27 @@ public class DatabaseHelper {
      ****************************************************************************************************************/
 
     /**
-     * not sure how I want to implement this yet with grades and all that
+     * writes a class to the database with its name and due date
      *
-     * @param cid
-     * @param assignment
+     * @param cid a string representation of the cass id. This method assumes its a valid class id
+     * @param assignment an assignment class
      */
     public void writeAssignment(String cid, Assignment assignment){
         DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
-        classRef.child(ASSIGNMENTS).child(assignment.Name).setValue(assignment.DueDate);
+        classRef.child(ASSIGNMENTS).child(assignment.Name).child(DUE_DATE).setValue(assignment.DueDate);
+    }
+
+    /**
+     * Adds a grade for a specified student in the given class on a given assignment
+     *
+     * @param cid String of the class id, assumed to be valid
+     * @param uid String of the students id, assumed to be valid
+     * @param grade String of the grade which the student received for the assignment
+     * @param assignment String of the assignments name
+     */
+    public void writeAssignmentGrade(String cid, String uid, String grade, String assignment){
+        DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
+        classRef.child(ASSIGNMENTS).child(assignment).child(GRADES).child(uid).setValue(grade);
     }
 
     /**
@@ -178,97 +194,52 @@ public class DatabaseHelper {
      * @param startTime: a string of the class start time. 12 hour format
      * @param endTime: a string of the class end time. 12 hour format
      * @param room: a string of which room the class takes place
-     * @param enrolled: an integer of how many students are enrolled in the class
      *
-     * This method creates a new class object and then adds it to the Firebase database with a new cid(class id)
-     *   then increments the cid in the database for future classes.
+     * This method creates a new class object and then adds it to the Firebase database
      */
-    public void writeNewClass(final String name, final ArrayList<String> daysOfClass, final String startTime, final String endTime, final String room){
-        DatabaseReference cidRef = mDatabase.getReference().child(CUR_CID);
+    public void writeNewClass( final String classId, final String name, final ArrayList<String> daysOfClass,
+                               final String startTime, final String endTime, final String room ){
 
-        cidRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String cid = dataSnapshot.getValue().toString();
+        Class newClass = new Class(name,daysOfClass,startTime,endTime,room);
+        mDatabase.getReference(CIDS).child(classId).setValue(newClass);
 
-                if(cid.isEmpty()){
-                    //do something
-                    Log.d("WRITE_NEW_CLASS", "mCid was empty, sad face");
-                } else {
-                    Class newClass = new Class(name,daysOfClass,startTime,endTime,room);
-                    DatabaseReference classRef = mDatabase.getReference(CIDS);
-                    classRef.child(cid).setValue(newClass);
-
-                    cid = incrementId(cid);
-                    cid = "c" + cid;
-                    mDatabase.getReference(CUR_CID).setValue(cid);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("WRITE_NEW_CLASS", "onCancelled");
-            }
-        });
     }
 
     /**
      * This method assumes all data was validated before its called
      *
-     * @param first: is a string of the users first name
-     * @param last: is a string of the users last name
-     * @param email: is a string of the users email address
-     * @param instructor: bool if true give instructor privileges
+     * @param name: is a string of the users first and last name
+     * @param userId: is a string generated by FirebaseAuth
      *
      * This method creates a new user object and then adds it to the Firebase database with a new uid(user id)
      *   then increments the uid in the database for future users.
      */
-    public void writeNewUser( final String first, final String last, final String email, final boolean instructor) {
+    public void writeNewUser( final String name, final String userId ) {
 
-        DatabaseReference uidRef = mDatabase.getReference().child(CUR_UID);
-
-        uidRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.getReference(UIDS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String uid = dataSnapshot.getValue().toString();
 
-                if(uid.isEmpty()){
+                if(dataSnapshot.child(userId).getValue() == null) {
+                    mDatabase.getReference(UIDS).child(userId).child(USER_NAME).setValue(name);
 
-                    //something has gone wrong if uid is empty we should probably handle this in some way... later though
-                    Log.d("ADD USER ERROR", "ClassCreatorActivity: could not get uid");
+                    //a method after this one prompts user and updates the instructor value
+                    mDatabase.getReference(UIDS).child(userId).child(INSTRUCTOR).setValue(false);
 
-                } else {
-
-                    UserInfo user = new UserInfo(first,last,email,instructor);
-                    DatabaseReference userRef = mDatabase.getReference(UIDS);
-                    userRef.child(uid).setValue(user);
-
-                    uid = incrementId(uid);
-                    uid = "u" + uid;
-                    mDatabase.getReference(CUR_UID).setValue(uid);
-
+                    //Intent prompt = new Intent(context,InstructorPromptActivity.class);
+                    //startActivity(prompt);
                 }
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d("WRITE_NEW_USER", "onCancelled");
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
             }
         });
     }
 
-    /**
-     * @param id is a string representing either curUid or curCid
-     * @return an incremented string, adding zeros if necessary. does not add the 'u' or 'c'
-     */
-    private String incrementId(String id){
-
-        String newId = id.substring(1);
-
-        int intId = Integer.parseInt(newId);
-        intId++;
-        newId = Integer.toString(intId);
-
-        return newId;
+    public void updateUserToInstructor(String uid, boolean bool){
+        mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).setValue(bool);
     }
 }
