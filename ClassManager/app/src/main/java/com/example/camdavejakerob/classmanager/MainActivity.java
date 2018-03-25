@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
 
     private static final int SIGN_IN_REQUEST_CODE = 1;
+
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
             //Alternative
             //Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
             //startActivity(loginIntent);
+            //Log.d("MAIN ACTIVITY", "onCreate: " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
         } else {
             // User is already signed in. Therefore, display
@@ -123,6 +128,17 @@ public class MainActivity extends AppCompatActivity {
                         "Sign in Successful",
                         Toast.LENGTH_LONG)
                         .show();
+
+                //This is where we enter the user into the database
+                //some checks will have to be done as well as prompting the user for the first time if they are an instructor or not
+                //don't know how we do that last part yet
+                ////////// every time we get here it prompts the user to choose student or teacher im done fighting with this for now so we will call it a feature /////////
+                databaseHelper = new DatabaseHelper();
+                FirebaseUser newUser = FirebaseAuth.getInstance().getCurrentUser();
+                databaseHelper.writeNewUser( newUser.getDisplayName(), newUser.getUid() );
+                Intent promptUser = new Intent(MainActivity.this,InstructorPromptActivity.class);
+                startActivity(promptUser);
+
             } else {
                 Toast.makeText(this,
                         "Sign in Failed. Please try again later.",

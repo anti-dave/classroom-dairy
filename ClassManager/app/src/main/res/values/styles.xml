@@ -75,4 +75,9 @@
     </style>
 
 
+    <!-- InstructorPrompt styles -->
+    <style name="AppTheme.PopupTheme" >
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
 </resources>

@@ -42,6 +42,10 @@
 
         <activity android:name=".ChatActivity"></activity>
 
+        <activity android:name=".InstructorPromptActivity"
+            android:theme="@style/AppTheme.PopupTheme"
+            ></activity>
+
     </application>
 
 </manifest>
