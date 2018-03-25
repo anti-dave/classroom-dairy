@@ -38,8 +38,9 @@ public class Class implements Parcelable{
     public String getName(){return Name;}
     public String getStartTime(){return StartTime;}
     public String getEndTime(){return EndTime;}
+    public String getClassTime(){return getStartTime() + " - " + getEndTime();}
     public String getRoom(){return Room;}
-    public String GetSchiheduledTime(){return getDaysOfClass() + " " + getStartTime() + " - " + getEndTime();}
+    public String getSchiheduledTime(){return getDaysOfClass() + " " + getStartTime() + " - " + getEndTime();}
     public String getDaysOfClass(){
         String days = "";
 
