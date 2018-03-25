@@ -51,7 +51,7 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout discussionBoardButton = findViewById(R.id.discussion_board);
         discussionBoardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent discussionBoardIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+                Intent discussionBoardIntent = new Intent(ClassInfoActivity.this, ChatActivity.class);
                 startActivity(discussionBoardIntent);
             }
         });

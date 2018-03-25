@@ -38,7 +38,7 @@ public class ClassAdapter extends ArrayAdapter<Class> {
 
         name.setText(aClass.getName());
         day.setText(aClass.getDaysOfClass());
-        time.setText(aClass.getStartTime());
+        time.setText(aClass.getClassTime());
         room.setText(aClass.getRoom());
 
 
