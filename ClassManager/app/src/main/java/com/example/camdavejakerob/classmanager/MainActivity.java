@@ -186,6 +186,12 @@ public class MainActivity extends AppCompatActivity {
                             //finish();
                         }
                     });
+            // Start sign in/sign up activity
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .build(),
+                    SIGN_IN_REQUEST_CODE);
         }
         if(item.getItemId() == R.id.action_change_account) {
             AuthUI.getInstance().signOut(this)
@@ -201,6 +207,12 @@ public class MainActivity extends AppCompatActivity {
                             //finish();
                         }
                     });
+            // Start sign in/sign up activity
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .build(),
+                    SIGN_IN_REQUEST_CODE);
         }
         return true;
     }
