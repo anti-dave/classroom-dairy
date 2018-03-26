@@ -15,6 +15,7 @@ public class Class implements Parcelable{
     private String StartTime;
     private String EndTime;
     private String Room;
+    private String Id;
     //private String Instructor; i want to add this but not going to yet because to lazy to fix this
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -27,12 +28,13 @@ public class Class implements Parcelable{
         }
     };
 
-    public Class(String name,ArrayList<String> daysOfClass, String startTime, String endTime, String room){
+    public Class(String name,ArrayList<String> daysOfClass, String startTime, String endTime, String room, String id){
         Name = name;
         DaysOfClass = daysOfClass;
         StartTime = startTime;
         EndTime = endTime;
         Room = room;
+        Id = id;
     }
 
     public String getName(){return Name;}
@@ -40,7 +42,8 @@ public class Class implements Parcelable{
     public String getEndTime(){return EndTime;}
     public String getClassTime(){return getStartTime() + " - " + getEndTime();}
     public String getRoom(){return Room;}
-    public String getSchheduledTime(){return getDaysOfClass() + " " + getStartTime() + " - " + getEndTime();}
+    public String getId(){return Id;}
+    public String getSchiheduledTime(){return getDaysOfClass() + " " + getStartTime() + " - " + getEndTime();}
     public String getDaysOfClass(){
         String days = "";
 
@@ -62,6 +65,7 @@ public class Class implements Parcelable{
         this.StartTime =  in.readString();
         this.EndTime =  in.readString();
         this.Room =  in.readString();
+        this.Id =   in.readString();
     }
 
     @Override
@@ -76,6 +80,7 @@ public class Class implements Parcelable{
         dest.writeString(this.StartTime);
         dest.writeString(this.EndTime);
         dest.writeString(this.Room);
+        dest.writeString(this.Id);
     }
 
     @Override
@@ -86,6 +91,7 @@ public class Class implements Parcelable{
                 ", startTime='" + StartTime + '\'' +
                 ", endTime='" + EndTime + '\'' +
                 ", room='" + Room + '\'' +
+                ", Id'" + Id + '\'' +
                 '}';
     }
 }

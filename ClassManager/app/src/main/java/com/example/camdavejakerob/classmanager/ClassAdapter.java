@@ -21,27 +21,28 @@ public class ClassAdapter extends ArrayAdapter<Class> {
         super(context, 0, classes);
     }
 
-        @Override
-        public View getView(int position, View view, ViewGroup parent) {
+    @Override
+    public View getView(int position, View view, ViewGroup parent) {
 
-            Class aClass = getItem(position);
+        Class aClass = getItem(position);
 
-            if (view == null){
-                view = LayoutInflater.from(getContext()).inflate(
-                        R.layout.class_item, parent, false);
-            }
+        if (view == null){
+            view = LayoutInflater.from(getContext()).inflate(
+                    R.layout.class_item, parent, false);
+        }
 
-            TextView name = (TextView) view.findViewById(R.id.class_name);
-            TextView day = (TextView) view.findViewById(R.id.class_day);
-            TextView time = (TextView) view.findViewById(R.id.class_time);
-            TextView room = (TextView) view.findViewById(R.id.class_room);
+        TextView name = (TextView) view.findViewById(R.id.class_name);
+        TextView day = (TextView) view.findViewById(R.id.class_day);
+        TextView time = (TextView) view.findViewById(R.id.class_time);
+        TextView room = (TextView) view.findViewById(R.id.class_room);
+        TextView classId = (TextView) view.findViewById(R.id.class_id);
 
-            name.setText(aClass.getName());
-            day.setText(aClass.getDaysOfClass());
-            time.setText(aClass.getClassTime());
-            room.setText(aClass.getRoom());
+        name.setText(aClass.getName());
+        day.setText(aClass.getDaysOfClass());
+        time.setText(aClass.getClassTime());
+        room.setText(aClass.getRoom());
+        classId.setText(aClass.getId());
 
-
-            return view;
+        return view;
     }
 }
