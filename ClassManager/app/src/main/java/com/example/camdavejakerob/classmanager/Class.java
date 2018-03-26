@@ -15,7 +15,8 @@ public class Class implements Parcelable{
     private String StartTime;
     private String EndTime;
     private String Room;
-    //private String Instructor; i want to add this but not going to yet because to lazy to fix this
+    private String CourseID;
+    private String Instructor;
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public Class createFromParcel(Parcel in) {
@@ -33,6 +34,8 @@ public class Class implements Parcelable{
         StartTime = startTime;
         EndTime = endTime;
         Room = room;
+        CourseID = "TEMP";
+        Instructor = "TEMP";
     }
 
     public String getName(){return Name;}
@@ -41,6 +44,8 @@ public class Class implements Parcelable{
     public String getClassTime(){return getStartTime() + " - " + getEndTime();}
     public String getRoom(){return Room;}
     public String getSchiheduledTime(){return getDaysOfClass() + " " + getStartTime() + " - " + getEndTime();}
+    public String getCourseID(){return CourseID;}
+    public String getInstructor(){return Instructor;}
     public String getDaysOfClass(){
         String days = "";
 
@@ -62,6 +67,8 @@ public class Class implements Parcelable{
         this.StartTime =  in.readString();
         this.EndTime =  in.readString();
         this.Room =  in.readString();
+        this.CourseID =in.readString();
+        this.Instructor = in.readString();
     }
 
     @Override
@@ -76,6 +83,8 @@ public class Class implements Parcelable{
         dest.writeString(this.StartTime);
         dest.writeString(this.EndTime);
         dest.writeString(this.Room);
+        dest.writeString(this.CourseID);
+        dest.writeString(this.Instructor);
     }
 
     @Override

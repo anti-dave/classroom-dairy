@@ -59,7 +59,8 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout assignmentsButton = findViewById(R.id.assignments);
         assignmentsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent assignmentsIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+                Intent assignmentsIntent = new Intent(ClassInfoActivity.this, AssignmentActivity.class);
+                assignmentsIntent.putExtra("TITLE", mCurrentClass.getName() + " Assignments");
                 startActivity(assignmentsIntent);
             }
         });

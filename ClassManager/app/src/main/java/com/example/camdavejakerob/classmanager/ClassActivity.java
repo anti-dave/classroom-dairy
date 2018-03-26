@@ -1,7 +1,9 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,7 +35,8 @@ public class ClassActivity extends AppCompatActivity {
         // in the future we will use FirebaseAuth to get current users id and then call method using that
         mListView = (ListView) findViewById(R.id.classes);
         DatabaseHelper database = new DatabaseHelper();
-        database.updateListViewUserClasses(this,mListView,"u0");
+
+        database.updateListViewUserClasses(this,mListView, FirebaseAuth.getInstance().getUid());
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
@@ -94,7 +99,33 @@ public class ClassActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+                    // This activity is NOT part of this app's task, so create a new task
+                    // when navigating up, with a synthesized back stack.
+                    TaskStackBuilder.create(this)
+                            // Add all of this activity's parents to the back stack
+                            .addNextIntentWithParentStack(upIntent)
+                            // Navigate up to the closest parent
+                            .startActivities();
+                } else {
+                    // This activity is part of this app's task, so simply
+                    // navigate up to the logical parent activity.
+                    NavUtils.navigateUpTo(this, upIntent);
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
+
+
 
 /*
 addClass(){
