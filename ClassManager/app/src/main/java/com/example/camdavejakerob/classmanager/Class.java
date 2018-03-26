@@ -28,13 +28,13 @@ public class Class implements Parcelable{
         }
     };
 
-    public Class(String name,ArrayList<String> daysOfClass, String startTime, String endTime, String room){
+    public Class(String name,ArrayList<String> daysOfClass, String startTime, String endTime, String room, String id){
         Name = name;
         DaysOfClass = daysOfClass;
         StartTime = startTime;
         EndTime = endTime;
         Room = room;
-        CourseID = "TEMP";
+        CourseID = id;
         Instructor = "TEMP";
     }
 
@@ -95,6 +95,7 @@ public class Class implements Parcelable{
                 ", startTime='" + StartTime + '\'' +
                 ", endTime='" + EndTime + '\'' +
                 ", room='" + Room + '\'' +
+                ", id='" + CourseID + '\'' +
                 '}';
     }
 }

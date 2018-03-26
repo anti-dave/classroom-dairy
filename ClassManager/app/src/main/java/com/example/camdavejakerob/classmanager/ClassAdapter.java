@@ -35,12 +35,13 @@ public class ClassAdapter extends ArrayAdapter<Class> {
         TextView day = (TextView) view.findViewById(R.id.class_day);
         TextView time = (TextView) view.findViewById(R.id.class_time);
         TextView room = (TextView) view.findViewById(R.id.class_room);
+        TextView classId = (TextView) view.findViewById(R.id.class_id);
 
         name.setText(aClass.getName());
         day.setText(aClass.getDaysOfClass());
         time.setText(aClass.getClassTime());
         room.setText(aClass.getRoom());
-
+        classId.setText(aClass.getCourseID());
 
         return view;
     }
