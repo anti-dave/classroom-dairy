@@ -57,6 +57,15 @@
                 android:value=".ClassActivity" />
         </activity>
 
+        <activity
+            android:name=".RosterActivity"
+            android:label="Class Roster"
+            android:parentActivityName=".ClassInfoActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ClassInfoActivity"/>
+        </activity>
+
         <activity android:name=".InstructorPromptActivity"
             android:theme="@style/AppTheme.PopupTheme"
             ></activity>

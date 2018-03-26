@@ -78,7 +78,8 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout studentsButton = findViewById(R.id.students);
         studentsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent studentsIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+                Intent studentsIntent = new Intent(ClassInfoActivity.this, RosterActivity.class);
+                studentsIntent.putExtra(CLASS_ID, mCurrentClass.getId());
                 startActivity(studentsIntent);
             }
         });

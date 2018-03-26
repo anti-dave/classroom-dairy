@@ -15,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.jar.Attributes;
 
 import static android.support.v4.content.ContextCompat.startActivity;
 
@@ -70,7 +71,44 @@ public class DatabaseHelper {
         });
     }
 
+    public void getEnrolledStudents(final Context context, final ListView listView, final String cid){
 
+        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                RosterAdapter rosterAdapter;
+                final ArrayList<UserInfo> users = new ArrayList<UserInfo>();
+
+                for(DataSnapshot rosterData: dataSnapshot.child(CIDS)
+                        .child(cid).child(ROSTER).getChildren()){
+
+                    String name, uid;
+
+                    uid = rosterData.getKey().toString();
+                    name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME).getValue().toString();
+
+                    users.add(new UserInfo(name,"","",false));
+                }
+                rosterAdapter = new RosterAdapter(context,users);
+                listView.setAdapter(rosterAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+
+    }
+
+    /**
+     *
+     * @param context
+     * @param listView
+     * @param uid
+     * @param cid
+     */
     public void getUserGrades(final Context context, final ListView listView, final String uid, final String cid){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
