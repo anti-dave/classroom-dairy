@@ -15,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.jar.Attributes;
 
 import static android.support.v4.content.ContextCompat.startActivity;
 
@@ -49,6 +50,7 @@ public class DatabaseHelper {
 
 
 
+
     /**
      *
      * @param path a string of the exact path to the desired information in the database.
@@ -69,6 +71,73 @@ public class DatabaseHelper {
         });
     }
 
+    public void getEnrolledStudents(final Context context, final ListView listView, final String cid){
+
+        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                RosterAdapter rosterAdapter;
+                final ArrayList<UserInfo> users = new ArrayList<UserInfo>();
+
+                for(DataSnapshot rosterData: dataSnapshot.child(CIDS)
+                        .child(cid).child(ROSTER).getChildren()){
+
+                    String name, uid;
+
+                    uid = rosterData.getKey().toString();
+                    name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME).getValue().toString();
+
+                    users.add(new UserInfo(name,"","",false));
+                }
+                rosterAdapter = new RosterAdapter(context,users);
+                listView.setAdapter(rosterAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+
+    }
+
+    /**
+     *
+     * @param context
+     * @param listView
+     * @param uid
+     * @param cid
+     */
+    public void getUserGrades(final Context context, final ListView listView, final String uid, final String cid){
+        mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        GradeAdapter gradeAdapter;
+                        final ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+
+                        for(DataSnapshot assignmentSnapshot: dataSnapshot.getChildren()){
+
+                            String name,grade,dueDate;
+
+                            name = assignmentSnapshot.getKey().toString();
+                            dueDate = assignmentSnapshot.child(DUE_DATE).getValue().toString();
+                            grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+
+                            assignments.add(new Assignment(dueDate,grade,name));
+                        }
+                        gradeAdapter = new GradeAdapter(context,assignments);
+                        listView.setAdapter(gradeAdapter);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d(TAG, "onCancelled: " + databaseError.toString());
+                    }
+                });
+    }
     /**
      * updates a list view with all available classes in the database
      *
@@ -86,13 +155,14 @@ public class DatabaseHelper {
 
                 for(DataSnapshot classSnapshot: dataSnapshot.getChildren()){
 
-                    String name,startTime,endTime,room;
+                    String name,startTime,endTime,room,cid;
+                    cid = classSnapshot.getKey().toString();
                     name=classSnapshot.child(CLASS_NAME).getValue().toString();
                     startTime=classSnapshot.child(TIME_START).getValue().toString();
                     endTime=classSnapshot.child(TIME_END).getValue().toString();
                     room=classSnapshot.child(ROOM).getValue().toString();
 
-                    classes.add(new Class(name,days,startTime,endTime,room));
+                    classes.add(new Class(name,days,startTime,endTime,room,cid));
                 }
                 classAdapter = new ClassAdapter(context,classes);
                 listView.setAdapter(classAdapter);
@@ -122,14 +192,17 @@ public class DatabaseHelper {
                 ArrayList<String> days = new ArrayList<String>();
 
                 for(DataSnapshot classSnapshot: dataSnapshot.child(UIDS).child(uid).child(CLASSES).getChildren()){
-                    DataSnapshot classData = dataSnapshot.child(CIDS).child(classSnapshot.getKey().toString());
+
+                    String cid = classSnapshot.getKey().toString();
+
+                    DataSnapshot classData = dataSnapshot.child(CIDS).child(cid);
 
                     String name,startTime,endTime,room;
                     name=classData.child(CLASS_NAME).getValue().toString();
                     startTime=classData.child(TIME_START).getValue().toString();
                     endTime=classData.child(TIME_END).getValue().toString();
                     room=classData.child(ROOM).getValue().toString();
-                    classes.add(new Class(name,days,startTime,endTime,room));
+                    classes.add(new Class(name,days,startTime,endTime,room,cid));
                 }
                 classAdapter = new ClassAdapter(context,classes);
                 listView.setAdapter(classAdapter);
@@ -200,7 +273,7 @@ public class DatabaseHelper {
     public void writeNewClass( final String classId, final String name, final ArrayList<String> daysOfClass,
                                final String startTime, final String endTime, final String room ){
 
-        Class newClass = new Class(name,daysOfClass,startTime,endTime,room);
+        Class newClass = new Class(name,daysOfClass,startTime,endTime,room,classId);
         mDatabase.getReference(CIDS).child(classId).setValue(newClass);
 
     }
@@ -225,9 +298,6 @@ public class DatabaseHelper {
 
                     //a method after this one prompts user and updates the instructor value
                     mDatabase.getReference(UIDS).child(userId).child(INSTRUCTOR).setValue(false);
-
-                    //Intent prompt = new Intent(context,InstructorPromptActivity.class);
-                    //startActivity(prompt);
                 }
 
             }

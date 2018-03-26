@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 public class ClassInfoActivity extends AppCompatActivity {
 
+    private String CLASS_ID = "CLASS_ID";
     private Class mCurrentClass;
 
     @Override
@@ -67,7 +69,8 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout gradesButton = findViewById(R.id.grades);
         gradesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent gradesIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+                Intent gradesIntent = new Intent(ClassInfoActivity.this, GradesActivity.class);
+                gradesIntent.putExtra(CLASS_ID, mCurrentClass.getId());
                 startActivity(gradesIntent);
             }
         });
@@ -75,7 +78,8 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout studentsButton = findViewById(R.id.students);
         studentsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent studentsIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+                Intent studentsIntent = new Intent(ClassInfoActivity.this, RosterActivity.class);
+                studentsIntent.putExtra(CLASS_ID, mCurrentClass.getId());
                 startActivity(studentsIntent);
             }
         });

@@ -46,13 +46,16 @@ public class ClassLoader extends AsyncTaskLoader<List<Class>> {
         final List<Class> classes = new ArrayList<Class>();
 
         // add classes here yo
-        classes.add(new Class("class1", today, "1pm","2pm","os101"));
 
-        classes.add(new Class("class2", tomorrow, "11pm","2pm","os1021"));
+        //////////////////////////////////////// DAVE I COMMENTED THIS OUT BECAUSE I CHANGED CLASSES AND I DONT THINK YOUR USING THIS
 
-        classes.add(new Class("class3", tomorrow, "12pm","2pm","os1031"));
+        //classes.add(new Class("class1", today, "1pm","2pm","os101"));
 
-        classes.add(new Class("class4", today, "13pm","2pm","os1041"));
+        //classes.add(new Class("class2", tomorrow, "11pm","2pm","os1021"));
+
+        //classes.add(new Class("class3", tomorrow, "12pm","2pm","os1031"));
+
+        //classes.add(new Class("class4", today, "13pm","2pm","os1041"));
 
         List<Class> classList = classes ;
         return classList;
