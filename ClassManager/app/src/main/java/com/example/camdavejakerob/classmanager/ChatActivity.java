@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,16 +21,35 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import java.security.MessageDigestSpi;
+
 /**
  * Created by Davey on 2/27/2018.
  */
 
 public class ChatActivity extends AppCompatActivity {
 
+    private static final String TAG = "ChatActivity";
     private int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<ChatMessage> adapter;
+    //private ListAdapter adapter;
+    String Messages = "Messages";
+    String AllUsers = "All Users";
+
     //mAuth = FirebaseAuth.getInstance().getCurrentUser;
     //FirebaseUser currentUser = mAuth.getCurrentUser();
+
+    /*@Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +59,8 @@ public class ChatActivity extends AppCompatActivity {
         FloatingActionButton fab =
                 (FloatingActionButton)findViewById(R.id.message_fab);
 
+        displayChatMessages();
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,7 +69,8 @@ public class ChatActivity extends AppCompatActivity {
                 // Read the input field and push a new instance
                 // of ChatMessage to the Firebase database
                 FirebaseDatabase.getInstance()
-                        .getReference()
+                        //.getReference()
+                        .getReference(Messages).child(AllUsers)
                         .push()
                         .setValue(new ChatMessage(input.getText().toString(),
                                 FirebaseAuth.getInstance()
@@ -79,13 +103,27 @@ public class ChatActivity extends AppCompatActivity {
                         R.layout.chat_message,this ) {
         */
 
+        /*
+        adapter = new FirebaseListAdapter<ChatMessage> (
+                FirebaseDatabase.getInstance().getReference(),
+                ChatMessage.class,
+                R.layout.chat_message,
+                this) {
+        */
+
         //begin insert
-            Query query = FirebaseDatabase.getInstance().getReference();
-            FirebaseListOptions<ChatMessage> options = new FirebaseListOptions.Builder<ChatMessage>()
-                    .setQuery(query, ChatMessage.class)
-                    .build();
+            Query ref = FirebaseDatabase.getInstance().getReference(Messages).child(AllUsers);
+
+            FirebaseListOptions<ChatMessage> options =
+                    new FirebaseListOptions.Builder<ChatMessage>()
+                            .setLayout(R.layout.chat_message)
+                            .setQuery(ref, ChatMessage.class)
+                            .setLifecycleOwner(this)
+                            .build();
+
             adapter = new FirebaseListAdapter<ChatMessage>(options) {
-                //end insert
+        //end insert
+
             @Override
             //populateView as alternative to getView
             protected void populateView(View v, ChatMessage model, int position) {
@@ -104,6 +142,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         };
 
+        Log.d(TAG, "Right Before Setting List Adapter");
         listOfMessages.setAdapter(adapter);
     }
 }// ChatActivity
