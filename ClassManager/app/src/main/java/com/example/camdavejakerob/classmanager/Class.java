@@ -40,7 +40,7 @@ public class Class implements Parcelable{
     public String getEndTime(){return EndTime;}
     public String getClassTime(){return getStartTime() + " - " + getEndTime();}
     public String getRoom(){return Room;}
-    public String getSchiheduledTime(){return getDaysOfClass() + " " + getStartTime() + " - " + getEndTime();}
+    public String getSchheduledTime(){return getDaysOfClass() + " " + getStartTime() + " - " + getEndTime();}
     public String getDaysOfClass(){
         String days = "";
 

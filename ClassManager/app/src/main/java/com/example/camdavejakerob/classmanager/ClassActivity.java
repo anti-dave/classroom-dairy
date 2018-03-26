@@ -59,7 +59,10 @@ public class ClassActivity extends AppCompatActivity {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_class_activity_dropdown, menu);
+        //if student do student
+        getMenuInflater().inflate(R.menu.teacher_class_dropdown, menu);
+        //if teacher do teacher
+        getMenuInflater().inflate(R.menu.student_class_dropdown, menu);
         return true;
     }//onCreateOptionsMenu
 
@@ -77,19 +80,26 @@ public class ClassActivity extends AppCompatActivity {
                     "Add Class",
                     Toast.LENGTH_LONG)
                     .show();
-            Intent addClassIntent = new Intent(ClassActivity.this, ClassCreatorActivity.class);
+            Intent addClassIntent = new Intent(ClassActivity.this, ClassAddListActivity.class);
             startActivity(addClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
-
         }
         if(item.getItemId() == R.id.action_create_class) {
-            //add class action
+            //create class action
             Toast.makeText(ClassActivity.this,
-                    "Created Class",
+                    "Create Class",
                     Toast.LENGTH_LONG)
                     .show();
             Intent createClassIntent = new Intent(ClassActivity.this, ClassCreatorActivity.class);
             startActivity(createClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
-
+        }
+        if(item.getItemId() == R.id.action_remove_class) {
+            //remove class action
+            Toast.makeText(ClassActivity.this,
+                    "Remove Class",
+                    Toast.LENGTH_LONG)
+                    .show();
+            Intent removeClassIntent = new Intent(ClassActivity.this, ClassCreatorActivity.class);
+            startActivity(removeClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
         }
         return true;
     }

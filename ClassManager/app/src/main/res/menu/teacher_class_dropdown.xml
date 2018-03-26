@@ -9,6 +9,10 @@
         android:title="@string/action_add_class"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_remove_class"
+        android:title="@string/action_remove_class"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_create_class"
         android:title="@string/action_create_class"
         app:showAsAction="never" />
