@@ -48,6 +48,9 @@ public class DatabaseHelper {
      ****************************************************************************************************************/
 
 
+    public void getGrades(final String uid, final String cid){
+
+    }
 
     /**
      *

@@ -61,6 +61,14 @@
             android:theme="@style/AppTheme.PopupTheme"
             ></activity>
 
+        <activity android:name=".GradesActivity"
+            android:label="My Grades"
+            android:parentActivityName=".ClassInfoActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ClassInfoActivity"/>
+        </activity>
+
     </application>
 
 </manifest>
