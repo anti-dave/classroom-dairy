@@ -11,6 +11,9 @@ public class Assignment {
 
     public Assignment(){
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
+        DueDate = "";
+        Grade = "";
+        Name = "";
     }
 
     public Assignment(String dueDate, String grade, String name){

@@ -18,6 +18,9 @@
         completions."
     </string>
 
+    <!-- Strings related to Assignment Activity in dropdown -->
+    <string name="grade_string">Grade: </string>
+    <string name="duedate_string">Due: </string>
     <!-- Strings related to Sign in dropdown -->
     <string name="action_sign_out">Sign Out</string>
     <string name="action_change_account">Change Account</string>
