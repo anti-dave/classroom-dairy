@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.camdavejakerob.classmanager.Assignments.Assignment;
+
 import java.util.List;
 
 /**
@@ -31,8 +33,8 @@ public class GradeAdapter extends ArrayAdapter<Assignment> {
         TextView name = (TextView) view.findViewById(R.id.assignment_name);
         TextView grade = (TextView) view.findViewById(R.id.assignment_grade);
 
-        name.setText(assignment.Name);
-        grade.setText(assignment.Grade);
+        name.setText(assignment.getName());
+        grade.setText(assignment.getGrade());
 
         return view;
     }

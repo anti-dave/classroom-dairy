@@ -1,12 +1,11 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.camdavejakerob.classmanager.Assignments.Assignment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -16,8 +15,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.jar.Attributes;
-
-import static android.support.v4.content.ContextCompat.startActivity;
 
 /**
  * Created by Rob on 3/13/2018.
@@ -229,7 +226,7 @@ public class DatabaseHelper {
      */
     public void writeAssignment(String cid, Assignment assignment){
         DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
-        classRef.child(ASSIGNMENTS).child(assignment.Name).child(DUE_DATE).setValue(assignment.DueDate);
+        classRef.child(ASSIGNMENTS).child(assignment.getName()).child(DUE_DATE).setValue(assignment.getDueDate());
     }
 
     /**

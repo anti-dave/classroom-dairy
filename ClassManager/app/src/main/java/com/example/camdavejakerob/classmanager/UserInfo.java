@@ -16,6 +16,10 @@ public class UserInfo {
 
     public UserInfo() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
+        first = "";
+        last = "";
+        email = "";
+        instructor = false;
     }
 
     public UserInfo(String first, String last, String email, boolean instructor) {

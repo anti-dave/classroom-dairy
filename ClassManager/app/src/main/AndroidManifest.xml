@@ -24,6 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".AssignmentActivity"/>
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
@@ -35,9 +36,6 @@
             android:label="Your Classes"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".ClassInfoActivity"
@@ -52,30 +50,22 @@
                 android:value=".MainActivity" />
         </activity>
         <activity android:name=".ChatActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ClassActivity" />
+
         </activity>
 
         <activity
             android:name=".RosterActivity"
             android:label="Class Roster"
             android:parentActivityName=".ClassInfoActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ClassInfoActivity"/>
         </activity>
 
         <activity android:name=".InstructorPromptActivity"
-            android:theme="@style/AppTheme.PopupTheme"
-            ></activity>
+            android:theme="@style/AppTheme.PopupTheme">
+
+        </activity>
 
         <activity android:name=".GradesActivity"
-            android:label="My Grades"
-            android:parentActivityName=".ClassInfoActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ClassInfoActivity"/>
+            android:label="My Grades">
         </activity>
 
     </application>
