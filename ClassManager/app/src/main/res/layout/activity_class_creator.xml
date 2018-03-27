@@ -14,19 +14,92 @@
         android:orientation="vertical"
         android:layout_weight="1">
 
-        <!-- Class Name label -->
+        <!-- Class id label -->
+        <TextView
+            style="@style/FormLabelStyle"
+            android:text="@string/class_id_prompt"/>
+        <!-- Input for id -->
+        <LinearLayout style="@style/FormInputFieldStyle">
+
+            <!-- User enters id of class here -->
+            <EditText
+                android:id="@+id/class_id_form"
+                style="@style/FormEditTextShortStyle"
+                android:hint="@string/class_id_hint"/>
+
+        </LinearLayout>
+
+        <!-- Class name label -->
         <TextView
             style="@style/FormLabelStyle"
             android:text="@string/class_name_prompt"/>
-
         <!-- Input for name -->
         <LinearLayout style="@style/FormInputFieldStyle">
 
-            <!-- User enters NAME of restaurant here -->
+            <!-- User enters NAME of class here -->
             <EditText
                 android:id="@+id/class_name_form"
                 style="@style/FormEditTextShortStyle"
                 android:hint="@string/class_name_hint"/>
+
+        </LinearLayout>
+
+        <!-- Class days label -->
+        <TextView
+            style="@style/FormLabelStyle"
+            android:text="@string/class_days_prompt"/>
+        <!-- Input for days -->
+        <LinearLayout style="@style/FormInputFieldStyle">
+            <!-- User enters days of class here -->
+            <EditText
+                android:id="@+id/class_days_form"
+                style="@style/FormEditTextShortStyle"
+                android:hint="@string/class_days_hint"/>
+
+        </LinearLayout>
+
+        <!-- Class startTime label -->
+        <TextView
+            style="@style/FormLabelStyle"
+            android:text="@string/class_startTime_prompt"/>
+        <!-- Input for startTime -->
+        <LinearLayout style="@style/FormInputFieldStyle">
+            <!-- User enters startTime of class here -->
+            <EditText
+                android:id="@+id/class_startTime_form"
+                style="@style/FormEditTextShortStyle"
+                android:hint="@string/class_startTime_hint"/>
+
+        </LinearLayout>
+
+        <!-- Class endTime label -->
+        <TextView
+            style="@style/FormLabelStyle"
+            android:text="@string/class_endTime_prompt"/>
+        <!-- Input for endTime -->
+        <LinearLayout style="@style/FormInputFieldStyle">
+
+            <!-- User enters endTime of class here -->
+            <EditText
+                android:id="@+id/class_endTime_form"
+                style="@style/FormEditTextShortStyle"
+                android:hint="@string/class_endTime_hint"/>
+
+        </LinearLayout>
+
+        <!-- Class room label -->
+        <TextView
+            style="@style/FormLabelStyle"
+            android:text="@string/class_room_prompt"/>
+
+        <!-- Input for room -->
+        <LinearLayout style="@style/FormInputFieldStyle">
+
+            <!-- User enters room of class here -->
+            <EditText
+                android:id="@+id/class_room_form"
+                style="@style/FormEditTextShortStyle"
+                android:hint="@string/class_room_hint"/>
 
         </LinearLayout>
 

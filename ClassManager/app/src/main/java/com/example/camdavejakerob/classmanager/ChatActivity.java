@@ -39,18 +39,6 @@ public class ChatActivity extends AppCompatActivity {
     //mAuth = FirebaseAuth.getInstance().getCurrentUser;
     //FirebaseUser currentUser = mAuth.getCurrentUser();
 
-    /*@Override
-    protected void onStart() {
-        super.onStart();
-        adapter.startListening();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,27 +77,6 @@ public class ChatActivity extends AppCompatActivity {
 
     private void displayChatMessages() {
         ListView listOfMessages = (ListView)findViewById(R.id.list_of_messages);
-
-        //adapter = new FirebaseListAdapter<ChatMessage> (this, ChatMessage.class,
-        //        R.layout.chat_message, FirebaseDatabase.getInstance().getReference())
-
-        /*
-        adapter = new FirebaseListAdapter<ChatMessage>
-
-                (FirebaseDatabase
-                        .getInstance()
-                        .getReference(),
-                        ChatMessage.class,
-                        R.layout.chat_message,this ) {
-        */
-
-        /*
-        adapter = new FirebaseListAdapter<ChatMessage> (
-                FirebaseDatabase.getInstance().getReference(),
-                ChatMessage.class,
-                R.layout.chat_message,
-                this) {
-        */
 
         //begin insert
             Query ref = FirebaseDatabase.getInstance().getReference(Messages).child(AllUsers);

@@ -48,6 +48,7 @@ public class ClassAddListActivity  extends AppCompatActivity {
     /** TextView that is displayed when the list is empty */
     private TextView mEmptyStateTextView;
     DatabaseHelper database = new DatabaseHelper();
+    //Query ref = FirebaseDatabase.getInstance().getReference(Messages).child(AllUsers);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,6 @@ public class ClassAddListActivity  extends AppCompatActivity {
         Query ref = FirebaseDatabase.getInstance().getReference(courseID);
         // Find a reference to the {@link ListView} in the layout
         final ListView itemListView = (ListView) findViewById(R.id.classes_list);
-
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         itemListView.setEmptyView(mEmptyStateTextView);
 
@@ -69,40 +69,8 @@ public class ClassAddListActivity  extends AppCompatActivity {
         // Get details on the currently active default data network
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-        /********************************/
-        FirebaseListOptions<Class> options =
-                new FirebaseListOptions.Builder<Class>()
-                        .setLayout(R.layout.class_item)
-                        .setQuery(ref, Class.class)
-                        .setLifecycleOwner(this)
-                        .build();
-
-        adapter = new FirebaseListAdapter<Class>(options) {
-
-            @Override
-            //populateView as alternative to getView
-            protected void populateView(View v, Class model, int position) {
-                // Get references to the views of message.xml
-                TextView className = (TextView)v.findViewById(R.id.class_name);
-                TextView classRoom = (TextView)v.findViewById(R.id.class_room);
-                TextView classTime = (TextView)v.findViewById(R.id.class_time);
-                //TextView classId = (TextView)v.findViewById(R.id.class_id);
-
-                // Set their text
-                //classId.setText(model.getName());
-                className.setText(model.getName());
-                classRoom.setText(model.getRoom());
-                classTime.setText(model.getClassTime());
-            }
-        };
-
-        Log.d(TAG, "Right Before Setting List Adapter");
-        availableClasses.setAdapter(adapter);
-        /***********************/
-
         // If there is a network connection, fetch data
         if (networkInfo != null && networkInfo.isConnected()) {
-
 
         } else {
             // Otherwise, display error
@@ -114,6 +82,38 @@ public class ClassAddListActivity  extends AppCompatActivity {
             mEmptyStateTextView.setText(com.example.camdavejakerob.classmanager.R.string.no_internet_connection);
         }
 
+        /********************************/
+        FirebaseListOptions<Class> options =
+                new FirebaseListOptions.Builder<Class>()
+                        .setLayout(R.layout.class_item)
+                        .setQuery(ref, Class.class)
+                        .setLifecycleOwner(this)
+                        .build();
+
+        adapter = new FirebaseListAdapter<Class>(options) {
+            @Override
+            //populateView as alternative to getView
+            protected void populateView(View v, Class model, int position) {
+                // Get references to the views of message.xml
+                Log.d(TAG, "here 4");
+                TextView className = (TextView)v.findViewById(R.id.class_name);
+                TextView classRoom = (TextView)v.findViewById(R.id.class_room);
+                TextView classTime = (TextView)v.findViewById(R.id.class_time);
+                TextView classId = (TextView)v.findViewById(R.id.class_id);
+                Log.d(TAG, "here 3");
+
+                // Set their text
+                classId.setText(model.getId());
+                className.setText(model.getName());
+                classRoom.setText(model.getRoom());
+                classTime.setText(model.getClassTime());
+            }
+        };
+
+        Log.d(TAG, "here 1");
+        availableClasses.setAdapter(adapter);
+        /***********************/
+
         // Setup the item click listener to bring up popupmenu
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -122,12 +122,14 @@ public class ClassAddListActivity  extends AppCompatActivity {
                         "You have chosen: ",
                         Toast.LENGTH_LONG)
                         .show();
+                Log.d(TAG, "here 2");
 
+                TextView classId = (TextView)view.findViewById(R.id.class_id);
                 //get uid
                 //under uids / child name (key) / child classes
-                /*database.enrollStudentToClass(
+                database.enrollStudentToClass(
                         FirebaseAuth.getInstance().getUid(),
-                        cid);*/
+                        classId.toString());
             }
         });
     }
