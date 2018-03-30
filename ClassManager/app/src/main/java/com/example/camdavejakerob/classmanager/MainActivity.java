@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout calendarButton = findViewById(R.id.calendar);
         calendarButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent calendarIntent = new Intent(MainActivity.this, InfoActivity.class);
+                Intent calendarIntent = new Intent(MainActivity.this, CalendarActivity.class);
                 startActivity(calendarIntent);
             }
         });
