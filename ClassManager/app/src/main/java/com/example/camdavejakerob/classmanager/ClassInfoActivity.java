@@ -61,7 +61,8 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout assignmentsButton = findViewById(R.id.assignments);
         assignmentsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent assignmentsIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
+                Intent assignmentsIntent = new Intent(ClassInfoActivity.this, AssignmentActivity.class);
+                assignmentsIntent.putExtra("TITLE", mCurrentClass.getName() + " Assignments");
                 startActivity(assignmentsIntent);
             }
         });
@@ -70,7 +71,7 @@ public class ClassInfoActivity extends AppCompatActivity {
         gradesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent gradesIntent = new Intent(ClassInfoActivity.this, GradesActivity.class);
-                gradesIntent.putExtra(CLASS_ID, mCurrentClass.getId());
+                gradesIntent.putExtra(CLASS_ID, mCurrentClass.getCourseID());
                 startActivity(gradesIntent);
             }
         });
@@ -79,7 +80,7 @@ public class ClassInfoActivity extends AppCompatActivity {
         studentsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent studentsIntent = new Intent(ClassInfoActivity.this, RosterActivity.class);
-                studentsIntent.putExtra(CLASS_ID, mCurrentClass.getId());
+                studentsIntent.putExtra(CLASS_ID, mCurrentClass.getCourseID());
                 startActivity(studentsIntent);
             }
         });
