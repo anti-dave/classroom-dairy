@@ -31,7 +31,9 @@ public class RosterAdapter extends ArrayAdapter<UserInfo> {
         }
 
         TextView name = (TextView) view.findViewById(R.id.roster_item_name);
+        TextView email = (TextView) view.findViewById(R.id.roster_item_email);
         name.setText(user.first); // this is going to change when I change how UserInfo does things
+        email.setText("Email: " + user.email);
 
         return view;
     }

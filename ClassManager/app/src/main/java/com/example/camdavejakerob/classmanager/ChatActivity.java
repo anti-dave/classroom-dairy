@@ -145,4 +145,5 @@ public class ChatActivity extends AppCompatActivity {
         Log.d(TAG, "Right Before Setting List Adapter");
         listOfMessages.setAdapter(adapter);
     }
+
 }// ChatActivity
