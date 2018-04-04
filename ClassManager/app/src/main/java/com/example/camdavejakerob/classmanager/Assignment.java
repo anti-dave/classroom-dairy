@@ -1,4 +1,4 @@
-package com.example.camdavejakerob.classmanager.Assignments;
+package com.example.camdavejakerob.classmanager;
 
 /**
  * Created by Rob on 3/15/2018.

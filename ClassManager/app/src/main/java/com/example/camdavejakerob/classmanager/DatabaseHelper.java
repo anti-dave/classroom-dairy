@@ -1,20 +1,22 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.camdavejakerob.classmanager.Assignments.Assignment;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
-import java.util.jar.Attributes;
+
+import static android.support.v4.content.ContextCompat.startForegroundService;
 
 /**
  * Created by Rob on 3/13/2018.
@@ -24,18 +26,19 @@ public class DatabaseHelper {
 
     //Strings used frequently for accessing data in Firebase
     private String CIDS = "cids", UIDS = "uids";
-    private String ROSTER = "roster", DAYS = "daysOfClass", TIME_END = "endTime", TIME_START = "startTime", CLASS_NAME = "name", ROOM = "room";
+    private String ROSTER = "roster", DAYS = "daysOfClass", TIME_END = "endTime", TIME_START = "startTime";
+    private String SYLLABUS = "syllabus", CLASS_NAME = "name", ROOM = "room";
     private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor";
     private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades";
     private String TAG = "DATABASE_HELPER";
 
     private FirebaseDatabase mDatabase;
-    private FirebaseAuth mAuth;
+    private FirebaseStorage mStorage;
 
 
     DatabaseHelper(){
         mDatabase = FirebaseDatabase.getInstance();
-        mAuth = FirebaseAuth.getInstance();
+        mStorage = FirebaseStorage.getInstance();
     }
 
 
@@ -45,8 +48,21 @@ public class DatabaseHelper {
      *
      ****************************************************************************************************************/
 
+    public void getClassSyllabus(final Context context, final String cid){
+        mDatabase.getReference(CIDS).child(cid).child(SYLLABUS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String url = dataSnapshot.getValue().toString();
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startForegroundService(context,browserIntent);
+            }
 
-
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+    }
 
     /**
      *
@@ -270,8 +286,11 @@ public class DatabaseHelper {
     public void writeNewClass( final String classId, final String name, final ArrayList<String> daysOfClass,
                                final String startTime, final String endTime, final String room ){
 
-        Class newClass = new Class(name,daysOfClass,startTime,endTime,room,classId);
-        mDatabase.getReference(CIDS).child(classId).setValue(newClass);
+        mDatabase.getReference(CIDS).child(classId).child(CLASS_NAME).setValue(name);
+        mDatabase.getReference(CIDS).child(classId).child(DAYS).setValue(daysOfClass);
+        mDatabase.getReference(CIDS).child(classId).child(TIME_START).setValue(startTime);
+        mDatabase.getReference(CIDS).child(classId).child(TIME_END).setValue(endTime);
+        mDatabase.getReference(CIDS).child(classId).child(ROOM).setValue(room);
 
     }
 
