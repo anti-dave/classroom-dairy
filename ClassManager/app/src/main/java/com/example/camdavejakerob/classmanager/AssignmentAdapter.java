@@ -34,7 +34,7 @@ public class AssignmentAdapter  extends ArrayAdapter<Assignment> {
         }
 
         TextView name = (TextView) view.findViewById(R.id.assignment_name);
-        TextView grade = (TextView) view.findViewById(R.id.assignment_grade);
+        //TextView grade = (TextView) view.findViewById(R.id.assignment_grade);
         TextView dueDate = (TextView) view.findViewById(R.id.assignment_due_date);
 
         name.setText(aAssignment.getName());

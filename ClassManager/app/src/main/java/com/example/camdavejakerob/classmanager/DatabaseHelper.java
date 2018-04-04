@@ -135,6 +135,43 @@ public class DatabaseHelper {
                     }
                 });
     }
+
+    /**
+     *
+     * @param context
+     * @param listView
+     * @param uid
+     * @param cid
+     */
+    public void getUserAssignment(final Context context, final ListView listView, final String uid, final String cid){
+        mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        AssignmentAdapter assignmentAdapter;
+                        final ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+
+                        for(DataSnapshot assignmentSnapshot: dataSnapshot.getChildren()){
+
+                            String name,grade,dueDate;
+
+                            name = assignmentSnapshot.getKey().toString();
+                            dueDate = assignmentSnapshot.child(DUE_DATE).getValue().toString();
+                            grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+
+                            assignments.add(new Assignment(dueDate,grade,name));
+                        }
+                        assignmentAdapter = new AssignmentAdapter(context,assignments);
+                        listView.setAdapter(assignmentAdapter);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d(TAG, "onCancelled: " + databaseError.toString());
+                    }
+                });
+    }
     /**
      * updates a list view with all available classes in the database
      *

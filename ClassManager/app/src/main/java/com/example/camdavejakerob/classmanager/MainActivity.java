@@ -64,12 +64,19 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         }
 
+
         final LinearLayout myClassesButton = findViewById(R.id.my_classes);
+
+        myClassesButton.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+            public void onFocusChange(View v, boolean hasFocus){
+                Toast.makeText(MainActivity.this,"hey i have focus", Toast.LENGTH_LONG).show();
+                //LinearLayout ln = (LinearLayout) findViewById(R.id.my_classes);
+                //ln.setBackgroundColor(0xfff);
+            }
+        });
+
         myClassesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-//                LinearLayout ln = (LinearLayout) findViewById(R.id.my_classes);
-//                ln.getBackground().setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xFFAA0000));
                 Intent classesIntent = new Intent(MainActivity.this, ClassActivity.class);
                 startActivity(classesIntent);
             }
@@ -83,11 +90,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final LinearLayout settingsButton = findViewById(R.id.settings);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
+        final LinearLayout calendarButton = findViewById(R.id.calendar);
+        calendarButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent settingsIntent = new Intent(MainActivity.this, InfoActivity.class);
-                startActivity(settingsIntent);
+                Intent calendarIntent = new Intent(MainActivity.this, InfoActivity.class);
+                startActivity(calendarIntent);
             }
         });
 
@@ -100,11 +107,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final LinearLayout calendarButton = findViewById(R.id.calendar);
-        calendarButton.setOnClickListener(new View.OnClickListener() {
+        final LinearLayout settingsButton = findViewById(R.id.settings);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent calendarIntent = new Intent(MainActivity.this, InfoActivity.class);
-                startActivity(calendarIntent);
+                Intent settingsIntent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(settingsIntent);
             }
         });
 
@@ -156,69 +163,72 @@ public class MainActivity extends AppCompatActivity {
 
     } //onActivityResult
 
-    /**
-     * Creates the menu with oncreate.
-     *
-     * @param menu
-     * @return bool on whether it was successful.
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_sign_in_dropdown, menu);
-        return true;
-    }//onCreateOptionsMenu
-
-    /**
-     * Logic for when menu is pressed.
-     *
-     * @param item
-     * @return bool on whether it was successful.
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_sign_out) {
-            AuthUI.getInstance().signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(MainActivity.this,
-                                    "You have been signed out.",
-                                    Toast.LENGTH_LONG)
-                                    .show();
-
-                            // Close activity, isneatd of close activity, make go back
-                            //finish();
-                        }
-                    });
-            // Start sign in/sign up activity
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .build(),
-                    SIGN_IN_REQUEST_CODE);
-        }
-        if(item.getItemId() == R.id.action_change_account) {
-            AuthUI.getInstance().signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(MainActivity.this,
-                                    "You have been signed out.",
-                                    Toast.LENGTH_LONG)
-                                    .show();
-
-                            // Close activity, isneatd of close activity, make go back
-                            //finish();
-                        }
-                    });
-            // Start sign in/sign up activity
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .build(),
-                    SIGN_IN_REQUEST_CODE);
-        }
-        return true;
-    }
+    
+////////////////////// deprecated moved to setting////////////////////////////
+//    /**
+//     * Creates the menu with oncreate.
+//     *
+//     * @param menu
+//     * @return bool on whether it was successful.
+//     */
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_sign_in_dropdown, menu);
+//        return true;
+//    }//onCreateOptionsMenu
+//
+//
+//    /**
+//     * Logic for when menu is pressed.
+//     *
+//     * @param item
+//     * @return bool on whether it was successful.
+//     */
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if(item.getItemId() == R.id.action_sign_out) {
+//            AuthUI.getInstance().signOut(this)
+//                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            Toast.makeText(MainActivity.this,
+//                                    "You have been signed out.",
+//                                    Toast.LENGTH_LONG)
+//                                    .show();
+//
+//                            // Close activity, isneatd of close activity, make go back
+//                            //finish();
+//                        }
+//                    });
+//            // Start sign in/sign up activity
+//            startActivityForResult(
+//                    AuthUI.getInstance()
+//                            .createSignInIntentBuilder()
+//                            .build(),
+//                    SIGN_IN_REQUEST_CODE);
+//        }
+//        if(item.getItemId() == R.id.action_change_account) {
+//            AuthUI.getInstance().signOut(this)
+//                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            Toast.makeText(MainActivity.this,
+//                                    "You have been signed out.",
+//                                    Toast.LENGTH_LONG)
+//                                    .show();
+//
+//                            // Close activity, isneatd of close activity, make go back
+//                            //finish();
+//                        }
+//                    });
+//            // Start sign in/sign up activity
+//            startActivityForResult(
+//                    AuthUI.getInstance()
+//                            .createSignInIntentBuilder()
+//                            .build(),
+//                    SIGN_IN_REQUEST_CODE);
+//        }
+//        return true;
+//    }
 
 }//main

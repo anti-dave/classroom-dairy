@@ -90,13 +90,12 @@
             android:layout_below="@id/row_1"
             android:layout_weight="3"
             >
-
             <LinearLayout
-                android:id="@+id/settings"
+                android:id="@+id/calendar"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="#820260"
                 android:orientation="vertical"
+                android:background="#820260"
                 android:layout_weight="5"
                 android:clickable="true"
                 >
@@ -104,14 +103,14 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    app:srcCompat="@drawable/ic_settings_black_24dp"
+                    app:srcCompat="@drawable/ic_event_note_black_24dp"
                     android:layout_weight="3"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:gravity="center"
-                    android:text="Settings"
+                    android:text="Calendar"
                     android:layout_weight="1"
                     android:textStyle="bold"
                     android:textSize="16dp"
@@ -119,6 +118,7 @@
                     />
 
             </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/messages"
@@ -161,11 +161,11 @@
             >
 
             <LinearLayout
-                android:id="@+id/calendar"
+                android:id="@+id/settings"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:background="#3ad19e"
+                android:orientation="vertical"
                 android:layout_weight="5"
                 android:clickable="true"
                 >
@@ -173,14 +173,14 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    app:srcCompat="@drawable/ic_event_note_black_24dp"
+                    app:srcCompat="@drawable/ic_settings_black_24dp"
                     android:layout_weight="3"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:gravity="center"
-                    android:text="Calendar"
+                    android:text="Settings"
                     android:layout_weight="1"
                     android:textStyle="bold"
                     android:textSize="16dp"
