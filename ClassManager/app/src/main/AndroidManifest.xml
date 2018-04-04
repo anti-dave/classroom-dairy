@@ -24,50 +24,54 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AssignmentActivity"/>
+        <activity android:name=".AssignmentActivity" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
             android:name=".RegistrationActivity"
             android:label="@string/title_activity_login" />
+
         <activity
             android:name=".ClassActivity"
             android:label="Your Classes"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait">
+
         </activity>
         <activity
             android:name=".ClassInfoActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ClassActivity" />
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ClassActivity">
+
         </activity>
         <activity android:name=".InfoActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+
         </activity>
         <activity android:name=".ChatActivity">
 
         </activity>
-
         <activity
             android:name=".RosterActivity"
-            android:label="Class Roster"
-            android:parentActivityName=".ClassInfoActivity">
-        </activity>
+            android:label="Class Roster">
 
-        <activity android:name=".InstructorPromptActivity"
+        </activity>
+        <activity
+            android:name=".InstructorPromptActivity"
             android:theme="@style/AppTheme.PopupTheme">
 
         </activity>
-
-        <activity android:name=".GradesActivity"
+        <activity
+            android:name=".GradesActivity"
             android:label="My Grades">
-        </activity>
 
+        </activity>
+        <activity
+            android:name=".MessageActivity"
+            android:label="Messages"
+            android:parentActivityName=".MainActivity">
+
+        </activity>
     </application>
 
 </manifest>

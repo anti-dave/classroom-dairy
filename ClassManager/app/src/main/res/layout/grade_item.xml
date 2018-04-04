@@ -5,24 +5,30 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="8dp">
-
-    <TextView
-        android:id="@+id/assignment_name"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="name:"
-        android:textColor="@android:color/black"
-        android:paddingVertical="8dp"
-        android:paddingHorizontal="4dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="4dp">
+        <TextView
+            android:id="@+id/assignment_name"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="HW1:"
+            android:textColor="@android:color/black"
+
+            />
+
+        <TextView
+            android:id="@+id/assignment_grade"
+            android:textSize="18dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Grade: A"
+            android:textColor="@android:color/black"
         />
-
-    <TextView
-        android:id="@+id/assignment_grade"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="grade"
-        android:textColor="@android:color/black"
-        android:paddingVertical="8dp"
-        android:paddingHorizontal="4dp"/>
-
+    </LinearLayout>
 </LinearLayout>

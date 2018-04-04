@@ -28,7 +28,9 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:background="#ff546a"
-                android:layout_weight="5">
+                android:layout_weight="5"
+                android:clickable="true"
+                >
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -42,6 +44,10 @@
                     android:gravity="center"
                     android:text="Syllabus"
                     android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:textColor="#fff"
+
                     />
 
             </LinearLayout>
@@ -53,6 +59,7 @@
                 android:orientation="vertical"
                 android:background="#f77485"
                 android:layout_weight="5"
+                android:clickable="true"
                 >
                 <ImageView
                     android:layout_width="match_parent"
@@ -65,7 +72,11 @@
                     android:layout_height="0dp"
                     android:gravity="center"
                     android:text="Attendance"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:textColor="#fff"
+                    />
 
             </LinearLayout>
 
@@ -86,7 +97,9 @@
                 android:layout_height="match_parent"
                 android:background="#820260"
                 android:orientation="vertical"
-                android:layout_weight="5">
+                android:layout_weight="5"
+                android:clickable="true"
+                >
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -99,7 +112,12 @@
                     android:layout_height="0dp"
                     android:gravity="center"
                     android:text="Discussion Board"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:textColor="#fff"
+                    android:clickable="true"
+                    />
 
             </LinearLayout>
 
@@ -109,7 +127,9 @@
                 android:layout_height="match_parent"
                 android:background="#965b86"
                 android:orientation="vertical"
-                android:layout_weight="5">
+                android:layout_weight="5"
+                android:clickable="true"
+                >
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -122,7 +142,11 @@
                     android:layout_height="0dp"
                     android:gravity="center"
                     android:text="Assignments"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:textColor="#fff"
+                    />
 
             </LinearLayout>
 
@@ -144,6 +168,7 @@
                 android:orientation="vertical"
                 android:background="#3ad19e"
                 android:layout_weight="5"
+                android:clickable="true"
                 >
 
                 <ImageView
@@ -157,7 +182,11 @@
                     android:layout_height="0dp"
                     android:gravity="center"
                     android:text="Grades"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:textColor="#fff"
+                    />
 
             </LinearLayout>
 
@@ -168,6 +197,7 @@
                 android:orientation="vertical"
                 android:background="#6cf7c8"
                 android:layout_weight="5"
+                android:clickable="true"
                 >
                 <ImageView
                     android:layout_width="match_parent"
@@ -180,7 +210,11 @@
                     android:layout_height="0dp"
                     android:gravity="center"
                     android:text="Students"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:textColor="#fff"
+                    />
 
             </LinearLayout>
         </LinearLayout>
