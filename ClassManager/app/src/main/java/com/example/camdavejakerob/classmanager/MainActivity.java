@@ -1,6 +1,7 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Intent;
+import android.graphics.LightingColorFilter;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -66,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout myClassesButton = findViewById(R.id.my_classes);
         myClassesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+//                LinearLayout ln = (LinearLayout) findViewById(R.id.my_classes);
+//                ln.getBackground().setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xFFAA0000));
                 Intent classesIntent = new Intent(MainActivity.this, ClassActivity.class);
                 startActivity(classesIntent);
             }
@@ -91,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout messagesButton = findViewById(R.id.messages);
         messagesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent messagesIntent = new Intent(MainActivity.this, ChatActivity.class);
+                Intent messagesIntent = new Intent(MainActivity.this, MessageActivity.class);
                 startActivity(messagesIntent);
             }
         });

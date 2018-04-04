@@ -7,16 +7,19 @@
 
     <TextView
         android:text="Name: Why the World is flat and you are to"
+        android:textStyle="bold"
+        android:textSize="18dp"
         android:id="@+id/assignment_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    <TextView
-        android:text="Grade: A+"
-        android:id="@+id/assignment_grade"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <!--<TextView-->
+        <!--android:textSize="16dp"-->
+        <!--android:id="@+id/assignment_grade"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
     <TextView
         android:text="Due: Yesterday"
+        android:textSize="18dp"
         android:id="@+id/assignment_due_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
