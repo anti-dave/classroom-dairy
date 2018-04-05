@@ -103,7 +103,7 @@ public class ClassAddListActivity  extends AppCompatActivity {
                 Log.d(TAG, "here 3");
 
                 // Set their text
-                classId.setText(model.getId());
+                classId.setText(model.getCourseID());
                 className.setText(model.getName());
                 classRoom.setText(model.getRoom());
                 classTime.setText(model.getClassTime());
