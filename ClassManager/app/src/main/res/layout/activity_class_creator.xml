@@ -33,10 +33,11 @@
         <TextView
             style="@style/FormLabelStyle"
             android:text="@string/class_name_prompt"/>
+
         <!-- Input for name -->
         <LinearLayout style="@style/FormInputFieldStyle">
 
-            <!-- User enters NAME of class here -->
+            <!-- User enters NAME of restaurant here -->
             <EditText
                 android:id="@+id/class_name_form"
                 style="@style/FormEditTextShortStyle"
@@ -49,12 +50,32 @@
             style="@style/FormLabelStyle"
             android:text="@string/class_days_prompt"/>
         <!-- Input for days -->
-        <LinearLayout style="@style/FormInputFieldStyle">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_weight="1">
             <!-- User enters days of class here -->
-            <EditText
-                android:id="@+id/class_days_form"
-                style="@style/FormEditTextShortStyle"
-                android:hint="@string/class_days_hint"/>
+            <Button
+                android:id="@+id/monday_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <Button
+                android:id="@+id/tuesday_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <Button
+                android:id="@+id/wednesday_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <Button
+                android:id="@+id/thursday_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <Button
+                android:id="@+id/friday_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 

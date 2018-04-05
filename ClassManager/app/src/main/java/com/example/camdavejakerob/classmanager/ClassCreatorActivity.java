@@ -34,12 +34,12 @@ public class ClassCreatorActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //check if valid
-                if(){
+               /* if(){
 
                 }else {
 
                 }
-
+*/
                 EditText classId = (EditText) findViewById(R.id.input);
                 EditText name = (EditText) findViewById(R.id.input);
                 EditText daysOfClass = (EditText) findViewById(R.id.input);
@@ -47,13 +47,13 @@ public class ClassCreatorActivity extends AppCompatActivity {
                 EditText endTime = (EditText) findViewById(R.id.input);
                 EditText room = (EditText) findViewById(R.id.input);
 
-                database.writeNewClass(
+                /*database.writeNewClass(
                         classId.toString(),
                         name.toString(),
                         daysOfClass.toString(),
                         startTime.toString(),
                         endTime.toString(),
-                        room.toString() );
+                        room.toString() );*/
             }
         });
     }
