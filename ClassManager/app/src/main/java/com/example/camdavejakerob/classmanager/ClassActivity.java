@@ -105,12 +105,12 @@ public class ClassActivity extends AppCompatActivity {
                         "Add Class",
                         Toast.LENGTH_LONG)
                         .show();
-                Intent addClassIntent = new Intent(ClassActivity.this, ClassCreatorActivity.class);
+                Intent addClassIntent = new Intent(ClassActivity.this, ClassAddListActivity.class);
                 startActivity(addClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
             case R.id.action_create_class:
                 //add class action
                 Toast.makeText(ClassActivity.this,
-                        "Created Class",
+                        "Create Class",
                         Toast.LENGTH_LONG)
                         .show();
                 Intent createClassIntent = new Intent(ClassActivity.this, ClassCreatorActivity.class);

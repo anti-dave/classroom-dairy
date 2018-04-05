@@ -83,7 +83,7 @@ public class ClassAddListActivity  extends AppCompatActivity {
         }
 
         /********************************/
-        FirebaseListOptions<Class> options =
+        /*FirebaseListOptions<Class> options =
                 new FirebaseListOptions.Builder<Class>()
                         .setLayout(R.layout.class_item)
                         .setQuery(ref, Class.class)
@@ -109,9 +109,11 @@ public class ClassAddListActivity  extends AppCompatActivity {
                 classTime.setText(model.getClassTime());
             }
         };
+*/
+       database.updateListViewListOfClasses(this, availableClasses);
 
-        Log.d(TAG, "here 1");
-        availableClasses.setAdapter(adapter);
+            Log.d(TAG, "here 1");
+        //availableClasses.setAdapter(adapter);
         /***********************/
 
         // Setup the item click listener to bring up popupmenu

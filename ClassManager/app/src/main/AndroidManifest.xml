@@ -39,6 +39,10 @@
             android:label="@string/title_activity_class_add_list" />
 
         <activity
+            android:name=".ClassCreatorActivity"
+            android:label="@string/title_activity_creator" />
+
+        <activity
             android:name=".ClassActivity"
             android:label="My Classes"
             android:parentActivityName=".MainActivity"
