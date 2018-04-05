@@ -22,7 +22,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "This Activity";
+    private static final String TAG = "MainActivity";
 
     private ListView listView;
 
