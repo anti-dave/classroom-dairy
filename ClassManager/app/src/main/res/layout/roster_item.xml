@@ -18,6 +18,7 @@
             android:textColor="@android:color/black"
             />
 
+        <!-- do we need this?
         <TextView
             android:id="@+id/roster_item_email"
             android:textSize="18dp"
@@ -26,6 +27,7 @@
             android:text="name@student.uml.edu"
             android:textColor="@android:color/black"
             android:textStyle="italic"/>
+        -->
     </LinearLayout>
 
 </LinearLayout>

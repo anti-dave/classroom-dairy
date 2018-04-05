@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int SIGN_IN_REQUEST_CODE = 1;
 
-    private DatabaseHelper databaseHelper;
+    private String curUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         }
 
+        // update the global user variable
+        DatabaseHelper helper = new DatabaseHelper();
+        helper.getCurrentUser(MainActivity.this);
 
         final LinearLayout myClassesButton = findViewById(R.id.my_classes);
 
@@ -145,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 //some checks will have to be done as well as prompting the user for the first time if they are an instructor or not
                 //don't know how we do that last part yet
                 ////////// every time we get here it prompts the user to choose student or teacher im done fighting with this for now so we will call it a feature /////////
-                databaseHelper = new DatabaseHelper();
+                DatabaseHelper databaseHelper = new DatabaseHelper();
                 FirebaseUser newUser = FirebaseAuth.getInstance().getCurrentUser();
                 databaseHelper.writeNewUser( newUser.getDisplayName(), newUser.getUid() );
                 Intent promptUser = new Intent(MainActivity.this,InstructorPromptActivity.class);
