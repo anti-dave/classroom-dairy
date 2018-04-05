@@ -28,6 +28,10 @@ public class Class implements Parcelable{
         }
     };
 
+    public Class(){
+
+    }
+
     public Class(String name,ArrayList<String> daysOfClass, String startTime, String endTime, String room, String id){
         Name = name;
         DaysOfClass = daysOfClass;
