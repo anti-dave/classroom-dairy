@@ -25,9 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".AssignmentActivity"/>
-      
+        <activity android:name=".AssignmentActivity" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
@@ -42,42 +40,41 @@
 
         <activity
             android:name=".ClassActivity"
-            android:label="Your Classes"
+            android:label="My Classes"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".ClassInfoActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ClassActivity" />
-        </activity>
-
-        <activity android:name=".InfoActivity">
+            android:parentActivityName=".ClassActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".InfoActivity"
+            android:label="Information"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-
-        <activity android:name=".ChatActivity">
-
-        </activity>
-
+        <activity android:name=".ChatActivity"
+            android:label="Discussion Board"></activity>
         <activity
             android:name=".RosterActivity"
-            android:label="Class Roster"
-            android:parentActivityName=".ClassInfoActivity">
-        </activity>
-
-        <activity android:name=".InstructorPromptActivity"
-            android:theme="@style/AppTheme.PopupTheme">
-
-        </activity>
-
-        <activity android:name=".GradesActivity"
-            android:label="My Grades">
+            android:label="Class Roster"></activity>
+        <activity
+            android:name=".InstructorPromptActivity"
+            android:theme="@style/AppTheme.PopupTheme"></activity>
+        <activity
+            android:name=".GradesActivity"
+            android:label="My Grades"></activity>
+        <activity
+            android:name=".MessageActivity"
+            android:label="Messages"
+            android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".SettingActivity"
+            android:label="Settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
 
     </application>
