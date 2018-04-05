@@ -65,7 +65,7 @@ public class DatabaseHelper {
     }
 
     /**
-     *
+     * we might not actually need this
      * @param path a string of the exact path to the desired information in the database.
      *             example: to get the user u1's first name the string needs to be "uids/u1/first"
      * @param textView a TextView object you wish to update
@@ -91,7 +91,7 @@ public class DatabaseHelper {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 RosterAdapter rosterAdapter;
-                final ArrayList<UserInfo> users = new ArrayList<UserInfo>();
+                final ArrayList<User> users = new ArrayList<User>();
 
                 for(DataSnapshot rosterData: dataSnapshot.child(CIDS)
                         .child(cid).child(ROSTER).getChildren()){
@@ -101,7 +101,7 @@ public class DatabaseHelper {
                     uid = rosterData.getKey().toString();
                     name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME).getValue().toString();
 
-                    users.add(new UserInfo(name,"","",false));
+                    users.add(new User(name,"","",false));
                 }
                 rosterAdapter = new RosterAdapter(context,users);
                 listView.setAdapter(rosterAdapter);

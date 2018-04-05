@@ -7,14 +7,14 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 
 @IgnoreExtraProperties
-public class UserInfo {
+public class User {
 
     public String first;
     public String last;
     public String email;
     boolean instructor;
 
-    public UserInfo() {
+    public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
         first = "";
         last = "";
@@ -22,7 +22,7 @@ public class UserInfo {
         instructor = false;
     }
 
-    public UserInfo(String first, String last, String email, boolean instructor) {
+    public User(String first, String last, String email, boolean instructor) {
         this.first = first;
         this.last = last;
         this.email = email;

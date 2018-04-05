@@ -13,18 +13,18 @@ import java.util.List;
  * Created by Rob on 3/26/2018.
  */
 
-public class RosterAdapter extends ArrayAdapter<UserInfo> {
+public class RosterAdapter extends ArrayAdapter<User> {
 
-    public RosterAdapter(Context context, List<UserInfo> users){
+    public RosterAdapter(Context context, List<User> users){
         super(context, 0, users);
     }
 
     @Override
     public View getView(int position, View view, ViewGroup parent){
-        UserInfo user = getItem(position);
+        User user = getItem(position);
 
 
-        //////////////////////////////// pick up here
+
         if(view == null){
             view = LayoutInflater.from(getContext()).inflate(
                     R.layout.roster_item,parent,false);
@@ -32,7 +32,7 @@ public class RosterAdapter extends ArrayAdapter<UserInfo> {
 
         TextView name = (TextView) view.findViewById(R.id.roster_item_name);
         TextView email = (TextView) view.findViewById(R.id.roster_item_email);
-        name.setText(user.first); // this is going to change when I change how UserInfo does things
+        name.setText(user.first); // this is going to change when I change how User does things
         email.setText("Email: " + user.email);
 
         return view;

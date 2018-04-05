@@ -28,32 +28,35 @@ public class InfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
 
-
-        //StorageReference ref = FirebaseStorage.getInstance().getReference();
-        //Uri file = Uri.fromFile(Environment.getExternalStorageDirectory(Environment.DIRECTORY_DOWNLOADS));
-
-        //ref.child("testDir").
-
-
-        //Log.d("INFO_ACTIVITY", "onCreate: " + Environment.getExternalStorageDirectory(Environment.DIRECTORY_DOWNLOADS));
-        //File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        /*File[] list = file.listFiles(new FileFilter() {
+        File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        
+        File[] list = file.listFiles();
+        
+        for(int i = 0; i < list.length; i++){
+            Log.d(TAG, "onCreate: " + list[i].getAbsolutePath());
+        }
+/*
+        File[] list = file.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
                 Log.d(TAG, "accept: " + pathname.toString());
                 return pathname.toString() == "Syllabus_Sample.pdf";
             }
         });
-
+        */
+/*
         if(list.length == 0){
             Log.d(TAG, "onCreate: list length was 0 :(");
         }
-
+        */
+/*
         for(int i = 0; i < list.length; i++) {
             Log.d("INFO_ACTIVITY", "onCreate: " + i + ": " + list[i].getName());
-        }*/
+        }
+        */
 
 
+        /*
         Uri file = Uri.fromFile(new File("/storage/emulated/0/Download/Syllabus_Sample.pdf"));
         StorageReference ref = FirebaseStorage.getInstance().getReference().child("testingDir/" + file.getLastPathSegment());
         UploadTask uploadTask = ref.putFile(file);
@@ -71,6 +74,7 @@ public class InfoActivity extends AppCompatActivity {
                 Log.d(TAG, "onSuccess: " + taskSnapshot.getMetadata().getName());
             }
         });
+        */
 
     }
 }
