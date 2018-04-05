@@ -31,11 +31,15 @@ public class UploadSyllabusActivity extends AppCompatActivity {
 
     private ListView mListView;
     private String TAG = "SYLLABUS_UPLOAD";
+    private String CLASS_ID = "CLASS_ID";
+    private String classId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_syllabus);
+
+        classId = getIntent().getStringExtra(CLASS_ID);
 
         // set up the list view
         mListView = (ListView) findViewById(R.id.list_of_files);
@@ -59,13 +63,10 @@ public class UploadSyllabusActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
                 //ask user once an item is selected if they are sure they want to upload this item
-                //TextView item = (TextView)adapterView.getItemAtPosition(position);
                 TextView path = (TextView) view.findViewById(R.id.upload_file_item_path);
                 TextView name = (TextView) view.findViewById(R.id.upload_file_item_name);
                 String fileName = name.getText().toString();
                 final String filePath = path.getText().toString();
-
-                //confirmationPopup(name.getText().toString(), path.getText().toString(),"COMP3040");
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(UploadSyllabusActivity.this);
                 builder.setCancelable(true);
@@ -78,7 +79,7 @@ public class UploadSyllabusActivity extends AppCompatActivity {
                         ////not sure how to do this last part, i think im going to need a class id or something.......
 
                         Uri file = Uri.fromFile(new File(filePath));
-                        StorageReference ref = FirebaseStorage.getInstance().getReference().child("COMP3040/syllabus");
+                        StorageReference ref = FirebaseStorage.getInstance().getReference().child(classId + "/syllabus");
                         UploadTask uploadTask = ref.putFile(file);
 
                         uploadTask.addOnFailureListener(new OnFailureListener() {

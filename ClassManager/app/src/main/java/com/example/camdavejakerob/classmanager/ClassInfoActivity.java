@@ -1,13 +1,29 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ClassInfoActivity extends AppCompatActivity {
 
+    private String TAG = "CLASS INFO ACTIVITY";
     private String CLASS_ID = "CLASS_ID";
     private Class mCurrentClass;
 
@@ -27,14 +43,38 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout syllabusButton = findViewById(R.id.syllabus);
         syllabusButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                Intent classesIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
-//                startActivity(classesIntent);
-               //String pdf_url = "https://firebasestorage.googleapis.com/v0/b/classmanager-38435.appspot.com/o/Syllabus_Sample.pdf?alt=media&token=3232f7b8-f732-4b75-b984-a1d7357c85d3";
-               //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdf_url));
-               //startActivity(browserIntent);
-                // this does nothing right now
-                Intent uploadIntent = new Intent(ClassInfoActivity.this,UploadSyllabusActivity.class);
-                startActivity(uploadIntent);
+
+                User user = ((ClassManagerApp) ClassInfoActivity.this.getApplication()).getCurUser();
+
+                // IF INSTRUCTOR
+                if(user.isInstructor()) {
+                    // ask if they want to view or upload syllabus
+                    AlertDialog.Builder sylAlertBuilder = new AlertDialog.Builder(ClassInfoActivity.this);
+                    sylAlertBuilder.setCancelable(true)
+                            .setTitle("Syllabus")
+                            .setMessage("View or upload Syllabus?")
+                            .setPositiveButton("Upload", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent uploadIntent = new Intent(ClassInfoActivity.this,UploadSyllabusActivity.class);
+                                    uploadIntent.putExtra(CLASS_ID, mCurrentClass.getCourseID());
+                                    startActivity(uploadIntent);
+                                }
+                            })
+                            .setNeutralButton("View", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //getSyllabus();
+                                }
+                            });
+                    AlertDialog sylDialog = sylAlertBuilder.create();
+                    sylDialog.show();
+                } else {
+                    // IF STUDENT
+                        //download the syllabus if there is one
+                    //Toast.makeText(ClassInfoActivity.this,"not an instructor we downloading this",Toast.LENGTH_SHORT);
+                    Log.d(TAG, "onClick: we are a student !? :(");
+                }
             }
         });
 
@@ -82,5 +122,37 @@ public class ClassInfoActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void getSyllabus(){
+        StorageReference ref = FirebaseStorage.getInstance()
+                .getReference(mCurrentClass.getCourseID())
+                .child("syllabus");
+
+        if(ref == null){
+            Log.d(TAG, "getSyllabus: is null, something went wrong");
+        } else {
+            //Log.d(TAG, "getSyllabus: is not null!!!! we win");
+            File downloadLocation = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            try {
+                File localFile = File.createTempFile(mCurrentClass.getName() + "Syllabus","pdf",downloadLocation);
+                ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        //do stuff
+                        Log.d(TAG, "onSuccess: i guess we downloaded this thing");
+                        //taskSnapshot.notify();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // do error stuff i guess :(
+                        Log.d(TAG, "onFailure: it seems we failed to do the download thing :(");
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

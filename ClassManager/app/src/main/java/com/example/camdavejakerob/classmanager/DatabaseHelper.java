@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,6 +49,39 @@ public class DatabaseHelper {
      *
      ****************************************************************************************************************/
 
+
+    public void getCurrentUser(final Context context){
+        String userId = FirebaseAuth.getInstance().getUid();
+        if(userId == null){ return; }
+
+        mDatabase.getReference(UIDS).child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String uid, name;
+                Boolean instructor;
+
+                uid = FirebaseAuth.getInstance().getUid();
+                name = dataSnapshot.child(USER_NAME).getValue().toString();
+                instructor = (Boolean) dataSnapshot.child(INSTRUCTOR).getValue();
+
+                User user = new User(uid,name,instructor);
+                ((ClassManagerApp) context.getApplicationContext()).setCurUser(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+    }
+
+    /**
+     * this does nothing yet :(
+     *
+     * @param context
+     * @param cid
+     */
     public void getClassSyllabus(final Context context, final String cid){
         mDatabase.getReference(CIDS).child(cid).child(SYLLABUS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -101,7 +135,7 @@ public class DatabaseHelper {
                     uid = rosterData.getKey().toString();
                     name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME).getValue().toString();
 
-                    users.add(new User(name,"","",false));
+                    users.add(new User("",name,false));
                 }
                 rosterAdapter = new RosterAdapter(context,users);
                 listView.setAdapter(rosterAdapter);

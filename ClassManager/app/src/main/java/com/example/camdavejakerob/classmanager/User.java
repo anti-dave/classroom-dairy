@@ -9,24 +9,28 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class User {
 
-    public String first;
-    public String last;
-    public String email;
-    boolean instructor;
+    private String mName;
+    private String mUserId;
+    private boolean mInstructor;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
-        first = "";
-        last = "";
-        email = "";
-        instructor = false;
+        mName = "";
+        mUserId = "";
+        mInstructor = false;
     }
 
-    public User(String first, String last, String email, boolean instructor) {
-        this.first = first;
-        this.last = last;
-        this.email = email;
-        this.instructor = instructor;
+    public User(String userId, String name, Boolean instructor) {
+        mUserId = userId;
+        mName = name;
+        mInstructor = instructor;
     }
+
+    public String getName(){return mName;}
+    public String getUserId(){return mUserId;}
+    public Boolean isInstructor(){return mInstructor;}
+    public void setName(String name){mName = name;}
+    public void setUserId(String uid){mUserId = uid;}
+    public void setInstructor(Boolean bool){mInstructor = bool;}
 
 }
