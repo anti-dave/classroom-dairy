@@ -66,7 +66,10 @@ public class ClassActivity extends AppCompatActivity {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_class_activity_dropdown, menu);
+        //if student do student
+        getMenuInflater().inflate(R.menu.teacher_class_dropdown, menu);
+        //if teacher do teacher
+        getMenuInflater().inflate(R.menu.student_class_dropdown, menu);
         return true;
     }//onCreateOptionsMenu
 

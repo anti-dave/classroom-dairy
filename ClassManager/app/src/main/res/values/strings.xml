@@ -4,6 +4,7 @@
     <string name="title_activity_registration">Register!</string>
     <string name="title_activity_chat">Chat!</string>
     <string name="action_chat_button">Chat!</string>
+    <string name="title_activity_class_add_list">Register Class</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -18,16 +19,30 @@
         completions."
     </string>
 
+    <!-- Strings related to Class Creation -->
+    <string name="class_id_prompt">Class ID</string>
+    <string name="class_id_hint">ID</string>
+    <string name="class_days_prompt">Days</string>
+    <string name="class_days_hint">Days</string>
+    <string name="class_startTime_prompt">Start Time</string>
+    <string name="class_startTime_hint">12:00 PM</string>
+    <string name="class_endTime_prompt">End Time</string>
+    <string name="class_endTime_hint">12:00 PM</string>
+    <string name="class_room_prompt">Class Room</string>
+    <string name="class_room_hint">Olsen 305</string>
+
     <!-- Strings related to Assignment Activity in dropdown -->
     <string name="grade_string">Grade: </string>
     <string name="duedate_string">Due: </string>
+
     <!-- Strings related to Sign in dropdown -->
     <string name="action_sign_out">Sign Out</string>
     <string name="action_change_account">Change Account</string>
 
     <!-- Strings related to Class Activity dropdown -->
     <string name="action_add_class">Add Class</string>
-    <string name="action_create_class">Add Class</string>
+    <string name="action_remove_class">Remove Class</string>
+    <string name="action_create_class">Create Class</string>
 
     <!-- Strings related to Class Editor Activity  -->
     <string name="class_name_hint">Class</string>

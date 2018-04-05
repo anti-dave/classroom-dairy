@@ -59,6 +59,7 @@ public class ClassInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent assignmentsIntent = new Intent(ClassInfoActivity.this, AssignmentActivity.class);
                 assignmentsIntent.putExtra("TITLE", mCurrentClass.getName() + " Assignments");
+                assignmentsIntent.putExtra(CLASS_ID, mCurrentClass.getCourseID());
                 startActivity(assignmentsIntent);
             }
         });

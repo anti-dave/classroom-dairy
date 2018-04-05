@@ -38,47 +38,58 @@
             android:label="@string/title_activity_login" />
 
         <activity
+            android:name=".ClassAddListActivity"
+            android:label="@string/title_activity_class_add_list" />
+
+        <activity
             android:name=".ClassActivity"
-            android:label="Your Classes"
+            android:label="My Classes"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ClassInfoActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".ClassActivity">
+            android:parentActivityName=".ClassActivity"
+            android:screenOrientation="portrait"></activity>
 
+        <activity android:name=".InfoActivity"
+            android:label="Information"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
 
-        <activity android:name=".InfoActivity"></activity>
-
-        <activity android:name=".ChatActivity"></activity>
+        <activity android:name=".ChatActivity"
+            android:label="Discussion Board"></activity>
 
         <activity android:name=".UploadSyllabusActivity"
-            android:parentActivityName=".ClassInfoActivity">
-        </activity>
+            android:label="Upload Syllabus"
+            android:parentActivityName=".ClassInfoActivity"></activity>
 
         <activity
             android:name=".RosterActivity"
-            android:label="Class Roster">
-        </activity>
+            android:label="Class Roster"></activity>
 
         <activity
             android:name=".InstructorPromptActivity"
-            android:theme="@style/AppTheme.PopupTheme">
-        </activity>
+            android:theme="@style/AppTheme.PopupTheme"></activity>
 
         <activity
             android:name=".GradesActivity"
-            android:label="My Grades">
-        </activity>
+            android:label="My Grades"></activity>
 
         <activity
             android:name=".MessageActivity"
             android:label="Messages"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"></activity>
 
+        <activity android:name=".SettingActivity"
+            android:label="Settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
 
     </application>
