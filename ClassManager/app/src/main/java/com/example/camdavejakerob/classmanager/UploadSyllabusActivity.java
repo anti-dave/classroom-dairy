@@ -1,18 +1,22 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -131,4 +135,29 @@ public class UploadSyllabusActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId() == android.R.id.home) {
+
+            Intent upIntent = NavUtils.getParentActivityIntent(this);
+            if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+                // This activity is NOT part of this app's task, so create a new task
+                // when navigating up, with a synthesized back stack.
+                TaskStackBuilder.create(this)
+                        // Add all of this activity's parents to the back stack
+                        .addNextIntentWithParentStack(upIntent)
+                        // Navigate up to the closest parent
+                        .startActivities();
+            } else {
+                // This activity is part of this app's task, so simply
+                // navigate up to the logical parent activity.
+                NavUtils.navigateUpTo(this, upIntent);
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

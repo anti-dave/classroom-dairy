@@ -46,12 +46,14 @@
             android:name=".ClassActivity"
             android:label="My Classes"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+        </activity>
 
         <activity
             android:name=".ClassInfoActivity"
             android:parentActivityName=".ClassActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+        </activity>
 
         <activity android:name=".InfoActivity"
             android:label="Information"
@@ -62,32 +64,34 @@
         </activity>
 
         <activity android:name=".ChatActivity"
-            android:label="Discussion Board"></activity>
+            android:label="Discussion Board">
+        </activity>
 
         <activity android:name=".UploadSyllabusActivity"
             android:label="Upload Syllabus"
             android:parentActivityName=".ClassInfoActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ClassInfoActivity"/>
         </activity>
 
         <activity
             android:name=".RosterActivity"
-            android:label="Class Roster"></activity>
+            android:label="Class Roster">
+        </activity>
 
         <activity
             android:name=".InstructorPromptActivity"
-            android:theme="@style/AppTheme.PopupTheme"></activity>
+            android:theme="@style/AppTheme.PopupTheme">
+        </activity>
 
         <activity
             android:name=".GradesActivity"
-            android:label="My Grades"></activity>
+            android:label="My Grades">
+        </activity>
 
         <activity
             android:name=".MessageActivity"
             android:label="Messages"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity">
+        </activity>
 
         <activity android:name=".SettingActivity"
             android:label="Settings"
