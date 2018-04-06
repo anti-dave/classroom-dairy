@@ -2,6 +2,7 @@ package com.example.camdavejakerob.classmanager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -57,23 +59,20 @@ public class ClassInfoActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Intent uploadIntent = new Intent(ClassInfoActivity.this,UploadSyllabusActivity.class);
-                                    uploadIntent.putExtra(CLASS_ID, mCurrentClass.getCourseID());
+                                    uploadIntent.putExtra("CURRENT_CLASS", mCurrentClass);
                                     startActivity(uploadIntent);
                                 }
                             })
                             .setNeutralButton("View", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    //getSyllabus();
+                                    getSyllabus();
                                 }
                             });
                     AlertDialog sylDialog = sylAlertBuilder.create();
                     sylDialog.show();
                 } else {
-                    // IF STUDENT
-                        //download the syllabus if there is one
-                    //Toast.makeText(ClassInfoActivity.this,"not an instructor we downloading this",Toast.LENGTH_SHORT);
-                    Log.d(TAG, "onClick: we are a student !? :(");
+                    getSyllabus();
                 }
             }
         });
@@ -125,34 +124,23 @@ public class ClassInfoActivity extends AppCompatActivity {
     }
 
     private void getSyllabus(){
-        StorageReference ref = FirebaseStorage.getInstance()
-                .getReference(mCurrentClass.getCourseID())
-                .child("syllabus");
 
-        if(ref == null){
-            Log.d(TAG, "getSyllabus: is null, something went wrong");
-        } else {
-            //Log.d(TAG, "getSyllabus: is not null!!!! we win");
-            File downloadLocation = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            try {
-                File localFile = File.createTempFile(mCurrentClass.getName() + "Syllabus","pdf",downloadLocation);
-                ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        //do stuff
-                        Log.d(TAG, "onSuccess: i guess we downloaded this thing");
-                        //taskSnapshot.notify();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // do error stuff i guess :(
-                        Log.d(TAG, "onFailure: it seems we failed to do the download thing :(");
-                    }
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
+        StorageReference ref = FirebaseStorage.getInstance().getReference();
+
+        ref.child(mCurrentClass.getCourseID()).child(mCurrentClass.getName() + " syllabus.pdf").getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d(TAG, "onSuccess: we successfull!" + uri.toString());
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(browserIntent);
             }
-        }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure: ", e);
+            }
+        });
     }
+
 }

@@ -1,6 +1,7 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,14 +33,16 @@ public class UploadSyllabusActivity extends AppCompatActivity {
     private ListView mListView;
     private String TAG = "SYLLABUS_UPLOAD";
     private String CLASS_ID = "CLASS_ID";
-    private String classId;
+    private Class mCurrentClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_syllabus);
 
-        classId = getIntent().getStringExtra(CLASS_ID);
+        Intent intent = getIntent();
+        //classId = getIntent().getStringExtra(CLASS_ID);
+        mCurrentClass = (Class) intent.getParcelableExtra("CURRENT_CLASS");
 
         // set up the list view
         mListView = (ListView) findViewById(R.id.list_of_files);
@@ -79,7 +82,8 @@ public class UploadSyllabusActivity extends AppCompatActivity {
                         ////not sure how to do this last part, i think im going to need a class id or something.......
 
                         Uri file = Uri.fromFile(new File(filePath));
-                        StorageReference ref = FirebaseStorage.getInstance().getReference().child(classId + "/syllabus");
+                        StorageReference ref = FirebaseStorage.getInstance().getReference().
+                                child(mCurrentClass.getCourseID() + "/" + mCurrentClass.getName() + " syllabus.pdf");
                         UploadTask uploadTask = ref.putFile(file);
 
                         uploadTask.addOnFailureListener(new OnFailureListener() {
