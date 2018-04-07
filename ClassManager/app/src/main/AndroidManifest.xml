@@ -101,6 +101,12 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <activity
+            android:name=".NewAssignmentActivity"
+            android:label="Create New Assignment"
+            android:parentActivityName=".AssignmentActivity">
+        </activity>
+
     </application>
 
 </manifest>

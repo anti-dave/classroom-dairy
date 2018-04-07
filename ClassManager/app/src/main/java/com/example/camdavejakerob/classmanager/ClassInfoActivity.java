@@ -97,8 +97,7 @@ public class ClassInfoActivity extends AppCompatActivity {
         assignmentsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent assignmentsIntent = new Intent(ClassInfoActivity.this, AssignmentActivity.class);
-                assignmentsIntent.putExtra("TITLE", mCurrentClass.getName() + " Assignments");
-                assignmentsIntent.putExtra(CLASS_ID, mCurrentClass.getCourseID());
+                assignmentsIntent.putExtra("CURRENT_CLASS", mCurrentClass);
                 startActivity(assignmentsIntent);
             }
         });
@@ -127,7 +126,7 @@ public class ClassInfoActivity extends AppCompatActivity {
 
         StorageReference ref = FirebaseStorage.getInstance().getReference();
 
-        ref.child(mCurrentClass.getCourseID()).child(mCurrentClass.getName() + " syllabus.pdf").getDownloadUrl()
+        ref.child(mCurrentClass.getCourseID()).child(mCurrentClass.getName() + "syllabus.pdf").getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {

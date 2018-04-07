@@ -82,8 +82,6 @@ public class UploadSyllabusActivity extends AppCompatActivity {
                 builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // upload item to the correct location in FirebaseStorage
-                        ////not sure how to do this last part, i think im going to need a class id or something.......
 
                         Uri file = Uri.fromFile(new File(filePath));
                         StorageReference ref = FirebaseStorage.getInstance().getReference().
@@ -108,16 +106,7 @@ public class UploadSyllabusActivity extends AppCompatActivity {
                         }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(UploadSyllabusActivity.this);
-                                confirmBuilder.setCancelable(true);
-                                confirmBuilder.setTitle("Success!");
-                                confirmBuilder.setMessage("File finished uploading");
-                                confirmBuilder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {}
-                                });
-                                AlertDialog confirmDialog = confirmBuilder.create();
-                                confirmDialog.show();
+                                Toast.makeText(UploadSyllabusActivity.this, "Upload Complete!", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

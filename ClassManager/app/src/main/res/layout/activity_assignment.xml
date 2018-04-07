@@ -7,12 +7,26 @@
     tools:context="com.example.camdavejakerob.classmanager.AssignmentActivity"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/assignment_teacher_button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingVertical="16dp"
+        android:visibility="visible">
+
+        <Button
+            android:id="@+id/assignment_teacher_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="new assignment"/>
+
+    </LinearLayout>
+
     <ListView
         android:id="@+id/assignment_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
     </ListView>
 
 </LinearLayout>
