@@ -171,7 +171,11 @@ public class DatabaseHelper {
 
                             name = assignmentSnapshot.getKey().toString();
                             dueDate = assignmentSnapshot.child(DUE_DATE).getValue().toString();
-                            grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+                            if(assignmentSnapshot.child(GRADES).child(uid).getValue() == null){
+                                grade = "This has not been graded yet.";
+                            } else {
+                                grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+                            }
 
                             assignments.add(new Assignment(dueDate,grade,name));
                         }
@@ -208,7 +212,11 @@ public class DatabaseHelper {
 
                             name = assignmentSnapshot.getKey().toString();
                             dueDate = assignmentSnapshot.child(DUE_DATE).getValue().toString();
-                            grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+                            if(assignmentSnapshot.child(GRADES).child(uid).getValue() == null){
+                                grade = "not yet graded";
+                            } else {
+                                grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+                            }
 
                             assignments.add(new Assignment(dueDate,grade,name));
                         }
