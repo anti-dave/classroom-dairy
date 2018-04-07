@@ -30,7 +30,7 @@ public class DatabaseHelper {
     private String ROSTER = "roster", DAYS = "daysOfClass", TIME_END = "endTime", TIME_START = "startTime";
     private String SYLLABUS = "syllabus", CLASS_NAME = "name", ROOM = "room";
     private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor";
-    private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades";
+    private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades", SUBMISSIONS = "submissions";
     private String TAG = "DATABASE_HELPER";
 
     private FirebaseDatabase mDatabase;
@@ -406,5 +406,10 @@ public class DatabaseHelper {
 
     public void updateUserToInstructor(String uid, boolean bool){
         mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).setValue(bool);
+    }
+
+    public void writeAssignmentSubmission(String uid, String cid, String assignmentName, String downloadUrl){
+        mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS).child(assignmentName)
+                .child(SUBMISSIONS).child(uid).setValue(downloadUrl);
     }
 }

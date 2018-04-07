@@ -46,6 +46,8 @@ public class ClassInfoActivity extends AppCompatActivity {
         syllabusButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                Toast.makeText(ClassInfoActivity.this, "found exception", Toast.LENGTH_SHORT).show();
+
                 User user = ((ClassManagerApp) ClassInfoActivity.this.getApplication()).getCurUser();
 
                 // IF INSTRUCTOR
@@ -124,9 +126,9 @@ public class ClassInfoActivity extends AppCompatActivity {
 
     private void getSyllabus(){
 
-        StorageReference ref = FirebaseStorage.getInstance().getReference();
+            StorageReference ref = FirebaseStorage.getInstance().getReference();
 
-        ref.child(mCurrentClass.getCourseID()).child(mCurrentClass.getName() + "syllabus.pdf").getDownloadUrl()
+        ref.child(mCurrentClass.getCourseID()).child(mCurrentClass.getName() + " syllabus.pdf").getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
