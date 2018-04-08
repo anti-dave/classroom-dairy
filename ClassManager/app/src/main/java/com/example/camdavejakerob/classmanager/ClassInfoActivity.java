@@ -1,20 +1,31 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
+
 public class ClassInfoActivity extends AppCompatActivity {
 
+    private String TAG = "CLASS INFO ACTIVITY";
     private String CLASS_ID = "CLASS_ID";
     private Class mCurrentClass;
 
@@ -34,11 +45,35 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout syllabusButton = findViewById(R.id.syllabus);
         syllabusButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                Intent classesIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
-//                startActivity(classesIntent);
-               String pdf_url = "https://firebasestorage.googleapis.com/v0/b/classmanager-38435.appspot.com/o/Syllabus_Sample.pdf?alt=media&token=3232f7b8-f732-4b75-b984-a1d7357c85d3";
-               Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdf_url));
-               startActivity(browserIntent);
+
+                User user = ((ClassManagerApp) ClassInfoActivity.this.getApplication()).getCurUser();
+
+                // IF INSTRUCTOR
+                if(user.isInstructor()) {
+                    // ask if they want to view or upload syllabus
+                    AlertDialog.Builder sylAlertBuilder = new AlertDialog.Builder(ClassInfoActivity.this);
+                    sylAlertBuilder.setCancelable(true)
+                            .setTitle("Syllabus")
+                            .setMessage("View or upload Syllabus?")
+                            .setPositiveButton("Upload", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent uploadIntent = new Intent(ClassInfoActivity.this,UploadSyllabusActivity.class);
+                                    uploadIntent.putExtra("CURRENT_CLASS", mCurrentClass);
+                                    startActivity(uploadIntent);
+                                }
+                            })
+                            .setNeutralButton("View", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getSyllabus();
+                                }
+                            });
+                    AlertDialog sylDialog = sylAlertBuilder.create();
+                    sylDialog.show();
+                } else {
+                    getSyllabus();
+                }
             }
         });
 
@@ -62,8 +97,7 @@ public class ClassInfoActivity extends AppCompatActivity {
         assignmentsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent assignmentsIntent = new Intent(ClassInfoActivity.this, AssignmentActivity.class);
-                assignmentsIntent.putExtra("TITLE", mCurrentClass.getName() + " Assignments");
-                assignmentsIntent.putExtra(CLASS_ID, mCurrentClass.getCourseID());
+                assignmentsIntent.putExtra("CURRENT_CLASS", mCurrentClass);
                 startActivity(assignmentsIntent);
             }
         });
@@ -87,4 +121,25 @@ public class ClassInfoActivity extends AppCompatActivity {
         });
 
     }
+
+    private void getSyllabus(){
+
+        StorageReference ref = FirebaseStorage.getInstance().getReference();
+
+        ref.child(mCurrentClass.getCourseID()).child(mCurrentClass.getName() + "syllabus.pdf").getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d(TAG, "onSuccess: we successfull!" + uri.toString());
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(browserIntent);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure: ", e);
+            }
+        });
+    }
+
 }

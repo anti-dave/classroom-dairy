@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 public class InfoActivity extends AppCompatActivity {
 
+    String TAG = "INFO_ACTIVITY";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
