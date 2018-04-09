@@ -97,6 +97,13 @@
             android:parentActivityName=".MainActivity">
         </activity>
 
+        <activity
+            android:name=".MessageListActivity"
+            android:label="Messages"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
+
         <activity android:name=".SettingActivity"
             android:label="Settings"
             android:parentActivityName=".MainActivity">

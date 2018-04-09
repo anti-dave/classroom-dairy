@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -48,8 +49,7 @@ public class ClassCreatorActivity extends AppCompatActivity {
 
                 }else {
 
-                }
-*/
+                } */
                 if(monday.isPressed()) {
                     weekdays.add("Monday");
                 }
@@ -69,19 +69,26 @@ public class ClassCreatorActivity extends AppCompatActivity {
                     weekdays.add("TBA");
                 }
 
-                EditText classId = (EditText) findViewById(R.id.input);
-                EditText name = (EditText) findViewById(R.id.input);
-                EditText startTime = (EditText) findViewById(R.id.input);
-                EditText endTime = (EditText) findViewById(R.id.input);
-                EditText room = (EditText) findViewById(R.id.input);
+                EditText classId = (EditText) findViewById(R.id.class_id_form);
+                EditText name = (EditText) findViewById(R.id.class_name_form);
+                EditText startTime = (EditText) findViewById(R.id.class_startTime_form);
+                EditText endTime = (EditText) findViewById(R.id.class_endTime_form);
+                EditText room = (EditText) findViewById(R.id.class_room_form);
 
                 database.writeNewClass(
-                        classId.toString(),
-                        name.toString(),
+                        classId.getText().toString(),
+                        name.getText().toString(),
                         weekdays,
-                        startTime.toString(),
-                        endTime.toString(),
-                        room.toString() );
+                        startTime.getText().toString(),
+                        endTime.getText().toString(),
+                        room.getText().toString() );
+
+                Toast.makeText(ClassCreatorActivity.this,
+                        name.getText().toString() + " Created",
+                        Toast.LENGTH_LONG)
+                        .show();
+
+                finish();
             }
         });
     }
