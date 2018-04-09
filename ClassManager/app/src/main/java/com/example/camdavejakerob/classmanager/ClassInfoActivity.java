@@ -89,7 +89,10 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout discussionBoardButton = findViewById(R.id.discussion_board);
         discussionBoardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent discussionBoardIntent = new Intent(ClassInfoActivity.this, ChatActivity.class);
+                Intent discussionBoardIntent = new Intent(ClassInfoActivity.this, MessageListActivity.class);
+
+                // Set the URI on the data field of the intent
+                discussionBoardIntent.putExtra("cid", CLASS_ID);
                 startActivity(discussionBoardIntent);
             }
         });

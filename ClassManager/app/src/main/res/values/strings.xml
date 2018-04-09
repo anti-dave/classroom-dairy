@@ -18,8 +18,8 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-
     <!-- Strings related to Class Creation -->
+    <string name="title_activity_creator">Class Add</string>
     <string name="class_id_prompt">Class ID</string>
     <string name="class_id_hint">ID</string>
     <string name="class_days_prompt">Days</string>
