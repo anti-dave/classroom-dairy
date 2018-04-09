@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout messagesButton = findViewById(R.id.messages);
         messagesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent messagesIntent = new Intent(MainActivity.this, MessageActivity.class);
+                Intent messagesIntent = new Intent(MainActivity.this, MessageListActivity.class);
                 startActivity(messagesIntent);
             }
         });

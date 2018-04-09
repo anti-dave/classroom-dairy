@@ -43,12 +43,10 @@ public class ClassAddListActivity  extends AppCompatActivity {
 
     private FirebaseListAdapter<Class> adapter;
     private static final String TAG = ClassAddListActivity.class.getName();
-    String courseID = "cids";
+    String courseID = "cids", UIDS = "uids";
     private static final int CLASS_LOADER_ID = 1;
-    /** TextView that is displayed when the list is empty */
     private TextView mEmptyStateTextView;
     DatabaseHelper database = new DatabaseHelper();
-    //Query ref = FirebaseDatabase.getInstance().getReference(Messages).child(AllUsers);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,37 +80,7 @@ public class ClassAddListActivity  extends AppCompatActivity {
             mEmptyStateTextView.setText(com.example.camdavejakerob.classmanager.R.string.no_internet_connection);
         }
 
-        /********************************/
-        FirebaseListOptions<Class> options =
-                new FirebaseListOptions.Builder<Class>()
-                        .setLayout(R.layout.class_item)
-                        .setQuery(ref, Class.class)
-                        .setLifecycleOwner(this)
-                        .build();
-
-        adapter = new FirebaseListAdapter<Class>(options) {
-            @Override
-            //populateView as alternative to getView
-            protected void populateView(View v, Class model, int position) {
-                // Get references to the views of message.xml
-                Log.d(TAG, "here 4");
-                TextView className = (TextView)v.findViewById(R.id.class_name);
-                TextView classRoom = (TextView)v.findViewById(R.id.class_room);
-                TextView classTime = (TextView)v.findViewById(R.id.class_time);
-                TextView classId = (TextView)v.findViewById(R.id.class_id);
-                Log.d(TAG, "here 3");
-
-                // Set their text
-                classId.setText(model.getCourseID());
-                className.setText(model.getName());
-                classRoom.setText(model.getRoom());
-                classTime.setText(model.getClassTime());
-            }
-        };
-
-        Log.d(TAG, "here 1");
-        availableClasses.setAdapter(adapter);
-        /***********************/
+       database.updateListViewListOfClasses(this, availableClasses);
 
         // Setup the item click listener to bring up popupmenu
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -122,14 +90,30 @@ public class ClassAddListActivity  extends AppCompatActivity {
                         "You have chosen: ",
                         Toast.LENGTH_LONG)
                         .show();
-                Log.d(TAG, "here 2");
 
                 TextView classId = (TextView)view.findViewById(R.id.class_id);
-                //get uid
-                //under uids / child name (key) / child classes
-                database.enrollStudentToClass(
-                        FirebaseAuth.getInstance().getUid(),
-                        classId.toString());
+
+                if(FirebaseDatabase.getInstance().getReference(UIDS)
+                        .child(FirebaseAuth.getInstance().getUid())
+                        .child("intructor")
+                        .equals(true)) {
+                    database.enrollStudentToClass(
+                            classId.getText().toString(),
+                            FirebaseAuth.getInstance().getUid());
+                } else {
+                    database.enrollStudentToClass(
+                            classId.getText().toString(),
+                            FirebaseAuth.getInstance().getUid());
+
+                    //Robs thing
+                    /*FirebaseDatabase
+                            .getInstance()
+                            .getReference(courseID)
+                            .child(newClassId)
+                            .child("roster")
+                            .child(currentUserId)
+                            .setValue(false);*/
+                }
             }
         });
     }
