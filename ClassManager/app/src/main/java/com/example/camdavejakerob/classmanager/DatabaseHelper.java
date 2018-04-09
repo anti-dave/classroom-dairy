@@ -78,7 +78,7 @@ public class DatabaseHelper {
     }
 
     public void getAllAssignmentSubmissions(final String cid, final String assignmentName, final ListView listView, final Context context){
-        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.getReference().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -170,12 +170,14 @@ public class DatabaseHelper {
                 for(DataSnapshot rosterData: dataSnapshot.child(CIDS)
                         .child(cid).child(ROSTER).getChildren()){
 
-                    String name, uid;
+                    if((Boolean) rosterData.getValue()) {
+                        String name, uid;
 
-                    uid = rosterData.getKey().toString();
-                    name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME).getValue().toString();
+                        uid = rosterData.getKey().toString();
+                        name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME).getValue().toString();
 
-                    users.add(new User("",name,false));
+                        users.add(new User(uid, name, false));
+                    }
                 }
                 rosterAdapter = new RosterAdapter(context,users);
                 listView.setAdapter(rosterAdapter);
@@ -197,7 +199,7 @@ public class DatabaseHelper {
      */
     public void getUserGrades(final Context context, final ListView listView, final String uid, final String cid){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -238,7 +240,7 @@ public class DatabaseHelper {
      */
     public void getUserAssignment(final Context context, final ListView listView, final String uid, final String cid){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -314,7 +316,7 @@ public class DatabaseHelper {
      * @param uid
      */
     public void updateListViewUserClasses(final Context context, final ListView listView, final String uid){
-        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.getReference().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -404,12 +406,15 @@ public class DatabaseHelper {
     public void writeNewClass( final String classId, final String name, final ArrayList<String> daysOfClass,
                                final String startTime, final String endTime, final String room ){
 
+        String curUserId = FirebaseAuth.getInstance().getUid();
+
         mDatabase.getReference(CIDS).child(classId).child(CLASS_NAME).setValue(name);
         mDatabase.getReference(CIDS).child(classId).child(DAYS).setValue(daysOfClass);
         mDatabase.getReference(CIDS).child(classId).child(TIME_START).setValue(startTime);
         mDatabase.getReference(CIDS).child(classId).child(TIME_END).setValue(endTime);
         mDatabase.getReference(CIDS).child(classId).child(ROOM).setValue(room);
-
+        mDatabase.getReference(CIDS).child(classId).child(ROSTER).child(curUserId).setValue(false);
+        mDatabase.getReference(UIDS).child(curUserId).child(CLASSES).child(classId).setValue(true);
     }
 
     /**
