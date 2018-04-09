@@ -50,6 +50,7 @@ public class DatabaseHelper {
      ****************************************************************************************************************/
 
 
+
     public void getCurrentUser(final Context context){
         String userId = FirebaseAuth.getInstance().getUid();
         if(userId == null){ return; }
@@ -76,44 +77,83 @@ public class DatabaseHelper {
         });
     }
 
-    /**
-     * this does nothing yet :(
-     *
-     * @param context
-     * @param cid
-     */
-    public void getClassSyllabus(final Context context, final String cid){
-        mDatabase.getReference(CIDS).child(cid).child(SYLLABUS).addListenerForSingleValueEvent(new ValueEventListener() {
+    public void getAllAssignmentSubmissions(final String cid, final String assignmentName, final ListView listView, final Context context){
+        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String url = dataSnapshot.getValue().toString();
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startForegroundService(context,browserIntent);
+
+                GradingHelperAdapter gradeAdapter;
+                ArrayList<GradingHelper> submissions = new ArrayList<GradingHelper>();
+
+                for(DataSnapshot rosterSnapshot: dataSnapshot.child(CIDS)
+                        .child(cid).child(ROSTER).getChildren()){
+
+                    // the instructor is given false when the course is created
+                    // make sure we do not display the instructor in the list
+                    if((Boolean) rosterSnapshot.getValue()) {
+                        //get the userId
+                        String grade, path;
+                        Boolean submitted;
+
+                        String uid = rosterSnapshot.getKey();               // get user id
+                        String name = dataSnapshot.child(UIDS).child(uid)
+                                .child(USER_NAME).getValue().toString();    // get users name
+
+
+                        DataSnapshot assignmentSnapshot = dataSnapshot.child(CIDS)
+                                .child(cid).child(ASSIGNMENTS).child(assignmentName);
+
+                        //see if they have submitted for the chosen homework
+                        if(assignmentSnapshot.child(SUBMISSIONS).child(uid).exists()) {
+                            //IF YES
+                            // set the text view giving the affirmative
+                            submitted = true;
+                            // set the invisible textview with the download path
+                            path = assignmentSnapshot.child(SUBMISSIONS).child(uid).getValue().toString();
+
+                            // check for grade
+                            if(assignmentSnapshot.child(GRADES).child(uid).exists()) {
+                                //IF YES
+                                // show grade
+                                grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+                            } else {
+                                //IF NO
+                                // say its not graded yet
+                                grade = "Not yet graded.";
+                            }
+                        } else {
+                            //IF NO
+                            // set the text view giving the negative
+                            submitted = false;
+                            // set the invisible textview with an empty string
+                            path = "";
+
+                            //see if they have submitted for the chosen assignment
+                            if(assignmentSnapshot.child(GRADES).child(uid).exists()) {
+                                //IF YES
+                                // show grade
+                                grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+                            } else {
+                                //IF NO
+                                // say its not graded yet
+                                grade = "Not yet graded.";
+                            }
+                        }
+
+                        submissions.add(new GradingHelper(name,uid,path,grade,submitted));
+
+                    }
+
+                }
+
+                gradeAdapter = new GradingHelperAdapter(context,submissions);
+                listView.setAdapter(gradeAdapter);
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: " + databaseError.toString());
-            }
-        });
-    }
-
-    /**
-     * we might not actually need this
-     * @param path a string of the exact path to the desired information in the database.
-     *             example: to get the user u1's first name the string needs to be "uids/u1/first"
-     * @param textView a TextView object you wish to update
-     */
-    public void updateTextView(String path, final TextView textView){
-        mDatabase.getReference(path).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                textView.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: " + databaseError.toString());
+                Log.d(TAG,"onCancelled: getAllAssignmentSubmissions " + databaseError.toString());
             }
         });
     }
@@ -146,7 +186,6 @@ public class DatabaseHelper {
                 Log.d(TAG, "onCancelled: " + databaseError.toString());
             }
         });
-
     }
 
     /**
@@ -330,11 +369,11 @@ public class DatabaseHelper {
      * @param cid String of the class id, assumed to be valid
      * @param uid String of the students id, assumed to be valid
      * @param grade String of the grade which the student received for the assignment
-     * @param assignment String of the assignments name
+     * @param assignmentName String of the assignments name
      */
-    public void writeAssignmentGrade(String cid, String uid, String grade, String assignment){
+    public void writeAssignmentGrade(String cid, String uid, String grade, String assignmentName){
         DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
-        classRef.child(ASSIGNMENTS).child(assignment).child(GRADES).child(uid).setValue(grade);
+        classRef.child(ASSIGNMENTS).child(assignmentName).child(GRADES).child(uid).setValue(grade);
     }
 
     /**

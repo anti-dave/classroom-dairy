@@ -34,6 +34,9 @@ public class ClassInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_info);
 
+        // get current user
+        final User user = ((ClassManagerApp) ClassInfoActivity.this.getApplication()).getCurUser();
+
         // assigns the currentClass
         Intent i = getIntent();
 
@@ -45,10 +48,6 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout syllabusButton = findViewById(R.id.syllabus);
         syllabusButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                Toast.makeText(ClassInfoActivity.this, "found exception", Toast.LENGTH_SHORT).show();
-
-                User user = ((ClassManagerApp) ClassInfoActivity.this.getApplication()).getCurUser();
 
                 // IF INSTRUCTOR
                 if(user.isInstructor()) {
@@ -107,9 +106,16 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout gradesButton = findViewById(R.id.grades);
         gradesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent gradesIntent = new Intent(ClassInfoActivity.this, GradesActivity.class);
-                gradesIntent.putExtra(CLASS_ID, mCurrentClass.getCourseID());
-                startActivity(gradesIntent);
+                //if the user is an instructor go to assignments where they can grade ELSE go to the grades to see
+                if(user.isInstructor()){
+                    Intent assignmentsIntent = new Intent(ClassInfoActivity.this, AssignmentActivity.class);
+                    assignmentsIntent.putExtra("CURRENT_CLASS", mCurrentClass);
+                    startActivity(assignmentsIntent);
+                } else {
+                    Intent gradesIntent = new Intent(ClassInfoActivity.this, GradesActivity.class);
+                    gradesIntent.putExtra(CLASS_ID, mCurrentClass.getCourseID());
+                    startActivity(gradesIntent);
+                }
             }
         });
 

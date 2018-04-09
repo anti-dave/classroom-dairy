@@ -80,7 +80,11 @@ public class AssignmentActivity extends AppCompatActivity {
 
                 if(mCurUser.isInstructor()) {
 
-                    //view homework submissions
+                    //view homework submissions and maybe grade some
+                    Intent gradeIntent = new Intent(AssignmentActivity.this, GradeAssignmentActivity.class);
+                    gradeIntent.putExtra("CURRENT_CLASS", mCurrentClass);
+                    gradeIntent.putExtra("ASSIGNMENT_NAME", assignmentName.getText().toString());
+                    startActivity(gradeIntent);
 
                 } else {
 

@@ -113,6 +113,11 @@
             android:parentActivityName=".AssignmentActivity">
         </activity>
 
+        <activity
+            android:name=".GradeAssignmentActivity"
+            android:label="Grade Assignments">
+        </activity>
+
     </application>
 
 </manifest>
