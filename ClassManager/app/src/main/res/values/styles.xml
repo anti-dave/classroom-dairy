@@ -23,7 +23,7 @@
     <!-- theme for the short form prompts -->
     <style name="FormLabelStyle">
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_weight">1</item>
         <item name="android:paddingTop">16dp</item>
         <item name="android:textAppearance">?android:textAppearanceSmall</item>
@@ -33,6 +33,13 @@
     <style name="FormEditTextShortStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+    </style>
+
+    <!-- theme for the small buttons in the form -->
+    <style name="SmallButtonStyle">
+        <item name="android:layout_height">80dp</item>
+        <item name="android:layout_width">80dp</item>
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
     </style>
 
