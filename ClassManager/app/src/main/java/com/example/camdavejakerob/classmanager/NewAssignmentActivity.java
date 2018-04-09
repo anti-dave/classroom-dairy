@@ -108,6 +108,9 @@ public class NewAssignmentActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(validData()){
 
+                    // don't let the user hit the button again
+                    mSubmit.setVisibility(View.GONE);
+
                     // upload file to storage
                     Uri uri = Uri.fromFile(new File(mFilePath.getText().toString()));
 
@@ -119,6 +122,8 @@ public class NewAssignmentActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText(NewAssignmentActivity.this, "Failed to create new assignment", Toast.LENGTH_SHORT).show();
+                            // return to AssignmentActivity
+                            NewAssignmentActivity.this.finish();
                         }
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -129,11 +134,10 @@ public class NewAssignmentActivity extends AppCompatActivity {
                             Assignment assignment = new Assignment(mDueDate.getText().toString(), "empty", mName.getText().toString());
                             DatabaseHelper databaseHelper = new DatabaseHelper();
                             databaseHelper.writeAssignment(mCurrentClass.getCourseID(),assignment);
+                            // return to AssignmentActivity
+                            NewAssignmentActivity.this.finish();
                         }
                     });
-
-                    // return to AssignmentActivity(go back???)
-                    NewAssignmentActivity.this.finish(); // im concerned this might cause a crash
 
                 } else {
                     Toast.makeText(NewAssignmentActivity.this,"Make sure each field is filled out",Toast.LENGTH_SHORT).show();

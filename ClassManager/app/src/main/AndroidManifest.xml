@@ -118,6 +118,17 @@
             android:parentActivityName=".AssignmentActivity">
         </activity>
 
+        <activity
+            android:name=".SubmitAssignmentActivity"
+            android:label="Select File"
+            android:parentActivityName=".AssignmentActivity">
+        </activity>
+
+        <activity
+            android:name=".GradeAssignmentActivity"
+            android:label="Grade Assignments">
+        </activity>
+
     </application>
 
 </manifest>
