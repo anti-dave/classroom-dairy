@@ -1,11 +1,8 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -17,8 +14,6 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
-import static android.support.v4.content.ContextCompat.startForegroundService;
-
 /**
  * Created by Rob on 3/13/2018.
  */
@@ -28,14 +23,13 @@ public class DatabaseHelper {
     //Strings used frequently for accessing data in Firebase
     private String CIDS = "cids", UIDS = "uids";
     private String ROSTER = "roster", DAYS = "daysOfClass", TIME_END = "endTime", TIME_START = "startTime";
-    private String SYLLABUS = "syllabus", CLASS_NAME = "name", ROOM = "room";
-    private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor";
+    private String SYLLABUS = "syllabus", MESSAGES = "Messages", CLASS_NAME = "name", ROOM = "room";
+    private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor", INSTRUCTOR_PROMPTED = "Instructor_Prompt_Bool";
     private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades", SUBMISSIONS = "submissions";
     private String TAG = "DATABASE_HELPER";
 
     private FirebaseDatabase mDatabase;
     private FirebaseStorage mStorage;
-
 
     DatabaseHelper(){
         mDatabase = FirebaseDatabase.getInstance();
@@ -48,8 +42,6 @@ public class DatabaseHelper {
      *                                  Accessors
      *
      ****************************************************************************************************************/
-
-
 
     public void getCurrentUser(final Context context){
         String userId = FirebaseAuth.getInstance().getUid();
@@ -68,6 +60,69 @@ public class DatabaseHelper {
 
                 User user = new User(uid,name,instructor);
                 ((ClassManagerApp) context.getApplicationContext()).setCurUser(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+    }
+
+    public void getAllMessageRecipients(final Context context, final ListView listView, final String uid){
+
+        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                MessageListAdapter chatAdapter;
+                final ArrayList<User> users = new ArrayList<User>();
+
+                for(DataSnapshot chatData: dataSnapshot.child(UIDS)
+                        .child(uid).child(MESSAGES).getChildren()){
+
+                        String name, recipientUid;
+
+                        recipientUid = chatData.getKey().toString();
+                        name = dataSnapshot
+                                .child(UIDS)
+                                .child(recipientUid)
+                                .child(USER_NAME)
+                                .getValue()
+                                .toString();
+
+                        users.add(new User(uid, name, false));
+                }
+                chatAdapter = new MessageListAdapter(context,users);
+                listView.setAdapter(chatAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+    }
+
+    public void getChatKeyFromUid(final Context context, final String recipientUid){
+        String userId = FirebaseAuth.getInstance().getUid();
+        if(userId == null){ return; }
+
+        //reference to all user id's
+        mDatabase.getReference(UIDS)
+                .child(userId)
+                .child(MESSAGES)
+                .child(recipientUid)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String uid, name, chatId;
+
+                uid = FirebaseAuth.getInstance().getUid();
+                name = dataSnapshot.child(UIDS).getValue().toString();
+                chatId = dataSnapshot.child(UIDS).getValue().toString();
+
             }
 
             @Override
@@ -284,13 +339,14 @@ public class DatabaseHelper {
 
                 ClassAdapter classAdapter;
                 final ArrayList<Class> classes = new ArrayList<Class>();
-                ArrayList<String> days = new ArrayList<String>();
 
                 for(DataSnapshot classSnapshot: dataSnapshot.getChildren()){
 
-                    String name,startTime,endTime,room,cid;
+                    String name,days,startTime,endTime,room,cid;
+
                     cid = classSnapshot.getKey().toString();
                     name=classSnapshot.child(CLASS_NAME).getValue().toString();
+                    days=classSnapshot.child(DAYS).getValue().toString();
                     startTime=classSnapshot.child(TIME_START).getValue().toString();
                     endTime=classSnapshot.child(TIME_END).getValue().toString();
                     room=classSnapshot.child(ROOM).getValue().toString();
@@ -322,7 +378,6 @@ public class DatabaseHelper {
 
                 ClassAdapter classAdapter;
                 final ArrayList<Class> classes = new ArrayList<Class>();
-                ArrayList<String> days = new ArrayList<String>();
 
                 for(DataSnapshot classSnapshot: dataSnapshot.child(UIDS).child(uid).child(CLASSES).getChildren()){
 
@@ -330,15 +385,14 @@ public class DatabaseHelper {
 
                     DataSnapshot classData = dataSnapshot.child(CIDS).child(cid);
 
-                    Log.d("DatabaseHelper.Java","before classdata class name");
-                    String name,startTime,endTime,room;
+                    String name,days,startTime,endTime,room;
                     name=classData.child(CLASS_NAME).getValue().toString();
+                    days=classData.child(DAYS).getValue().toString();
                     startTime=classData.child(TIME_START).getValue().toString();
                     endTime=classData.child(TIME_END).getValue().toString();
                     room=classData.child(ROOM).getValue().toString();
                     classes.add(new Class(name,days,startTime,endTime,room,cid));
                 }
-                Log.d("DatabaseHelper.Java","after every class is snapshottede");
                 classAdapter = new ClassAdapter(context,classes);
                 listView.setAdapter(classAdapter);
             }
@@ -405,7 +459,7 @@ public class DatabaseHelper {
      *
      * This method creates a new class object and then adds it to the Firebase database
      */
-    public void writeNewClass( final String classId, final String name, final ArrayList<String> daysOfClass,
+    public void writeNewClass( final String classId, final String name, final String daysOfClass,
                                final String startTime, final String endTime, final String room ){
 
         String curUserId = FirebaseAuth.getInstance().getUid();
@@ -452,16 +506,10 @@ public class DatabaseHelper {
 
     public void updateUserToInstructor(String uid, boolean bool){
         mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).setValue(bool);
+        mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).child(INSTRUCTOR_PROMPTED).setValue(true);
+        Log.d(TAG, "Instructor set ");
     }
 
-    public boolean userIsInstructor(String uid){
-        if (
-                mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).equals(true)
-                ) {
-            return true;
-        }
-        else return false;
-    }
 
     public void writeAssignmentSubmission(String uid, String cid, String assignmentName, String downloadUrl){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS).child(assignmentName)

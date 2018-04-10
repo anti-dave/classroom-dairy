@@ -47,6 +47,10 @@
             android:label="@string/title_activity_creator" />
 
         <activity
+            android:name=".DiscussionBoardActivity"
+            android:label="@string/title_discussion_board" />
+
+        <activity
             android:name=".ClassActivity"
             android:label="My Classes"
             android:parentActivityName=".MainActivity"

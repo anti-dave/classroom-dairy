@@ -1,28 +1,17 @@
 package com.example.camdavejakerob.classmanager;
 
-import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.DateFormat;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
-import com.firebase.ui.database.FirebaseListOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 
 /**
  * Created by Davey on 4/8/2018.
@@ -31,7 +20,7 @@ import com.google.firebase.database.Query;
 public class MessageListActivity extends AppCompatActivity {
 
     private static final String TAG = "MessageListActivity";
-    String Messages = "Messaging";
+    String Messages = "Messages";
     String AllUsers = "All Users";
     String CIDS = "cids", UIDS = "uids";
 
@@ -51,10 +40,38 @@ public class MessageListActivity extends AppCompatActivity {
         //mCurrentChatUri = intent.getData();
         final String cid = intent.getStringExtra("cid");
 
-        displayMessages();
+        ListView mListView = (ListView) findViewById(R.id.list_of_messages);
+        DatabaseHelper mDatabase = new DatabaseHelper();
+        mDatabase.getAllMessageRecipients(this, mListView, FirebaseAuth.getInstance().getUid().toString() );
 
-    }
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, final long id) {
+            Toast.makeText(MessageListActivity.this,
+                    "You have chosen: ",
+                    Toast.LENGTH_LONG)
+                    .show();
 
+            TextView uid = view.findViewById(R.id.uid);
+            String userSelectedId = uid.getText().toString();
+
+            TextView name = view.findViewById(R.id.chatName);
+            String userSelectedName = name.getText().toString();
+
+            //TextView chatIdKey = view.findViewById(R.id.roster_item_key);
+            //String chatId = chatIdKey.getText().toString();
+
+            // Create new intent to go to {@link ChatActivity}
+            Intent intent = new Intent(MessageListActivity.this, ChatActivity.class);
+            //intent.putExtra("chatId", chatId);
+            intent.putExtra("recipientUid", userSelectedId);
+            intent.putExtra("recipientName", userSelectedName);
+            startActivity(intent);
+        }
+    });
+}
+}
+/*
     private void displayMessages() {
 
         ListView listOfMessages = (ListView)findViewById(R.id.list_of_message_chats);
@@ -87,7 +104,7 @@ public class MessageListActivity extends AppCompatActivity {
             //populateView as alternative to getView
             protected void populateView(View v, String model, int position) {
                 // Get references to the views of message.xml
-                TextView chatName = (TextView) v.findViewById(R.id.chatName);
+                TextView chatName = v.findViewById(R.id.chatName);
                 //TextView lastMessage = (TextView)v.findViewById(R.id.last_message);
                 //TextView lastMessageTime = (TextView)v.findViewById(R.id.last_message_time);
 
@@ -108,6 +125,9 @@ public class MessageListActivity extends AppCompatActivity {
 
         /** TextView that is displayed when the list is empty
          * make it such that it says no messages found*/
+
+
+  /*
         TextView mEmptyStateTextView;
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         itemListView.setEmptyView(mEmptyStateTextView);
@@ -134,5 +154,5 @@ public class MessageListActivity extends AppCompatActivity {
         });
     }
 
-}
+}*/
 

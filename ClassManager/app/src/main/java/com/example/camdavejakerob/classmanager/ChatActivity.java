@@ -87,7 +87,7 @@ public class ChatActivity extends AppCompatActivity {
             //Push key into message queue of recipients chat
             user
                     .child(Messages)
-                    .child( endUserName )
+                    .child( endUserId )
                     .setValue(key);
 
             //Push key into message queue of users chat in recipients chat folder
@@ -95,8 +95,7 @@ public class ChatActivity extends AppCompatActivity {
                     .child(Messages)
                     .child(
                             FirebaseAuth.getInstance()
-                                    .getCurrentUser()
-                                    .getDisplayName())
+                                    .getCurrentUser().getUid())
                     .setValue(key);
 
             displayChatMessages(key);

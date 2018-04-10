@@ -16,7 +16,7 @@
         android:layout_above="@id/message_fab"
         android:dividerHeight="16dp"
         android:divider="@android:color/transparent"
-        android:id="@+id/list_of_message_chats"
+        android:id="@+id/list_of_messages"
         android:layout_marginBottom="16dp"/>
 
     <!-- Empty view is only visible when the list has no items. -->
