@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public class ClassActivity extends AppCompatActivity {
 
     private ListView mListView;
     private FirebaseUser curUser;
+    private String TAG = "ClassActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class ClassActivity extends AppCompatActivity {
         // in the future we will use FirebaseAuth to get current users id and then call method using that
         mListView = (ListView) findViewById(R.id.classes);
         DatabaseHelper database = new DatabaseHelper();
+
         database.updateListViewUserClasses(this, mListView, curUser.getUid());
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -49,6 +53,7 @@ public class ClassActivity extends AppCompatActivity {
 
                 // using the position to get the name of the class clicked on
                 Class currentClass = (Class)adapterView.getItemAtPosition(position);
+
                 // then pass the class name to the class activity
                 classIntent.putExtra("CURRENT_CLASS",(Parcelable) currentClass);
 
@@ -66,12 +71,20 @@ public class ClassActivity extends AppCompatActivity {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //if student do student
-        getMenuInflater().inflate(R.menu.teacher_class_dropdown, menu);
-        //if teacher do teacher
-        getMenuInflater().inflate(R.menu.student_class_dropdown, menu);
+        DatabaseHelper db = new DatabaseHelper();
+        //if instructor do instructor
+        if( db.userIsInstructor(
+                FirebaseAuth
+                        .getInstance()
+                        .getCurrentUser()
+                        .getUid()) ) {
+            getMenuInflater().inflate(R.menu.teacher_class_dropdown, menu);
+        } else {
+            //if teacher do teacher
+            getMenuInflater().inflate(R.menu.student_class_dropdown, menu);
+        }
         return true;
-    }//onCreateOptionsMenu
+    }
 
     /**
      * Logic for when menu is pressed.
@@ -120,28 +133,3 @@ public class ClassActivity extends AppCompatActivity {
     }
 
 }
-
-
-
-/*
-addClass(){
-    if student(){
-        addClassCourse()
-    } //else, is teacher
-    else {
-        createClass();
-    }
-}
-
-student(){
-    return;
-}
-
-addClassCourse() {
-
-}
-
-createClass(){
-
-}
-*/

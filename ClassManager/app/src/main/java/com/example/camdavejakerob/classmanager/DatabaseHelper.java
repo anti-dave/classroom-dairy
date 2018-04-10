@@ -330,6 +330,7 @@ public class DatabaseHelper {
 
                     DataSnapshot classData = dataSnapshot.child(CIDS).child(cid);
 
+                    Log.d("DatabaseHelper.Java","before classdata class name");
                     String name,startTime,endTime,room;
                     name=classData.child(CLASS_NAME).getValue().toString();
                     startTime=classData.child(TIME_START).getValue().toString();
@@ -337,6 +338,7 @@ public class DatabaseHelper {
                     room=classData.child(ROOM).getValue().toString();
                     classes.add(new Class(name,days,startTime,endTime,room,cid));
                 }
+                Log.d("DatabaseHelper.Java","after every class is snapshottede");
                 classAdapter = new ClassAdapter(context,classes);
                 listView.setAdapter(classAdapter);
             }
@@ -385,7 +387,7 @@ public class DatabaseHelper {
      *  This method adds the user id to the roster list and the class id to the classes list of the user
      *
      */
-    public void enrollStudentToClass(final String cid, final String uid){
+    public void enrollUserToClass(final String cid, final String uid){
         DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
         DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
         classRef.child(ROSTER).child(uid).setValue(true);
@@ -450,6 +452,15 @@ public class DatabaseHelper {
 
     public void updateUserToInstructor(String uid, boolean bool){
         mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).setValue(bool);
+    }
+
+    public boolean userIsInstructor(String uid){
+        if (
+                mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).equals(true)
+                ) {
+            return true;
+        }
+        else return false;
     }
 
     public void writeAssignmentSubmission(String uid, String cid, String assignmentName, String downloadUrl){
