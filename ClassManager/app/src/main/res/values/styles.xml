@@ -88,4 +88,12 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <!-- Strings related to Calendar Activity  -->
+    <string name="calendarAccountLabel">Google Account: </string>
+    <string name="calendarAccountButton">Default Text</string>
+    <string name="calendarAccountHelpText">Click to select an account</string>
+    <string name="calendarToggleLabel">Enable Google Calendar</string>
+    <string name="calendarToggleHelpText">Allow adding events to your Google Calendar</string>
+    <string name="calendarViewButton">View Google Calendar</string>
+
 </resources>
