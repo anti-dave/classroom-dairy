@@ -1,11 +1,14 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -486,8 +489,6 @@ public class DatabaseHelper {
      */
     public void writeNewUser(final String name, final String userId, final Boolean isInstructor) {
 
-
-
         mDatabase.getReference(UIDS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -505,6 +506,43 @@ public class DatabaseHelper {
                 Log.d(TAG, "onCancelled: " + databaseError.toString());
             }
         });
+    }
+
+    public void addUser(final Context context, final FirebaseUser user){
+
+        mDatabase.getReference(UIDS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(!dataSnapshot.child(user.getUid()).exists()){
+
+                    AlertDialog.Builder promptUser = new AlertDialog.Builder(context);
+                    promptUser.setTitle("First Time Login")
+                            .setMessage("Are you an instructor or a student?")
+                            .setPositiveButton("Instructor", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    writeNewUser(user.getDisplayName(),
+                                            user.getUid(),true);
+                                }
+                            })
+                            .setNegativeButton("Student", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    writeNewUser(user.getDisplayName(),
+                                            user.getUid(),false);
+                                }
+                            }).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+
     }
 
     public void updateUserToInstructor(String uid, boolean bool){

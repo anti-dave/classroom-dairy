@@ -154,31 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
                 final FirebaseUser newUser = FirebaseAuth.getInstance().getCurrentUser();
                 final DatabaseHelper databaseHelper = new DatabaseHelper();
-
-                AlertDialog.Builder promptUser = new AlertDialog.Builder(MainActivity.this);
-                promptUser.setTitle("First Time Login")
-                        .setMessage("Are you an instructor or a student?")
-                        .setPositiveButton("Instructor", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                databaseHelper.writeNewUser(newUser.getDisplayName(),
-                                        newUser.getUid(),true);
-                            }
-                        })
-                        .setNegativeButton("Student", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                databaseHelper.writeNewUser(newUser.getDisplayName(),
-                                        newUser.getUid(),false);
-                            }
-                        })
-                        .setNeutralButton("I'm not new", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        }).show();
-
+                databaseHelper.addUser(MainActivity.this,newUser);
 
                 Log.d(TAG, "Database helper has launched");
 

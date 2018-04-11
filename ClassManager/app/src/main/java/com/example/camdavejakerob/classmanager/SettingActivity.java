@@ -65,19 +65,9 @@ public class SettingActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG)
                         .show();
 
-
-                //This is where we enter the user into the database
-                //some checks will have to be done as well as prompting the user for the first time if they are an instructor or not
-                //don't know how we do that last part yet
-                ////////// every time we get here it prompts the user to choose student or teacher im done fighting with this for now so we will call it a feature /////////
-                //DatabaseHelper databaseHelper = new DatabaseHelper();
-                //FirebaseUser newUser = FirebaseAuth.getInstance().getCurrentUser();
-                //databaseHelper.writeNewUser( newUser.getDisplayName(), newUser.getUid() );
-                //Intent promptUser = new Intent(SettingActivity.this,InstructorPromptActivity.class);
-                //startActivity(promptUser);
-
-                // Close activity, isneatd of close activity, make go back
-                finish();
+                final FirebaseUser newUser = FirebaseAuth.getInstance().getCurrentUser();
+                final DatabaseHelper databaseHelper = new DatabaseHelper();
+                databaseHelper.addUser(SettingActivity.this,newUser);
 
             } else {
                 Toast.makeText(this,
