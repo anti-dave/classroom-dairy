@@ -1,18 +1,16 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
+import android.widget.TimePicker;
 
 /**
  * Created by Davey on 3/20/2018.
@@ -25,7 +23,8 @@ public class ClassCreatorActivity extends AppCompatActivity {
     //query firebase DB for getComponentName()
     DatabaseHelper database = new DatabaseHelper();
     private String CIDS = "cids", UIDS = "uids";
-    final ArrayList<String> weekdays = new ArrayList<String>();
+    String weekdays = "";
+    private static final String TAG = "ClassCreatorActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,61 +34,107 @@ public class ClassCreatorActivity extends AppCompatActivity {
         FloatingActionButton fab =
                 (FloatingActionButton) findViewById(R.id.class_add_fab);
 
-        final Button monday = (Button) findViewById(R.id.monday_button);
-        final Button tuesday = (Button) findViewById(R.id.tuesday_button);;
-        final Button wednesday = (Button) findViewById(R.id.wednesday_button);;
-        final Button thursday = (Button) findViewById(R.id.thursday_button);;
-        final Button friday = (Button) findViewById(R.id.friday_button);;
+        final CheckBox monday = findViewById(R.id.monday_button);
+        final CheckBox tuesday = findViewById(R.id.tuesday_button);;
+        final CheckBox wednesday = findViewById(R.id.wednesday_button);;
+        final CheckBox thursday = findViewById(R.id.thursday_button);;
+        final CheckBox friday = findViewById(R.id.friday_button);;
+
+        final EditText classIdEditText = (EditText) findViewById(R.id.class_id_form);
+        final EditText nameEditText = (EditText) findViewById(R.id.class_name_form);
+        final EditText roomEditText = (EditText) findViewById(R.id.class_room_form);
+        
+        final TimePicker startTimepicker = (TimePicker) findViewById(R.id.startTimePicker);
+        final TimePicker endTimepicker = (TimePicker) findViewById(R.id.endTimePicker);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //check if valid
-               /* if(){
 
-                }else {
+                String classId = classIdEditText.getText().toString();
+                String name = nameEditText.getText().toString();
+                String room = roomEditText.getText().toString();
 
-                } */
-                if(monday.isPressed()) {
-                    weekdays.add("Monday");
-                }
-                else if(tuesday.isPressed()) {
-                    weekdays.add("Tuesday");
-                }
-                else if(wednesday.isPressed()) {
-                    weekdays.add("Wednesday");
-                }
-                else if(thursday.isPressed()) {
-                    weekdays.add("Thursday");
-                }
-                else if(friday.isPressed()) {
-                    weekdays.add("Friday");
-                }
-                else if(weekdays.isEmpty()) {
-                    weekdays.add("TBA");
-                }
+                //check if inputs are valid
+                if( paramsAreValid(classId, name, room) ){
 
-                EditText classId = (EditText) findViewById(R.id.class_id_form);
-                EditText name = (EditText) findViewById(R.id.class_name_form);
-                EditText startTime = (EditText) findViewById(R.id.class_startTime_form);
-                EditText endTime = (EditText) findViewById(R.id.class_endTime_form);
-                EditText room = (EditText) findViewById(R.id.class_room_form);
+                    if(monday.isChecked() ) {
+                        weekdays += ("M ");
+                        Log.d(TAG, "Monday");
+                    }
+                    if(tuesday.isChecked()) {
+                        weekdays += ("Tu ");
+                        Log.d(TAG, "Tuesday");
+                    }
+                    if(wednesday.isChecked()) {
+                        weekdays += ("W ");
+                        Log.d(TAG, "Wednesday");
+                    }
+                    if(thursday.isChecked()) {
+                        weekdays += ("T ");
+                        Log.d(TAG, "Thursday");
+                    }
+                    if(friday.isChecked()) {
+                        weekdays += ("F ");
+                        Log.d(TAG, "Friday");
+                    }
+                    if(weekdays.isEmpty()) {
+                        weekdays += ("TBA");
+                        Log.d(TAG, "TBA" );
+                    }
 
-                database.writeNewClass(
-                        classId.getText().toString(),
-                        name.getText().toString(),
-                        weekdays,
-                        startTime.getText().toString(),
-                        endTime.getText().toString(),
-                        room.getText().toString() );
+                    String startTime;
+                    String endTime;
 
-                Toast.makeText(ClassCreatorActivity.this,
-                        name.getText().toString() + " Created",
-                        Toast.LENGTH_LONG)
-                        .show();
+                    int startHour = startTimepicker.getCurrentHour();
+                    int startMinute = startTimepicker.getCurrentMinute();
 
-                finish();
+                    int endHour = endTimepicker.getCurrentHour();
+                    int endMinute = endTimepicker.getCurrentMinute();
+
+                    startTime =
+                            String.valueOf(startHour)
+                            + ":"
+                            + String.valueOf(startMinute) ;
+
+                    endTime =
+                            String.valueOf(endHour)
+                                    + ":"
+                                    + String.valueOf(endMinute) ;
+
+                    database.writeNewClass(
+                            classId,
+                            name,
+                            weekdays,
+                            startTime,
+                            endTime,
+                            room);
+
+                    Toast.makeText(ClassCreatorActivity.this,
+                            name + " Created",
+                            Toast.LENGTH_LONG)
+                            .show();
+
+                    finish();
+                } else {
+                    Toast.makeText(ClassCreatorActivity.this,
+                            "Incomplete Form",
+                            Toast.LENGTH_LONG)
+                            .show();
+                }
             }
         });
+    }
+
+    private Boolean paramsAreValid(String classId,
+                                   String name,
+                                   String room) {
+
+        if( !classId.isEmpty()
+                && !name.isEmpty()
+                && !room.isEmpty() ){
+            return true;
+        } else { return false; }
+
     }
 }

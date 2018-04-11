@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -47,10 +48,20 @@
             android:label="@string/title_activity_creator" />
 
         <activity
+            android:name=".DiscussionBoardActivity"
+            android:label="@string/title_discussion_board" />
+
+        <activity
             android:name=".ClassActivity"
             android:label="My Classes"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".CalendarActivity"
+            android:label="Class Calendar"
+            android:parentActivityName=".MainActivity">
         </activity>
 
         <activity
@@ -79,11 +90,6 @@
         <activity
             android:name=".RosterActivity"
             android:label="Class Roster">
-        </activity>
-
-        <activity
-            android:name=".InstructorPromptActivity"
-            android:theme="@style/AppTheme.PopupTheme">
         </activity>
 
         <activity
@@ -116,6 +122,17 @@
             android:name=".NewAssignmentActivity"
             android:label="Create New Assignment"
             android:parentActivityName=".AssignmentActivity">
+        </activity>
+
+        <activity
+            android:name=".SubmitAssignmentActivity"
+            android:label="Select File"
+            android:parentActivityName=".AssignmentActivity">
+        </activity>
+
+        <activity
+            android:name=".GradeAssignmentActivity"
+            android:label="Grade Assignments">
         </activity>
 
     </application>

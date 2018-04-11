@@ -56,16 +56,15 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mCurrentChatUri = intent.getData();
         final String chatId = intent.getStringExtra("chatId");
-        final String endUser = intent.getStringExtra("recipientUid");
+        final String endUserId = intent.getStringExtra("recipientUid");
+        final String endUserName = intent.getStringExtra("recipientName");
 
-        Random rand = new Random();
-        String key;
+        Integer rand = new Random().nextInt();
+        final String key = rand.toString();
 
         DatabaseReference db = FirebaseDatabase
                 .getInstance()
                 .getReference();
-
-        Log.d("hello", endUser);
 
         //Database references for user and recipient
         DatabaseReference user =
@@ -76,37 +75,33 @@ public class ChatActivity extends AppCompatActivity {
         DatabaseReference recipient =
                 db
                         .child(UIDS)
-                        .child(endUser);
+                        .child(endUserId);
 
         //may have to add a mechanism that checks for class discussion boards
         //Check if the recipients name is in the users message queue
         //if(user.child(Messages).child( recipient.child("name").toString() ) == null ) {
         if( chatId == null ) {
 
-            key = rand.toString();
+            //key = rand.toString();
 
             //Push key into message queue of recipients chat
             user
                     .child(Messages)
-                    .child( recipient.child("name").toString() )
-                    .push()
+                    .child( endUserId )
                     .setValue(key);
 
             //Push key into message queue of users chat in recipients chat folder
             recipient
                     .child(Messages)
-                    .child( user.child("name").toString() )
-                    .push()
+                    .child(
+                            FirebaseAuth.getInstance()
+                                    .getCurrentUser().getUid())
                     .setValue(key);
 
             displayChatMessages(key);
         } else {
             //Retrieve key from message queue with recipients name on it
-            /*key = user
-                    .child(Messages)
-                    .child( recipient.child("name").toString() )
-                    .toString();*/
-            displayChatMessages(chatId);
+            displayChatMessages(key);
         }
 
         FloatingActionButton fab =
@@ -121,7 +116,7 @@ public class ChatActivity extends AppCompatActivity {
                 // of ChatMessage to the Firebase database
                 FirebaseDatabase.getInstance()
                         .getReference(MessageRoom)
-                        .child(chatId)
+                        .child(key)
                         .push()
                         .setValue(new ChatMessage(input.getText().toString(),
                                 FirebaseAuth.getInstance()

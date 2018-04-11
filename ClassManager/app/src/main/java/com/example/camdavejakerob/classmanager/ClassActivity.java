@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public class ClassActivity extends AppCompatActivity {
 
     private ListView mListView;
     private FirebaseUser curUser;
+    private String TAG = "ClassActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class ClassActivity extends AppCompatActivity {
         // in the future we will use FirebaseAuth to get current users id and then call method using that
         mListView = (ListView) findViewById(R.id.classes);
         DatabaseHelper database = new DatabaseHelper();
+
         database.updateListViewUserClasses(this, mListView, curUser.getUid());
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -49,6 +53,7 @@ public class ClassActivity extends AppCompatActivity {
 
                 // using the position to get the name of the class clicked on
                 Class currentClass = (Class)adapterView.getItemAtPosition(position);
+
                 // then pass the class name to the class activity
                 classIntent.putExtra("CURRENT_CLASS",(Parcelable) currentClass);
 
@@ -66,12 +71,18 @@ public class ClassActivity extends AppCompatActivity {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //if student do student
-        getMenuInflater().inflate(R.menu.teacher_class_dropdown, menu);
-        //if teacher do teacher
-        getMenuInflater().inflate(R.menu.student_class_dropdown, menu);
+
+        final User user = ((ClassManagerApp) ClassActivity.this.getApplication()).getCurUser();
+
+        //if instructor do instructor
+        if( user.isInstructor() ) {
+            getMenuInflater().inflate(R.menu.teacher_class_dropdown, menu);
+        } else {
+            //if teacher do teacher
+            getMenuInflater().inflate(R.menu.student_class_dropdown, menu);
+        }
         return true;
-    }//onCreateOptionsMenu
+    }
 
     /**
      * Logic for when menu is pressed.
@@ -83,6 +94,7 @@ public class ClassActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
+
             case android.R.id.home:
                 Intent upIntent = NavUtils.getParentActivityIntent(this);
                 if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
@@ -99,7 +111,8 @@ public class ClassActivity extends AppCompatActivity {
                     NavUtils.navigateUpTo(this, upIntent);
                 }
                 return true;
-            case R.id.action_add_class:
+
+            case R.id.action_remove_class:
                 //add class action
                 Toast.makeText(ClassActivity.this,
                         "Add Class",
@@ -107,6 +120,18 @@ public class ClassActivity extends AppCompatActivity {
                         .show();
                 Intent addClassIntent = new Intent(ClassActivity.this, ClassAddListActivity.class);
                 startActivity(addClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
+                return true;
+
+            case R.id.action_add_class:
+                //add class action
+                Toast.makeText(ClassActivity.this,
+                        "Add Class",
+                        Toast.LENGTH_LONG)
+                        .show();
+                Intent removeClassIntent = new Intent(ClassActivity.this, ClassAddListActivity.class);
+                startActivity(removeClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
+                return true;
+
             case R.id.action_create_class:
                 //add class action
                 Toast.makeText(ClassActivity.this,
@@ -115,33 +140,10 @@ public class ClassActivity extends AppCompatActivity {
                         .show();
                 Intent createClassIntent = new Intent(ClassActivity.this, ClassCreatorActivity.class);
                 startActivity(createClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
+                return true;
+
         }
         return super.onOptionsItemSelected(item);
     }
 
 }
-
-
-
-/*
-addClass(){
-    if student(){
-        addClassCourse()
-    } //else, is teacher
-    else {
-        createClass();
-    }
-}
-
-student(){
-    return;
-}
-
-addClassCourse() {
-
-}
-
-createClass(){
-
-}
-*/

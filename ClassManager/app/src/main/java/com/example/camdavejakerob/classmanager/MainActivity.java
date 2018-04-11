@@ -1,5 +1,7 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.LightingColorFilter;
 import android.support.annotation.NonNull;
@@ -36,12 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Don't need to build this if they're only using emial.
-        // Build an arraylist of providers if we decide
-        // to use more options like facebook and google
         //new AuthUI.IdpConfig.EmailBuilder().build();
-
-        //The Auth is using Google I think
-        //But
         /*******************Authorization, Registration Check**************************/
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
             // Start sign in/sign up activity
@@ -50,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                             .createSignInIntentBuilder()
                             .build(),
                     SIGN_IN_REQUEST_CODE);
+
             //Alternative
             //Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
             //startActivity(loginIntent);
@@ -66,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // update the global user variable
-        DatabaseHelper helper = new DatabaseHelper();
-        helper.getCurrentUser(MainActivity.this);
+        updateCurUserData();
 
         final LinearLayout myClassesButton = findViewById(R.id.my_classes);
 
@@ -81,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         myClassesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                updateCurUserData();
                 Intent classesIntent = new Intent(MainActivity.this, ClassActivity.class);
                 startActivity(classesIntent);
             }
@@ -89,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout notificationsButton = findViewById(R.id.notifications);
         notificationsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                updateCurUserData();
                 Intent notificationsIntent = new Intent(MainActivity.this, InfoActivity.class);
                 startActivity(notificationsIntent);
             }
@@ -97,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout calendarButton = findViewById(R.id.calendar);
         calendarButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent calendarIntent = new Intent(MainActivity.this, InfoActivity.class);
+                updateCurUserData();
+                Intent calendarIntent = new Intent(MainActivity.this, CalendarActivity.class);
                 startActivity(calendarIntent);
             }
         });
@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout messagesButton = findViewById(R.id.messages);
         messagesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                updateCurUserData();
                 Intent messagesIntent = new Intent(MainActivity.this, MessageListActivity.class);
                 startActivity(messagesIntent);
             }
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout settingsButton = findViewById(R.id.settings);
         settingsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                updateCurUserData();
                 Intent settingsIntent = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(settingsIntent);
             }
@@ -122,15 +124,18 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout infoButton = findViewById(R.id.inforamtion);
         infoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                updateCurUserData();
                 Intent infoIntent = new Intent(MainActivity.this, InfoActivity.class);
                 startActivity(infoIntent);
             }
         });
-        // we might want to load all of there info on to a local data base so it can run faster
-//        Intent classesIntent = new Intent(MainActivity.this, ClassActivity.class);
-//        startActivity(classesIntent);
 
     } //OnCreate
+
+    private void updateCurUserData(){
+        DatabaseHelper helper = new DatabaseHelper();
+        helper.getCurrentUser(MainActivity.this);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
@@ -144,15 +149,12 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG)
                         .show();
 
-                //This is where we enter the user into the database
-                //some checks will have to be done as well as prompting the user for the first time if they are an instructor or not
-                //don't know how we do that last part yet
-                ////////// every time we get here it prompts the user to choose student or teacher im done fighting with this for now so we will call it a feature /////////
-                DatabaseHelper databaseHelper = new DatabaseHelper();
-                FirebaseUser newUser = FirebaseAuth.getInstance().getCurrentUser();
-                databaseHelper.writeNewUser( newUser.getDisplayName(), newUser.getUid() );
-                Intent promptUser = new Intent(MainActivity.this,InstructorPromptActivity.class);
-                startActivity(promptUser);
+                // attempt to add the user to the database if they are a new user
+                final FirebaseUser newUser = FirebaseAuth.getInstance().getCurrentUser();
+                final DatabaseHelper databaseHelper = new DatabaseHelper();
+                databaseHelper.addUser(MainActivity.this,newUser);
+
+                Log.d(TAG, "Database helper has launched");
 
             } else {
                 Toast.makeText(this,

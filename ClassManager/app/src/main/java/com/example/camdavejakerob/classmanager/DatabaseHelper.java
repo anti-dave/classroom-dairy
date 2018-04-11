@@ -1,13 +1,14 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
+import android.content.DialogInterface;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -16,8 +17,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
-
-import static android.support.v4.content.ContextCompat.startForegroundService;
 
 /**
  * Created by Rob on 3/13/2018.
@@ -28,14 +27,13 @@ public class DatabaseHelper {
     //Strings used frequently for accessing data in Firebase
     private String CIDS = "cids", UIDS = "uids";
     private String ROSTER = "roster", DAYS = "daysOfClass", TIME_END = "endTime", TIME_START = "startTime";
-    private String SYLLABUS = "syllabus", CLASS_NAME = "name", ROOM = "room";
-    private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor";
-    private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades";
+    private String SYLLABUS = "syllabus", MESSAGES = "Messages", CLASS_NAME = "name", ROOM = "room";
+    private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor", INSTRUCTOR_PROMPTED = "Instructor_Prompt_Bool";
+    private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades", SUBMISSIONS = "submissions";
     private String TAG = "DATABASE_HELPER";
 
     private FirebaseDatabase mDatabase;
     private FirebaseStorage mStorage;
-
 
     DatabaseHelper(){
         mDatabase = FirebaseDatabase.getInstance();
@@ -48,7 +46,6 @@ public class DatabaseHelper {
      *                                  Accessors
      *
      ****************************************************************************************************************/
-
 
     public void getCurrentUser(final Context context){
         String userId = FirebaseAuth.getInstance().getUid();
@@ -76,19 +73,32 @@ public class DatabaseHelper {
         });
     }
 
-    /**
-     * this does nothing yet :(
-     *
-     * @param context
-     * @param cid
-     */
-    public void getClassSyllabus(final Context context, final String cid){
-        mDatabase.getReference(CIDS).child(cid).child(SYLLABUS).addListenerForSingleValueEvent(new ValueEventListener() {
+    public void getAllMessageRecipients(final Context context, final ListView listView, final String uid){
+
+        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String url = dataSnapshot.getValue().toString();
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startForegroundService(context,browserIntent);
+
+                MessageListAdapter chatAdapter;
+                final ArrayList<User> users = new ArrayList<User>();
+
+                for(DataSnapshot chatData: dataSnapshot.child(UIDS)
+                        .child(uid).child(MESSAGES).getChildren()){
+
+                        String name, recipientUid;
+
+                        recipientUid = chatData.getKey().toString();
+                        name = dataSnapshot
+                                .child(UIDS)
+                                .child(recipientUid)
+                                .child(USER_NAME)
+                                .getValue()
+                                .toString();
+
+                        users.add(new User(uid, name, false));
+                }
+                chatAdapter = new MessageListAdapter(context,users);
+                listView.setAdapter(chatAdapter);
             }
 
             @Override
@@ -98,22 +108,111 @@ public class DatabaseHelper {
         });
     }
 
-    /**
-     * we might not actually need this
-     * @param path a string of the exact path to the desired information in the database.
-     *             example: to get the user u1's first name the string needs to be "uids/u1/first"
-     * @param textView a TextView object you wish to update
-     */
-    public void updateTextView(String path, final TextView textView){
-        mDatabase.getReference(path).addListenerForSingleValueEvent(new ValueEventListener() {
+    public void getChatKeyFromUid(final Context context, final String recipientUid){
+        String userId = FirebaseAuth.getInstance().getUid();
+        if(userId == null){ return; }
+
+        //reference to all user id's
+        mDatabase.getReference(UIDS)
+                .child(userId)
+                .child(MESSAGES)
+                .child(recipientUid)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                textView.setText(dataSnapshot.getValue().toString());
+                String uid, name, chatId;
+
+                uid = FirebaseAuth.getInstance().getUid();
+                name = dataSnapshot.child(UIDS).getValue().toString();
+                chatId = dataSnapshot.child(UIDS).getValue().toString();
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+    }
+
+    public void getAllAssignmentSubmissions(final String cid, final String assignmentName, final ListView listView, final Context context){
+        mDatabase.getReference().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                GradingHelperAdapter gradeAdapter;
+                ArrayList<GradingHelper> submissions = new ArrayList<GradingHelper>();
+
+                for(DataSnapshot rosterSnapshot: dataSnapshot.child(CIDS)
+                        .child(cid).child(ROSTER).getChildren()){
+
+                    // the instructor is given false when the course is created
+                    // make sure we do not display the instructor in the list
+                    if((Boolean) rosterSnapshot.getValue()) {
+                        //get the userId
+                        String grade, path;
+                        Boolean submitted;
+
+                        String uid = rosterSnapshot.getKey();               // get user id
+                        String name = dataSnapshot.child(UIDS).child(uid)
+                                .child(USER_NAME).getValue().toString();    // get users name
+
+
+                        DataSnapshot assignmentSnapshot = dataSnapshot.child(CIDS)
+                                .child(cid).child(ASSIGNMENTS).child(assignmentName);
+
+                        //see if they have submitted for the chosen homework
+                        if(assignmentSnapshot.child(SUBMISSIONS).child(uid).exists()) {
+                            //IF YES
+                            // set the text view giving the affirmative
+                            submitted = true;
+                            // set the invisible textview with the download path
+                            path = assignmentSnapshot.child(SUBMISSIONS).child(uid).getValue().toString();
+
+                            // check for grade
+                            if(assignmentSnapshot.child(GRADES).child(uid).exists()) {
+                                //IF YES
+                                // show grade
+                                grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+                            } else {
+                                //IF NO
+                                // say its not graded yet
+                                grade = "Not yet graded.";
+                            }
+                        } else {
+                            //IF NO
+                            // set the text view giving the negative
+                            submitted = false;
+                            // set the invisible textview with an empty string
+                            path = "";
+
+                            //see if they have submitted for the chosen assignment
+                            if(assignmentSnapshot.child(GRADES).child(uid).exists()) {
+                                //IF YES
+                                // show grade
+                                grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+                            } else {
+                                //IF NO
+                                // say its not graded yet
+                                grade = "Not yet graded.";
+                            }
+                        }
+
+                        submissions.add(new GradingHelper(name,uid,path,grade,submitted));
+
+                    }
+
+                }
+
+                gradeAdapter = new GradingHelperAdapter(context,submissions);
+                listView.setAdapter(gradeAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG,"onCancelled: getAllAssignmentSubmissions " + databaseError.toString());
             }
         });
     }
@@ -130,12 +229,14 @@ public class DatabaseHelper {
                 for(DataSnapshot rosterData: dataSnapshot.child(CIDS)
                         .child(cid).child(ROSTER).getChildren()){
 
-                    String name, uid;
+                    if((Boolean) rosterData.getValue()) {
+                        String name, uid;
 
-                    uid = rosterData.getKey().toString();
-                    name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME).getValue().toString();
+                        uid = rosterData.getKey().toString();
+                        name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME).getValue().toString();
 
-                    users.add(new User("",name,false));
+                        users.add(new User(uid, name, false));
+                    }
                 }
                 rosterAdapter = new RosterAdapter(context,users);
                 listView.setAdapter(rosterAdapter);
@@ -146,7 +247,6 @@ public class DatabaseHelper {
                 Log.d(TAG, "onCancelled: " + databaseError.toString());
             }
         });
-
     }
 
     /**
@@ -158,7 +258,7 @@ public class DatabaseHelper {
      */
     public void getUserGrades(final Context context, final ListView listView, final String uid, final String cid){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -199,7 +299,7 @@ public class DatabaseHelper {
      */
     public void getUserAssignment(final Context context, final ListView listView, final String uid, final String cid){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -243,13 +343,14 @@ public class DatabaseHelper {
 
                 ClassAdapter classAdapter;
                 final ArrayList<Class> classes = new ArrayList<Class>();
-                ArrayList<String> days = new ArrayList<String>();
 
                 for(DataSnapshot classSnapshot: dataSnapshot.getChildren()){
 
-                    String name,startTime,endTime,room,cid;
+                    String name,days,startTime,endTime,room,cid;
+
                     cid = classSnapshot.getKey().toString();
                     name=classSnapshot.child(CLASS_NAME).getValue().toString();
+                    days=classSnapshot.child(DAYS).getValue().toString();
                     startTime=classSnapshot.child(TIME_START).getValue().toString();
                     endTime=classSnapshot.child(TIME_END).getValue().toString();
                     room=classSnapshot.child(ROOM).getValue().toString();
@@ -275,13 +376,12 @@ public class DatabaseHelper {
      * @param uid
      */
     public void updateListViewUserClasses(final Context context, final ListView listView, final String uid){
-        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.getReference().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 ClassAdapter classAdapter;
                 final ArrayList<Class> classes = new ArrayList<Class>();
-                ArrayList<String> days = new ArrayList<String>();
 
                 for(DataSnapshot classSnapshot: dataSnapshot.child(UIDS).child(uid).child(CLASSES).getChildren()){
 
@@ -289,8 +389,9 @@ public class DatabaseHelper {
 
                     DataSnapshot classData = dataSnapshot.child(CIDS).child(cid);
 
-                    String name,startTime,endTime,room;
+                    String name,days,startTime,endTime,room;
                     name=classData.child(CLASS_NAME).getValue().toString();
+                    days=classData.child(DAYS).getValue().toString();
                     startTime=classData.child(TIME_START).getValue().toString();
                     endTime=classData.child(TIME_END).getValue().toString();
                     room=classData.child(ROOM).getValue().toString();
@@ -313,6 +414,7 @@ public class DatabaseHelper {
      *
      ****************************************************************************************************************/
 
+
     /**
      * writes a class to the database with its name and due date
      *
@@ -330,11 +432,11 @@ public class DatabaseHelper {
      * @param cid String of the class id, assumed to be valid
      * @param uid String of the students id, assumed to be valid
      * @param grade String of the grade which the student received for the assignment
-     * @param assignment String of the assignments name
+     * @param assignmentName String of the assignments name
      */
-    public void writeAssignmentGrade(String cid, String uid, String grade, String assignment){
+    public void writeAssignmentGrade(String cid, String uid, String grade, String assignmentName){
         DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
-        classRef.child(ASSIGNMENTS).child(assignment).child(GRADES).child(uid).setValue(grade);
+        classRef.child(ASSIGNMENTS).child(assignmentName).child(GRADES).child(uid).setValue(grade);
     }
 
     /**
@@ -344,7 +446,7 @@ public class DatabaseHelper {
      *  This method adds the user id to the roster list and the class id to the classes list of the user
      *
      */
-    public void enrollStudentToClass(final String cid, final String uid){
+    public void enrollUserToClass(final String cid, final String uid){
         DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
         DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
         classRef.child(ROSTER).child(uid).setValue(true);
@@ -362,15 +464,18 @@ public class DatabaseHelper {
      *
      * This method creates a new class object and then adds it to the Firebase database
      */
-    public void writeNewClass( final String classId, final String name, final ArrayList<String> daysOfClass,
+    public void writeNewClass( final String classId, final String name, final String daysOfClass,
                                final String startTime, final String endTime, final String room ){
+
+        String curUserId = FirebaseAuth.getInstance().getUid();
 
         mDatabase.getReference(CIDS).child(classId).child(CLASS_NAME).setValue(name);
         mDatabase.getReference(CIDS).child(classId).child(DAYS).setValue(daysOfClass);
         mDatabase.getReference(CIDS).child(classId).child(TIME_START).setValue(startTime);
         mDatabase.getReference(CIDS).child(classId).child(TIME_END).setValue(endTime);
         mDatabase.getReference(CIDS).child(classId).child(ROOM).setValue(room);
-
+        mDatabase.getReference(CIDS).child(classId).child(ROSTER).child(curUserId).setValue(false);
+        mDatabase.getReference(UIDS).child(curUserId).child(CLASSES).child(classId).setValue(true);
     }
 
     /**
@@ -382,17 +487,16 @@ public class DatabaseHelper {
      * This method creates a new user object and then adds it to the Firebase database with a new uid(user id)
      *   then increments the uid in the database for future users.
      */
-    public void writeNewUser( final String name, final String userId ) {
+    public void writeNewUser(final String name, final String userId, final Boolean isInstructor) {
 
         mDatabase.getReference(UIDS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.child(userId).getValue() == null) {
-                    mDatabase.getReference(UIDS).child(userId).child(USER_NAME).setValue(name);
-
-                    //a method after this one prompts user and updates the instructor value
-                    mDatabase.getReference(UIDS).child(userId).child(INSTRUCTOR).setValue(false);
+                    DatabaseReference newUser = mDatabase.getReference(UIDS).child(userId);
+                    newUser.child(USER_NAME).setValue(name);
+                    newUser.child(INSTRUCTOR).setValue(isInstructor);
                 }
 
             }
@@ -404,7 +508,52 @@ public class DatabaseHelper {
         });
     }
 
+    public void addUser(final Context context, final FirebaseUser user){
+
+        mDatabase.getReference(UIDS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(!dataSnapshot.child(user.getUid()).exists()){
+
+                    AlertDialog.Builder promptUser = new AlertDialog.Builder(context);
+                    promptUser.setTitle("First Time Login")
+                            .setMessage("Are you an instructor or a student?")
+                            .setPositiveButton("Instructor", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    writeNewUser(user.getDisplayName(),
+                                            user.getUid(),true);
+                                }
+                            })
+                            .setNegativeButton("Student", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    writeNewUser(user.getDisplayName(),
+                                            user.getUid(),false);
+                                }
+                            }).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+
+    }
+
     public void updateUserToInstructor(String uid, boolean bool){
         mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).setValue(bool);
+        mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).child(INSTRUCTOR_PROMPTED).setValue(true);
+        Log.d(TAG, "Instructor set ");
+    }
+
+
+    public void writeAssignmentSubmission(String uid, String cid, String assignmentName, String downloadUrl){
+        mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS).child(assignmentName)
+                .child(SUBMISSIONS).child(uid).setValue(downloadUrl);
     }
 }

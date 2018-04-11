@@ -34,6 +34,9 @@ public class ClassInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_info);
 
+        // get current user
+        final User user = ((ClassManagerApp) ClassInfoActivity.this.getApplication()).getCurUser();
+
         // assigns the currentClass
         Intent i = getIntent();
 
@@ -45,8 +48,6 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout syllabusButton = findViewById(R.id.syllabus);
         syllabusButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                User user = ((ClassManagerApp) ClassInfoActivity.this.getApplication()).getCurUser();
 
                 // IF INSTRUCTOR
                 if(user.isInstructor()) {
@@ -88,10 +89,13 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout discussionBoardButton = findViewById(R.id.discussion_board);
         discussionBoardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent discussionBoardIntent = new Intent(ClassInfoActivity.this, MessageListActivity.class);
+                Intent discussionBoardIntent = new Intent(ClassInfoActivity.this, DiscussionBoardActivity.class);
+
+                Log.d(TAG,  mCurrentClass.getCourseID());
+                Log.d(TAG,  mCurrentClass.getCourseID().toString());
 
                 // Set the URI on the data field of the intent
-                discussionBoardIntent.putExtra("cid", CLASS_ID);
+                discussionBoardIntent.putExtra("cid",  mCurrentClass.getCourseID().toString() );
                 startActivity(discussionBoardIntent);
             }
         });
@@ -108,9 +112,16 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout gradesButton = findViewById(R.id.grades);
         gradesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent gradesIntent = new Intent(ClassInfoActivity.this, GradesActivity.class);
-                gradesIntent.putExtra(CLASS_ID, mCurrentClass.getCourseID());
-                startActivity(gradesIntent);
+                //if the user is an instructor go to assignments where they can grade ELSE go to the grades to see
+                if(user.isInstructor()){
+                    Intent assignmentsIntent = new Intent(ClassInfoActivity.this, AssignmentActivity.class);
+                    assignmentsIntent.putExtra("CURRENT_CLASS", mCurrentClass);
+                    startActivity(assignmentsIntent);
+                } else {
+                    Intent gradesIntent = new Intent(ClassInfoActivity.this, GradesActivity.class);
+                    gradesIntent.putExtra(CLASS_ID, mCurrentClass.getCourseID());
+                    startActivity(gradesIntent);
+                }
             }
         });
 
@@ -127,9 +138,9 @@ public class ClassInfoActivity extends AppCompatActivity {
 
     private void getSyllabus(){
 
-        StorageReference ref = FirebaseStorage.getInstance().getReference();
+            StorageReference ref = FirebaseStorage.getInstance().getReference();
 
-        ref.child(mCurrentClass.getCourseID()).child(mCurrentClass.getName() + "syllabus.pdf").getDownloadUrl()
+        ref.child(mCurrentClass.getCourseID()).child(mCurrentClass.getName() + " syllabus.pdf").getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
