@@ -42,27 +42,33 @@
         <!-- Input for days -->
         <LinearLayout
             style="@style/FormLabelStyle"
-            android:orientation="horizontal">
+            android:orientation="vertical">
+
             <!-- User enters days of class here -->
-            <Button
+            <CheckBox
                 android:id="@+id/monday_button"
-                style="@style/SmallButtonStyle" />
+                style="@style/SmallButtonStyle"
+                android:text="Monday" />
 
-            <Button
+            <CheckBox
                 android:id="@+id/tuesday_button"
-                style="@style/SmallButtonStyle" />
+                style="@style/SmallButtonStyle"
+                android:text="Tuesday" />
 
-            <Button
+            <CheckBox
                 android:id="@+id/wednesday_button"
-                style="@style/SmallButtonStyle" />
+                style="@style/SmallButtonStyle"
+                android:text="Wednesday" />
 
-            <Button
+            <CheckBox
                 android:id="@+id/thursday_button"
-                style="@style/SmallButtonStyle" />
+                style="@style/SmallButtonStyle"
+                android:text="Thursday" />
 
-            <Button
+            <CheckBox
                 android:id="@+id/friday_button"
-                style="@style/SmallButtonStyle" />
+                style="@style/SmallButtonStyle"
+                android:text="Friday" />
 
         </LinearLayout>
 
@@ -71,23 +77,25 @@
             style="@style/FormLabelStyle"
             android:text="@string/class_startTime_prompt" />
 
-            <!-- User enters startTime of class here -->
-            <EditText
-                android:id="@+id/class_startTime_form"
-                style="@style/FormEditTextShortStyle"
-                android:hint="@string/class_startTime_hint" />
+        <!-- User enters startTime of class here -->
+        <TimePicker
+            android:id="@+id/startTimePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner" />
 
         <!-- Class endTime label -->
+
         <TextView
             style="@style/FormLabelStyle"
             android:text="@string/class_endTime_prompt" />
 
-            <!-- User enters endTime of class here -->
-            <EditText
-                android:id="@+id/class_endTime_form"
-                style="@style/FormEditTextShortStyle"
-                android:hint="@string/class_endTime_hint" />
-
+        <!-- User enters endTime of class here -->
+        <TimePicker
+            android:id="@+id/endTimePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"/>
 
         <!-- Class room label -->
         <TextView

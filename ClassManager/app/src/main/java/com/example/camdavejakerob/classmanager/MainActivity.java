@@ -22,7 +22,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "This Activity";
+    private static final String TAG = "MainActivity";
 
     private ListView listView;
 
@@ -36,12 +36,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Don't need to build this if they're only using emial.
-        // Build an arraylist of providers if we decide
-        // to use more options like facebook and google
         //new AuthUI.IdpConfig.EmailBuilder().build();
-
-        //The Auth is using Google I think
-        //But
         /*******************Authorization, Registration Check**************************/
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
             // Start sign in/sign up activity
@@ -50,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
                             .createSignInIntentBuilder()
                             .build(),
                     SIGN_IN_REQUEST_CODE);
+
             //Alternative
             //Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
             //startActivity(loginIntent);
@@ -153,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
                 databaseHelper.writeNewUser( newUser.getDisplayName(), newUser.getUid() );
                 Intent promptUser = new Intent(MainActivity.this,InstructorPromptActivity.class);
                 startActivity(promptUser);
+
+                Log.d(TAG, "Database helper has launched");
 
             } else {
                 Toast.makeText(this,

@@ -1,39 +1,22 @@
 package com.example.camdavejakerob.classmanager;
 
-import android.app.LoaderManager;
-import android.content.ContentUris;
 import android.content.Context;
-import android.content.Intent;
-import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.text.format.DateFormat;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.example.camdavejakerob.classmanager.
 
 import com.firebase.ui.database.FirebaseListAdapter;
-import com.firebase.ui.database.FirebaseListOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Davey on 3/20/2018.
@@ -55,6 +38,7 @@ public class ClassAddListActivity  extends AppCompatActivity {
 
         ListView availableClasses = (ListView)findViewById(R.id.classes_list);
         Query ref = FirebaseDatabase.getInstance().getReference(courseID);
+
         // Find a reference to the {@link ListView} in the layout
         final ListView itemListView = (ListView) findViewById(R.id.classes_list);
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
@@ -97,11 +81,11 @@ public class ClassAddListActivity  extends AppCompatActivity {
                         .child(FirebaseAuth.getInstance().getUid())
                         .child("intructor")
                         .equals(true)) {
-                    database.enrollStudentToClass(
+                    database.enrollUserToClass(
                             classId.getText().toString(),
                             FirebaseAuth.getInstance().getUid());
                 } else {
-                    database.enrollStudentToClass(
+                    database.enrollUserToClass(
                             classId.getText().toString(),
                             FirebaseAuth.getInstance().getUid());
 
