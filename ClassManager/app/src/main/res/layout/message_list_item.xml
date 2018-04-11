@@ -17,6 +17,13 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/message_user"
         android:layout_alignParentEnd="true"
+        android:id="@+id/uid" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/message_user"
+        android:layout_alignParentEnd="true"
         android:id="@+id/last_message" />
 
     <TextView

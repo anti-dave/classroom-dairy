@@ -30,6 +30,9 @@ public class RosterAdapter extends ArrayAdapter<User> {
                     R.layout.roster_item,parent,false);
         }
 
+        TextView uid = (TextView) view.findViewById(R.id.uid);
+        uid.setText(user.getUserId());
+
         TextView name = (TextView) view.findViewById(R.id.roster_item_name);
         name.setText(user.getName());
 
