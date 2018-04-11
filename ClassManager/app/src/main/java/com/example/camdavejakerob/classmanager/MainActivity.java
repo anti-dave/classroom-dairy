@@ -129,9 +129,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(infoIntent);
             }
         });
-        // we might want to load all of there info on to a local data base so it can run faster
-//        Intent classesIntent = new Intent(MainActivity.this, ClassActivity.class);
-//        startActivity(classesIntent);
 
     } //OnCreate
 
@@ -152,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG)
                         .show();
 
+                // attempt to add the user to the database if they are a new user
                 final FirebaseUser newUser = FirebaseAuth.getInstance().getCurrentUser();
                 final DatabaseHelper databaseHelper = new DatabaseHelper();
                 databaseHelper.addUser(MainActivity.this,newUser);
