@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         calendarButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 updateCurUserData();
-                Intent calendarIntent = new Intent(MainActivity.this, InfoActivity.class);
+                Intent calendarIntent = new Intent(MainActivity.this, CalendarActivity.class);
                 startActivity(calendarIntent);
             }
         });
