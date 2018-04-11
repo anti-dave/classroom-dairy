@@ -1,8 +1,11 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -354,6 +357,7 @@ public class DatabaseHelper {
      *
      ****************************************************************************************************************/
 
+
     /**
      * writes a class to the database with its name and due date
      *
@@ -426,17 +430,16 @@ public class DatabaseHelper {
      * This method creates a new user object and then adds it to the Firebase database with a new uid(user id)
      *   then increments the uid in the database for future users.
      */
-    public void writeNewUser( final String name, final String userId ) {
+    public void writeNewUser(final String name, final String userId, final Boolean isInstructor) {
 
         mDatabase.getReference(UIDS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.child(userId).getValue() == null) {
-                    mDatabase.getReference(UIDS).child(userId).child(USER_NAME).setValue(name);
-
-                    //a method after this one prompts user and updates the instructor value
-                    mDatabase.getReference(UIDS).child(userId).child(INSTRUCTOR).setValue(false);
+                    DatabaseReference newUser = mDatabase.getReference(UIDS).child(userId);
+                    newUser.child(USER_NAME).setValue(name);
+                    newUser.child(INSTRUCTOR).setValue(isInstructor);
                 }
 
             }

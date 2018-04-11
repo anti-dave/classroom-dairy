@@ -1,5 +1,7 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.LightingColorFilter;
 import android.support.annotation.NonNull;
@@ -66,8 +68,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // update the global user variable
-        DatabaseHelper helper = new DatabaseHelper();
-        helper.getCurrentUser(MainActivity.this);
+        updateCurUserData();
 
         final LinearLayout myClassesButton = findViewById(R.id.my_classes);
 
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
         myClassesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                updateCurUserData();
                 Intent classesIntent = new Intent(MainActivity.this, ClassActivity.class);
                 startActivity(classesIntent);
             }
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout notificationsButton = findViewById(R.id.notifications);
         notificationsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                updateCurUserData();
                 Intent notificationsIntent = new Intent(MainActivity.this, InfoActivity.class);
                 startActivity(notificationsIntent);
             }
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout calendarButton = findViewById(R.id.calendar);
         calendarButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                updateCurUserData();
                 Intent calendarIntent = new Intent(MainActivity.this, InfoActivity.class);
                 startActivity(calendarIntent);
             }
@@ -106,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout messagesButton = findViewById(R.id.messages);
         messagesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                updateCurUserData();
                 Intent messagesIntent = new Intent(MainActivity.this, MessageListActivity.class);
                 startActivity(messagesIntent);
             }
@@ -114,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout settingsButton = findViewById(R.id.settings);
         settingsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                updateCurUserData();
                 Intent settingsIntent = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(settingsIntent);
             }
@@ -122,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout infoButton = findViewById(R.id.inforamtion);
         infoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                updateCurUserData();
                 Intent infoIntent = new Intent(MainActivity.this, InfoActivity.class);
                 startActivity(infoIntent);
             }
@@ -131,6 +138,11 @@ public class MainActivity extends AppCompatActivity {
 //        startActivity(classesIntent);
 
     } //OnCreate
+
+    private void updateCurUserData(){
+        DatabaseHelper helper = new DatabaseHelper();
+        helper.getCurrentUser(MainActivity.this);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
@@ -144,15 +156,33 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG)
                         .show();
 
-                //This is where we enter the user into the database
-                //some checks will have to be done as well as prompting the user for the first time if they are an instructor or not
-                //don't know how we do that last part yet
-                ////////// every time we get here it prompts the user to choose student or teacher im done fighting with this for now so we will call it a feature /////////
-                DatabaseHelper databaseHelper = new DatabaseHelper();
-                FirebaseUser newUser = FirebaseAuth.getInstance().getCurrentUser();
-                databaseHelper.writeNewUser( newUser.getDisplayName(), newUser.getUid() );
-                Intent promptUser = new Intent(MainActivity.this,InstructorPromptActivity.class);
-                startActivity(promptUser);
+                final FirebaseUser newUser = FirebaseAuth.getInstance().getCurrentUser();
+                final DatabaseHelper databaseHelper = new DatabaseHelper();
+
+                AlertDialog.Builder promptUser = new AlertDialog.Builder(MainActivity.this);
+                promptUser.setTitle("First Time Login")
+                        .setMessage("Are you an instructor or a student?")
+                        .setPositiveButton("Instructor", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                databaseHelper.writeNewUser(newUser.getDisplayName(),
+                                        newUser.getUid(),true);
+                            }
+                        })
+                        .setNegativeButton("Student", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                databaseHelper.writeNewUser(newUser.getDisplayName(),
+                                        newUser.getUid(),false);
+                            }
+                        })
+                        .setNeutralButton("I'm not new", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        }).show();
+
 
             } else {
                 Toast.makeText(this,
