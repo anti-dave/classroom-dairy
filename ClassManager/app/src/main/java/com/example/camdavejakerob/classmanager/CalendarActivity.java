@@ -62,7 +62,9 @@ public class CalendarActivity extends AppCompatActivity
         setContentView(R.layout.activity_calendar);
 
         // Initialize Google account credential
-        initCredential(accountCredential);
+        accountCredential = GoogleAccountCredential.usingOAuth2(
+                getApplicationContext(), Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff());
         // Initialize Google Calendar service
         initCalendarService(service);
 
@@ -198,7 +200,9 @@ public class CalendarActivity extends AppCompatActivity
     public void addCalendarEvent(Event event, GeneralTime time, String userEmail) throws IOException
     {
         if (accountCredential == null)
-            initCredential(accountCredential);
+            accountCredential = GoogleAccountCredential.usingOAuth2(
+            getApplicationContext(), Arrays.asList(SCOPES))
+            .setBackOff(new ExponentialBackOff());
 
         if (service == null)
             initCalendarService(service);
