@@ -27,7 +27,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:background="#ff546a"
+                android:background="@color/tile_0"
                 android:layout_weight="5"
                 android:clickable="true"
                 android:focusable="true"
@@ -47,7 +47,7 @@
                     android:layout_weight="1"
                     android:textStyle="bold"
                     android:textSize="16dp"
-                    android:textColor="#fff"
+                    android:textColor="@color/white"
                     />
 
             </LinearLayout>
@@ -57,7 +57,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:background="#f77485"
+                android:background="@color/tile_1"
                 android:layout_weight="5"
                 android:clickable="true"
                 >
@@ -95,7 +95,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:background="#820260"
+                android:background="@color/tile_2"
                 android:layout_weight="5"
                 android:clickable="true"
                 >
@@ -114,7 +114,7 @@
                     android:layout_weight="1"
                     android:textStyle="bold"
                     android:textSize="16dp"
-                    android:textColor="#fff"
+                    android:textColor="@color/white"
                     />
 
             </LinearLayout>
@@ -124,7 +124,7 @@
                 android:id="@+id/messages"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="#965b86"
+                android:background="@color/tile_3"
                 android:orientation="vertical"
                 android:layout_weight="5"
                 android:clickable="true"
@@ -144,7 +144,7 @@
                     android:layout_weight="1"
                     android:textStyle="bold"
                     android:textSize="16dp"
-                    android:textColor="#fff"
+                    android:textColor="@color/white"
                     />
 
             </LinearLayout>
@@ -164,7 +164,7 @@
                 android:id="@+id/settings"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="#3ad19e"
+                android:background="@color/tile_4"
                 android:orientation="vertical"
                 android:layout_weight="5"
                 android:clickable="true"
@@ -184,7 +184,7 @@
                     android:layout_weight="1"
                     android:textStyle="bold"
                     android:textSize="16dp"
-                    android:textColor="#fff"
+                    android:textColor="@color/white"
                     />
 
             </LinearLayout>
@@ -194,7 +194,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:background="#6cf7c8"
+                android:background="@color/tile_5"
                 android:layout_weight="5"
                 android:clickable="true"
                 >
@@ -212,7 +212,7 @@
                     android:layout_weight="1"
                     android:textStyle="bold"
                     android:textSize="16dp"
-                    android:textColor="#fff"
+                    android:textColor="@color/white"
                     />
 
             </LinearLayout>

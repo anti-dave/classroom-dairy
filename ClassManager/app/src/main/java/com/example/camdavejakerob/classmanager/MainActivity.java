@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         myClassesButton.setOnFocusChangeListener(new View.OnFocusChangeListener(){
             public void onFocusChange(View v, boolean hasFocus){
-                Toast.makeText(MainActivity.this,"hey i have focus", Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this,"hey i have focus", Toast.LENGTH_LONG).show();
                 //LinearLayout ln = (LinearLayout) findViewById(R.id.my_classes);
                 //ln.setBackgroundColor(0xfff);
             }
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         messagesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 updateCurUserData();
-                Intent messagesIntent = new Intent(MainActivity.this, MessageListActivity.class);
+                Intent messagesIntent = new Intent(MainActivity.this, MessageActivity.class);
                 startActivity(messagesIntent);
             }
         });
