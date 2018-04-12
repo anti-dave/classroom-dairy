@@ -3,7 +3,6 @@ package com.example.camdavejakerob.classmanager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -414,7 +413,6 @@ public class DatabaseHelper {
      *
      ****************************************************************************************************************/
 
-
     /**
      * writes a class to the database with its name and due date
      *
@@ -487,25 +485,11 @@ public class DatabaseHelper {
      * This method creates a new user object and then adds it to the Firebase database with a new uid(user id)
      *   then increments the uid in the database for future users.
      */
-    public void writeNewUser(final String name, final String userId, final Boolean isInstructor) {
+    public void writeNewUser( final String name, final String userId, final Boolean isInstructor ) {
+        DatabaseReference newUser = mDatabase.getReference(UIDS).child(userId);
+        newUser.child(USER_NAME).setValue(name);
+        newUser.child(INSTRUCTOR).setValue(isInstructor);
 
-        mDatabase.getReference(UIDS).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if(dataSnapshot.child(userId).getValue() == null) {
-                    DatabaseReference newUser = mDatabase.getReference(UIDS).child(userId);
-                    newUser.child(USER_NAME).setValue(name);
-                    newUser.child(INSTRUCTOR).setValue(isInstructor);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: " + databaseError.toString());
-            }
-        });
     }
 
     public void addUser(final Context context, final FirebaseUser user){

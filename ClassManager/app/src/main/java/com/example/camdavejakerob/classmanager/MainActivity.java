@@ -1,10 +1,10 @@
 package com.example.camdavejakerob.classmanager;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.LightingColorFilter;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         calendarButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 updateCurUserData();
-                Intent calendarIntent = new Intent(MainActivity.this, CalendarActivity.class);
+                Intent calendarIntent = new Intent(MainActivity.this, InfoActivity.class);
                 startActivity(calendarIntent);
             }
         });
@@ -133,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
     } //OnCreate
 
     private void updateCurUserData(){
-        DatabaseHelper helper = new DatabaseHelper();
-        helper.getCurrentUser(MainActivity.this);
+        DatabaseHelper databaseHelper = new DatabaseHelper();
+        databaseHelper.getCurrentUser(MainActivity.this);
     }
 
     @Override
@@ -149,10 +149,10 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG)
                         .show();
 
-                // attempt to add the user to the database if they are a new user
+                //This is where we enter the user into the database
                 final FirebaseUser newUser = FirebaseAuth.getInstance().getCurrentUser();
                 final DatabaseHelper databaseHelper = new DatabaseHelper();
-                databaseHelper.addUser(MainActivity.this,newUser);
+                databaseHelper.addUser(MainActivity.this, newUser);
 
                 Log.d(TAG, "Database helper has launched");
 
