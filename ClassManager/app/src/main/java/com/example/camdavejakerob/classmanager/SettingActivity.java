@@ -46,9 +46,6 @@ public class SettingActivity extends AppCompatActivity {
                                                 .createSignInIntentBuilder()
                                                 .build(),
                                         SIGN_IN_REQUEST_CODE);
-
-                                // Close activity, isneatd of close activity, make go back
-                                finish();
                             }
                         });
             }
@@ -73,9 +70,7 @@ public class SettingActivity extends AppCompatActivity {
                 ////////// every time we get here it prompts the user to choose student or teacher im done fighting with this for now so we will call it a feature /////////
                 DatabaseHelper databaseHelper = new DatabaseHelper();
                 FirebaseUser newUser = FirebaseAuth.getInstance().getCurrentUser();
-                databaseHelper.writeNewUser( newUser.getDisplayName(), newUser.getUid() );
-                Intent promptUser = new Intent(SettingActivity.this,InstructorPromptActivity.class);
-                startActivity(promptUser);
+                databaseHelper.addUser(SettingActivity.this, newUser);
 
             } else {
                 Toast.makeText(this,
