@@ -59,7 +59,13 @@ public class DatabaseHelper {
 
                 uid = FirebaseAuth.getInstance().getUid();
                 name = dataSnapshot.child(USER_NAME).getValue().toString();
-                instructor = (Boolean) dataSnapshot.child(INSTRUCTOR).getValue();
+
+                if("true" == dataSnapshot.child(INSTRUCTOR).getValue().toString()) {
+                    instructor = true;
+                }
+                else {
+                    instructor = false;
+                }
 
                 User user = new User(uid,name,instructor);
                 ((ClassManagerApp) context.getApplicationContext()).setCurUser(user);
