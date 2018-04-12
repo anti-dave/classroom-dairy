@@ -1,14 +1,10 @@
 package com.example.camdavejakerob.classmanager;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -414,7 +410,6 @@ public class DatabaseHelper {
      *
      ****************************************************************************************************************/
 
-
     /**
      * writes a class to the database with its name and due date
      *
@@ -487,16 +482,17 @@ public class DatabaseHelper {
      * This method creates a new user object and then adds it to the Firebase database with a new uid(user id)
      *   then increments the uid in the database for future users.
      */
-    public void writeNewUser(final String name, final String userId, final Boolean isInstructor) {
+    public void writeNewUser( final String name, final String userId ) {
 
         mDatabase.getReference(UIDS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.child(userId).getValue() == null) {
-                    DatabaseReference newUser = mDatabase.getReference(UIDS).child(userId);
-                    newUser.child(USER_NAME).setValue(name);
-                    newUser.child(INSTRUCTOR).setValue(isInstructor);
+                    mDatabase.getReference(UIDS).child(userId).child(USER_NAME).setValue(name);
+
+                    //a method after this one prompts user and updates the instructor value
+                    mDatabase.getReference(UIDS).child(userId).child(INSTRUCTOR).setValue(false);
                 }
 
             }
@@ -506,43 +502,6 @@ public class DatabaseHelper {
                 Log.d(TAG, "onCancelled: " + databaseError.toString());
             }
         });
-    }
-
-    public void addUser(final Context context, final FirebaseUser user){
-
-        mDatabase.getReference(UIDS).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if(!dataSnapshot.child(user.getUid()).exists()){
-
-                    AlertDialog.Builder promptUser = new AlertDialog.Builder(context);
-                    promptUser.setTitle("First Time Login")
-                            .setMessage("Are you an instructor or a student?")
-                            .setPositiveButton("Instructor", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    writeNewUser(user.getDisplayName(),
-                                            user.getUid(),true);
-                                }
-                            })
-                            .setNegativeButton("Student", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    writeNewUser(user.getDisplayName(),
-                                            user.getUid(),false);
-                                }
-                            }).show();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: " + databaseError.toString());
-            }
-        });
-
     }
 
     public void updateUserToInstructor(String uid, boolean bool){

@@ -93,6 +93,11 @@
         </activity>
 
         <activity
+            android:name=".InstructorPromptActivity"
+            android:theme="@style/AppTheme.PopupTheme">
+        </activity>
+
+        <activity
             android:name=".GradesActivity"
             android:label="My Grades">
         </activity>

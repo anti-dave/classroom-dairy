@@ -82,6 +82,12 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+
+    <!-- InstructorPrompt styles -->
+    <style name="AppTheme.PopupTheme" >
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <!-- Strings related to Calendar Activity  -->
     <string name="calendarAccountLabel">Google Account: </string>
     <string name="calendarAccountButton">Default Text</string>
