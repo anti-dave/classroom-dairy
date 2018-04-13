@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             style="@style/FormLabelStyle"
-            android:textSize="32dp"
+            android:textSize="32sp"
             android:textStyle="bold"
             android:text="@string/class_id_prompt" />
             <!-- User enters id of class here -->
@@ -34,7 +34,7 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:textSize="32dp"
+            android:textSize="32sp"
             android:textStyle="bold"
             style="@style/FormLabelStyle"
             android:text="@string/class_name_prompt" />
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             style="@style/FormLabelStyle"
-            android:textSize="32dp"
+            android:textSize="32sp"
             android:textStyle="bold"
             android:text="@string/class_days_prompt" />
 
@@ -110,7 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             style="@style/FormLabelStyle"
-            android:textSize="32dp"
+            android:textSize="32sp"
             android:textStyle="bold"
             android:text="@string/class_startTime_prompt" />
 
@@ -127,7 +127,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             style="@style/FormLabelStyle"
-            android:textSize="32dp"
+            android:textSize="32sp"
             android:textStyle="bold"
             android:text="@string/class_endTime_prompt" />
 
@@ -143,7 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             style="@style/FormLabelStyle"
-            android:textSize="32dp"
+            android:textSize="32sp"
             android:textStyle="bold"
             android:text="@string/class_room_prompt" />
 

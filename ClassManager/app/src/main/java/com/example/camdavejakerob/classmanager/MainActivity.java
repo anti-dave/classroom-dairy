@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                     "Welcome " + FirebaseAuth.getInstance()
                             .getCurrentUser()
                             .getDisplayName(),
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_SHORT).show();
         }
 
         // update the global user variable

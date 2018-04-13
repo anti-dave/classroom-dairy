@@ -9,15 +9,19 @@
     tools:context="com.example.camdavejakerob.classmanager.ChatActivity">
 
 <android.support.design.widget.FloatingActionButton
+    android:padding="8dp"
+    android:layout_margin="8dp"
+    app:fabSize="normal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:clickable="true"
-    android:src="@drawable/ic_message"
+    android:src="@drawable/ic_add"
     android:id="@+id/message_fab"
     android:layout_alignParentBottom="true"
     android:layout_alignParentEnd="true" />
 
 <android.support.design.widget.TextInputLayout
+    android:padding="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_toLeftOf="@id/message_fab"

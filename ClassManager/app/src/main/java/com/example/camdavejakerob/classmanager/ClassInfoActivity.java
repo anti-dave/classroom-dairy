@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -136,24 +137,25 @@ public class ClassInfoActivity extends AppCompatActivity {
 
     }
 
-    private void getSyllabus(){
-
-            StorageReference ref = FirebaseStorage.getInstance().getReference();
+    private void getSyllabus() {
+        StorageReference ref = FirebaseStorage.getInstance().getReference();
 
         ref.child(mCurrentClass.getCourseID()).child(mCurrentClass.getName() + " syllabus.pdf").getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Log.d(TAG, "onSuccess: we successfull!" + uri.toString());
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(browserIntent);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d(TAG, "onSuccess: we successfull!" + uri.toString());
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(browserIntent);
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ClassInfoActivity.this, "No Syllabus Found", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "onFailure: ", e);
             }
         });
     }
-
 }
