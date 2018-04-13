@@ -45,7 +45,7 @@
                     android:text="Syllabus"
                     android:layout_weight="1"
                     android:textStyle="bold"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     android:textColor="#fff"
 
                     />
@@ -74,7 +74,7 @@
                     android:text="Attendance"
                     android:layout_weight="1"
                     android:textStyle="bold"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     android:textColor="#fff"
                     />
 
@@ -114,7 +114,7 @@
                     android:text="Discussion Board"
                     android:layout_weight="1"
                     android:textStyle="bold"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     android:textColor="#fff"
                     android:clickable="true"
                     />
@@ -144,7 +144,7 @@
                     android:text="Assignments"
                     android:layout_weight="1"
                     android:textStyle="bold"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     android:textColor="#fff"
                     />
 
@@ -184,7 +184,7 @@
                     android:text="Grades"
                     android:layout_weight="1"
                     android:textStyle="bold"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     android:textColor="#fff"
                     />
 
@@ -212,7 +212,7 @@
                     android:text="Students"
                     android:layout_weight="1"
                     android:textStyle="bold"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     android:textColor="#fff"
                     />
 

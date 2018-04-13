@@ -4,4 +4,13 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="white">#ffff</color>
+    <color name="actionbar_background">#303f9f</color>
+    <color name="actionbar_text">#ffffff</color>
+    <color name="black">#000</color>
+    <color name="tile_0">#ff546a</color>
+    <color name="tile_1">#f77485</color>
+    <color name="tile_2">#820260</color>
+    <color name="tile_3">#965b86</color>
+    <color name="tile_4">#3ad19e</color>
+    <color name="tile_5">#6cf7c8</color>
 </resources>
