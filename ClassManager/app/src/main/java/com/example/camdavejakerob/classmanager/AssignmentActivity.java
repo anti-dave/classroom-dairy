@@ -43,6 +43,8 @@ public class AssignmentActivity extends AppCompatActivity {
         Intent i = getIntent();
         mCurrentClass = (Class) i.getParcelableExtra("CURRENT_CLASS");
 
+        setTitle("Assignments");
+
         // get the current user
         mCurUser = ((ClassManagerApp) AssignmentActivity.this.getApplication()).getCurUser();
 

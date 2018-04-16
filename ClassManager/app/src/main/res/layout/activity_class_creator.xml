@@ -15,10 +15,16 @@
 
         <!-- Class id label -->
         <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             style="@style/FormLabelStyle"
+            android:textSize="32sp"
+            android:textStyle="bold"
             android:text="@string/class_id_prompt" />
             <!-- User enters id of class here -->
             <EditText
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:id="@+id/class_id_form"
                 style="@style/FormEditTextShortStyle"
                 android:hint="@string/class_id_hint" />
@@ -26,89 +32,143 @@
 
         <!-- Class name label -->
         <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="32sp"
+            android:textStyle="bold"
             style="@style/FormLabelStyle"
             android:text="@string/class_name_prompt" />
             <!-- User enters NAME of restaurant here -->
             <EditText
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:id="@+id/class_name_form"
                 style="@style/FormEditTextShortStyle"
                 android:hint="@string/class_name_hint" />
 
         <!-- Class days label -->
         <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             style="@style/FormLabelStyle"
+            android:textSize="32sp"
+            android:textStyle="bold"
             android:text="@string/class_days_prompt" />
 
         <!-- Input for days -->
         <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             style="@style/FormLabelStyle"
-            android:orientation="horizontal">
+            android:orientation="vertical">
+
             <!-- User enters days of class here -->
-            <Button
+            <CheckBox
+                android:padding="8dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:id="@+id/monday_button"
-                style="@style/SmallButtonStyle" />
+                style="@style/SmallButtonStyle"
+                android:text="Monday" />
 
-            <Button
+            <CheckBox
+                android:padding="8dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:id="@+id/tuesday_button"
-                style="@style/SmallButtonStyle" />
+                style="@style/SmallButtonStyle"
+                android:text="Tuesday" />
 
-            <Button
+            <CheckBox
+                android:padding="8dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:id="@+id/wednesday_button"
-                style="@style/SmallButtonStyle" />
+                style="@style/SmallButtonStyle"
+                android:text="Wednesday" />
 
-            <Button
+            <CheckBox
+                android:padding="8dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:id="@+id/thursday_button"
-                style="@style/SmallButtonStyle" />
+                style="@style/SmallButtonStyle"
+                android:text="Thursday" />
 
-            <Button
+            <CheckBox
+                android:padding="8dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:id="@+id/friday_button"
-                style="@style/SmallButtonStyle" />
+                style="@style/SmallButtonStyle"
+                android:text="Friday" />
 
         </LinearLayout>
 
         <!-- Class startTime label -->
         <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             style="@style/FormLabelStyle"
+            android:textSize="32sp"
+            android:textStyle="bold"
             android:text="@string/class_startTime_prompt" />
 
-            <!-- User enters startTime of class here -->
-            <EditText
-                android:id="@+id/class_startTime_form"
-                style="@style/FormEditTextShortStyle"
-                android:hint="@string/class_startTime_hint" />
+        <!-- User enters startTime of class here -->
+        <TimePicker
+            android:id="@+id/startTimePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner" />
 
         <!-- Class endTime label -->
+
         <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             style="@style/FormLabelStyle"
+            android:textSize="32sp"
+            android:textStyle="bold"
             android:text="@string/class_endTime_prompt" />
 
-            <!-- User enters endTime of class here -->
-            <EditText
-                android:id="@+id/class_endTime_form"
-                style="@style/FormEditTextShortStyle"
-                android:hint="@string/class_endTime_hint" />
-
+        <!-- User enters endTime of class here -->
+        <TimePicker
+            android:id="@+id/endTimePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"/>
 
         <!-- Class room label -->
         <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             style="@style/FormLabelStyle"
+            android:textSize="32sp"
+            android:textStyle="bold"
             android:text="@string/class_room_prompt" />
 
             <!-- User enters room of class here -->
             <EditText
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:id="@+id/class_room_form"
                 style="@style/FormEditTextShortStyle"
                 android:hint="@string/class_room_hint" />
 
 
         <android.support.design.widget.FloatingActionButton
+            app:fabSize="normal"
+            android:padding="16dp"
+            android:layout_margin="16dp"
             android:id="@+id/class_add_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:clickable="true"
-            android:src="@drawable/ic_message" />
+            android:src="@drawable/ic_add"
+            android:layout_gravity="right"
+            />
 
     </LinearLayout>
 

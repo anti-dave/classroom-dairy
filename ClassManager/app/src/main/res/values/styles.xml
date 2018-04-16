@@ -38,8 +38,8 @@
 
     <!-- theme for the small buttons in the form -->
     <style name="SmallButtonStyle">
-        <item name="android:layout_height">80dp</item>
-        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_width">50dp</item>
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
     </style>
 
@@ -88,12 +88,40 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <!-- Strings related to Calendar Activity  -->
-    <string name="calendarAccountLabel">Google Account: </string>
-    <string name="calendarAccountButton">Default Text</string>
-    <string name="calendarAccountHelpText">Click to select an account</string>
-    <string name="calendarToggleLabel">Enable Google Calendar</string>
-    <string name="calendarToggleHelpText">Allow adding events to your Google Calendar</string>
-    <string name="calendarViewButton">View Google Calendar</string>
+    <!-- Action Bar Themes-->
+    <style name="Tile0"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tile_0</item>
+    </style>
+
+    <style name="Tile1"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tile_1</item>
+    </style>
+
+    <style name="Tile2"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tile_2</item>
+    </style>
+
+    <style name="Tile3"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tile_3</item>
+    </style>
+
+    <style name="Tile4"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tile_4</item>
+    </style>
+
+    <style name="Tile5"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tile_5</item>
+    </style>
+
+    <style name="ClassInfoTheme"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/black</item>
+    </style>
 
 </resources>

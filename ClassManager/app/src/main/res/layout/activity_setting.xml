@@ -16,21 +16,12 @@
     <Button
         android:id="@+id/logout"
         android:text="Logout"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:padding="16dp"
         android:layout_marginTop="100dp"/>
-    <Button
-        android:id="@+id/switch_user"
-        android:text="Switch Users"
-        android:textSize="18dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:padding="16dp"
-        android:layout_margin="32dp"/>
     </LinearLayout>
 
 </LinearLayout>

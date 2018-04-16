@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Class implements Parcelable{
     private String Name;
-    private ArrayList<String> DaysOfClass;
+    private String DaysOfClass;
     private String StartTime;
     private String EndTime;
     private String Room;
@@ -32,7 +32,7 @@ public class Class implements Parcelable{
 
     }
 
-    public Class(String name,ArrayList<String> daysOfClass, String startTime, String endTime, String room, String id){
+    public Class(String name,String daysOfClass, String startTime, String endTime, String room, String id){
         Name = name;
         DaysOfClass = daysOfClass;
         StartTime = startTime;
@@ -50,15 +50,7 @@ public class Class implements Parcelable{
     public String getSchiheduledTime(){return getDaysOfClass() + " " + getStartTime() + " - " + getEndTime();}
     public String getCourseID(){return CourseID;}
     public String getInstructor(){return Instructor;}
-    public String getDaysOfClass(){
-        String days = "";
-
-        for(int i = 0; i < DaysOfClass.size(); i++){
-            days += DaysOfClass.get(i) + " ";
-        }
-
-        return days;
-    }
+    public String getDaysOfClass(){return DaysOfClass;}
 
     // Parcelling part
     // for some help https://stackoverflow.com/questions/9406188/liststring-readstringarray-in-parcelable
@@ -66,7 +58,7 @@ public class Class implements Parcelable{
 
     public Class(Parcel in){
         this.Name = in.readString();
-        this.DaysOfClass = in.createStringArrayList();
+        this.DaysOfClass = in.readString();
         //in.readStringList(DaysOfClass);
         this.StartTime =  in.readString();
         this.EndTime =  in.readString();
@@ -83,7 +75,7 @@ public class Class implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.Name);
-        dest.writeList(this.DaysOfClass);
+        dest.writeString(this.DaysOfClass);
         dest.writeString(this.StartTime);
         dest.writeString(this.EndTime);
         dest.writeString(this.Room);
