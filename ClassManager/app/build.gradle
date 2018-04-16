@@ -35,9 +35,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:11.4.2'
     implementation 'com.google.firebase:firebase-auth:11.4.2'
     implementation 'com.google.firebase:firebase-core:11.4.2'
-    //implementation 'com.firebaseui:firebase-ui-auth:3.2.2'
-    //implementation 'com.firebaseui:firebase-ui-auth:3.1.0'
-    //implementation 'com.firebaseui:firebase-ui-auth:3.0.1'
     implementation 'com.firebaseui:firebase-ui-auth:3.0.0'
     implementation 'com.firebaseui:firebase-ui:3.0.0'
     implementation 'com.google.firebase:firebase-messaging:11.4.2'
@@ -47,11 +44,7 @@ dependencies {
 
     // cam
     implementation 'pub.devrel:easypermissions:0.3.0'
-    /*implementation 'com.google.api-client:google-api-client-android:1.23.0'
-    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
-    implementation ('com.google.apis:google-api-services-calendar:v3-rev304-1.23.0'){
-        exclude group: 'com.google.guava'
-    }*/
+
     implementation 'com.android.support:multidex:1.0.0'
     compile 'com.google.apis:google-api-services-calendar:v3-rev125-1.20.0' exclude group: 'com.google.guava'
     compile 'com.google.api-client:google-api-client-android:1.23.0' exclude module: 'httpclient' exclude group: 'com.google.guava'
