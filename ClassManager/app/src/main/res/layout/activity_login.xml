@@ -32,7 +32,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Classroom Manager\n"
+                android:text="@string/classroom_manager"
                 android:gravity="center"
                 android:textSize="32sp"/>
 

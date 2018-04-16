@@ -15,37 +15,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:text="Made By: Cam Cambell, Dave DaCosta, Jake Adamson, Rob Cucchiara"/>
+            android:text="@string/by_line"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:text="\nContact Info:"/>
+            android:text="@string/ncontact_info"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="\tEmail: someone@classManager.com"/>
+            android:text="@string/emails"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="\tPhone: 123 456 7890"/>
+            android:text="@string/phone"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="\tAddress: 123 Some St, Lowell Ma"/>
-
-        <!--Rob was here, if i forget to delete this please do, im testing methods here
-        <TextView
-            android:id="@+id/info_activity_test"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/rTest"
-            />-->
+            android:text="@string/taddress_123_some_st_lowell_ma"/>
 
     </LinearLayout>
 

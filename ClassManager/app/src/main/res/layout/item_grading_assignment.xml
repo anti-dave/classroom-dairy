@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:text="first last"
+        android:text="@string/first_last_name"
         android:textColor="@android:color/black"
         android:padding="8dp"
         />
@@ -21,7 +21,7 @@
         android:id="@+id/grading_student_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="id goes here"
+        android:text="@string/id_goes_here_placeholder"
         android:visibility="gone"/>
 
     <LinearLayout
@@ -33,7 +33,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Submitted: "
+            android:text="@string/submitted_grading"
             android:textSize="16sp"
             android:paddingHorizontal="8dp"
             android:textColor="@android:color/black"/>
@@ -42,7 +42,7 @@
             android:id="@+id/grading_work_submitted"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="true/false"/>
+            android:text="@string/true_false_placeholder"/>
 
     </LinearLayout>
 
@@ -55,7 +55,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Grade: "
+            android:text="@string/grade_grading"
             android:textSize="16sp"
             android:padding="8dp"
             android:textColor="@android:color/black"/>
@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
-            android:text="number/not yet graded"/>
+            android:text="@string/number_not_yet_graded_placeholder"/>
 
     </LinearLayout>
 
@@ -73,7 +73,7 @@
         android:id="@+id/grading_file_path"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="file path here"
+        android:text="@string/file_path_placeholder"
         android:visibility="gone"/>
 
 </LinearLayout>

@@ -17,7 +17,7 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="HW1:"
+            android:text="@string/hw1_placeholder"
             android:textColor="@android:color/black"
 
             />
@@ -27,7 +27,7 @@
             android:textSize="18sp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Grade: A"
+            android:text="@string/grade_a_placeholder"
             android:textColor="@android:color/black"
         />
     </LinearLayout>

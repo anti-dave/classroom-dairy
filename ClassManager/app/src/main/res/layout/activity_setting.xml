@@ -15,7 +15,7 @@
        >
     <Button
         android:id="@+id/logout"
-        android:text="Logout"
+        android:text="@string/logout"
         android:textSize="18sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

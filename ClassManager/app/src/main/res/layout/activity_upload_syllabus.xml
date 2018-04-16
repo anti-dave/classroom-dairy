@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:text="We found these files, which would you like to upload?"
+        android:text="@string/syllabus_upload_hint"
         android:textColor="@android:color/black"
         android:padding="16dp"/>
 
