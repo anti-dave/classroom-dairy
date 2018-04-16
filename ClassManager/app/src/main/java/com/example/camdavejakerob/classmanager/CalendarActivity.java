@@ -66,7 +66,12 @@ public class CalendarActivity extends AppCompatActivity
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
         // Initialize Google Calendar service
-        initCalendarService(service);
+        HttpTransport transport = AndroidHttp.newCompatibleTransport();
+        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+        service = new Calendar.Builder(
+            transport, jsonFactory, accountCredential)
+            .setApplicationName("Google Calendar API Android Quickstart")
+            .build();
 
         String accountName = getGoogleAccount();
         changeAccountButton = (Button) findViewById(R.id.cal_GoogleAccountButton);
@@ -205,7 +210,14 @@ public class CalendarActivity extends AppCompatActivity
             .setBackOff(new ExponentialBackOff());
 
         if (service == null)
-            initCalendarService(service);
+        {
+            HttpTransport transport = AndroidHttp.newCompatibleTransport();
+            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+            service = new Calendar.Builder(
+                    transport, jsonFactory, accountCredential)
+                    .setApplicationName("Google Calendar API Android Quickstart")
+                    .build();
+        }
 
         event.setStart(time.getStart());
         event.setEnd(time.getEnd());
