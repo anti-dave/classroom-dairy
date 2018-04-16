@@ -42,11 +42,14 @@ dependencies {
 
     // cam
     implementation 'pub.devrel:easypermissions:0.3.0'
-    implementation 'com.google.api-client:google-api-client-android:1.23.0'
+    /*implementation 'com.google.api-client:google-api-client-android:1.23.0'
     implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
     implementation ('com.google.apis:google-api-services-calendar:v3-rev304-1.23.0'){
         exclude group: 'com.google.guava'
-    }
+    }*/
+    compile 'com.google.apis:google-api-services-calendar:v3-rev260-1.23.0' exclude module: 'httpclient'
+    compile 'com.google.api-client:google-api-client-android:1.23.0' exclude module: 'httpclient'
+    compile 'com.google.http-client:google-http-client-gson:1.23.0' exclude module: 'httpclient'
 }
 
 
