@@ -46,6 +46,11 @@ public class DatabaseHelper {
      *
      ****************************************************************************************************************/
 
+    /**
+     * This updates the global user variable that is used to tell if the current user is an instructor or student
+     *
+     * @param context the context of the activity that the app is currently in
+     */
     public void getCurrentUser(final Context context){
         String userId = FirebaseAuth.getInstance().getUid();
         if(userId == null){ return; }
@@ -78,6 +83,12 @@ public class DatabaseHelper {
         });
     }
 
+    /**
+     *
+     * @param context context of the activity that the app is currently in
+     * @param listView ListView intended to display the information
+     * @param uid
+     */
     public void getAllMessageRecipients(final Context context, final ListView listView, final String uid){
 
         mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -113,6 +124,11 @@ public class DatabaseHelper {
         });
     }
 
+    /**
+     *
+     * @param context context of the activity that the app is currently in
+     * @param recipientUid
+     */
     public void getChatKeyFromUid(final Context context, final String recipientUid){
         String userId = FirebaseAuth.getInstance().getUid();
         if(userId == null){ return; }
@@ -141,6 +157,14 @@ public class DatabaseHelper {
         });
     }
 
+    /**
+     * populates a list view with all of the submitted work for a given assignment
+     *
+     * @param cid class id that the assignment is for
+     * @param assignmentName the name of the assignment
+     * @param listView ListView intended to display the information
+     * @param context context of the activity that the app is currently in
+     */
     public void getAllAssignmentSubmissions(final String cid, final String assignmentName, final ListView listView, final Context context){
         mDatabase.getReference().addValueEventListener(new ValueEventListener() {
             @Override
@@ -222,6 +246,13 @@ public class DatabaseHelper {
         });
     }
 
+    /**
+     * used to show all of the students enrolled in a given class
+     *
+     * @param context context of the activity that the app is currently in
+     * @param listView ListView intended to display the information
+     * @param cid the class id for the desired information
+     */
     public void getEnrolledStudents(final Context context, final ListView listView, final String cid){
 
         mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -255,11 +286,12 @@ public class DatabaseHelper {
     }
 
     /**
+     * Displays the assignment name and the grade of each assignment for the given user
      *
-     * @param context
-     * @param listView
-     * @param uid
-     * @param cid
+     * @param context context of the activity that the app is currently in
+     * @param listView ListView intended to display the information
+     * @param uid the user id who's grades you are looking for
+     * @param cid the class id that you are currently viewing
      */
     public void getUserGrades(final Context context, final ListView listView, final String uid, final String cid){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
@@ -296,11 +328,12 @@ public class DatabaseHelper {
     }
 
     /**
+     *  populates the given ListView with the assignments for the given class and displays grades, due date and name of the assignment
      *
-     * @param context
-     * @param listView
-     * @param uid
-     * @param cid
+     * @param context context of the activity that the app is currently in
+     * @param listView ListView intended to display the information
+     * @param uid user id of the user requesting the information
+     * @param cid class id of the class for which you desire this information
      */
     public void getUserAssignment(final Context context, final ListView listView, final String uid, final String cid){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
@@ -338,8 +371,8 @@ public class DatabaseHelper {
     /**
      * updates a list view with all available classes in the database
      *
-     * @param context
-     * @param listView
+     * @param context context of the activity that the app is currently in
+     * @param listView the ListView intended to display the information
      */
     public void updateListViewListOfClasses(final Context context, final ListView listView){
         mDatabase.getReference(CIDS).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -375,10 +408,11 @@ public class DatabaseHelper {
     }
 
     /**
+     * This populates a given ListView with all of classes that the given user is enrolled in
      *
-     * @param context
-     * @param listView
-     * @param uid
+     * @param context context to the activity the app is currently in currently
+     * @param listView the ListView which you intend to populate
+     * @param uid the user id you wish to get the information for
      */
     public void updateListViewUserClasses(final Context context, final ListView listView, final String uid){
         mDatabase.getReference().addValueEventListener(new ValueEventListener() {
@@ -498,6 +532,13 @@ public class DatabaseHelper {
 
     }
 
+    /**
+     * calls the writeNewUser method to add the user to the database as well as prompts the current user to
+     *  choose if they are an instructor or a student
+     *
+     * @param context context of the activity the app is currently in
+     * @param user the user data for the user trying to register in the app
+     */
     public void addUser(final Context context, final FirebaseUser user){
 
         mDatabase.getReference(UIDS).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -535,13 +576,14 @@ public class DatabaseHelper {
 
     }
 
-    public void updateUserToInstructor(String uid, boolean bool){
-        mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).setValue(bool);
-        mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).child(INSTRUCTOR_PROMPTED).setValue(true);
-        Log.d(TAG, "Instructor set ");
-    }
-
-
+    /**
+     * adds the students submission to the database with the url to download
+     *
+     * @param uid the user id of the student submitting the work
+     * @param cid the class for which the assignment is being submitted
+     * @param assignmentName the name of the assignment that the work is being submitted for
+     * @param downloadUrl the url to download the work from Firebase Storage
+     */
     public void writeAssignmentSubmission(String uid, String cid, String assignmentName, String downloadUrl){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS).child(assignmentName)
                 .child(SUBMISSIONS).child(uid).setValue(downloadUrl);
