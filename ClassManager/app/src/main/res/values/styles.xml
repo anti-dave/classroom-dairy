@@ -88,4 +88,40 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <!-- Action Bar Themes-->
+    <style name="Tile0"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tile_0</item>
+    </style>
+
+    <style name="Tile1"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tile_1</item>
+    </style>
+
+    <style name="Tile2"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tile_2</item>
+    </style>
+
+    <style name="Tile3"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tile_3</item>
+    </style>
+
+    <style name="Tile4"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tile_4</item>
+    </style>
+
+    <style name="Tile5"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tile_5</item>
+    </style>
+
+    <style name="ClassInfoTheme"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/black</item>
+    </style>
+
 </resources>

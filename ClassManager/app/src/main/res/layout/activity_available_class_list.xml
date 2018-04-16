@@ -11,8 +11,11 @@
         android:orientation="horizontal">
         <TextView
             android:text="@string/class_name_prompt"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:id="@+id/class_list_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2" />
     </LinearLayout>
