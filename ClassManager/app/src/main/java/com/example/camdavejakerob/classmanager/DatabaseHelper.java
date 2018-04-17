@@ -34,6 +34,7 @@ public class DatabaseHelper {
     private String MESSAGE_ROOMS = "MessageRooms";
     private String MESSAGE_TEXT = "messageText";
     private String MESSAGE_TIME = "messageTime";
+    private String DISCUSSION_BOARD = "Discussion Boards";
 
     private FirebaseDatabase mDatabase;
     private FirebaseStorage mStorage;
@@ -477,6 +478,61 @@ public class DatabaseHelper {
         DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
         classRef.child(ROSTER).child(uid).setValue(true);
         userRef.child(CLASSES).child(cid).setValue(true);
+    }
+
+    /**
+     * @param cid a string of the class number
+     * @param uid a string of the user id
+     *
+     *  This method removes the user id from the roster list and the class id from the classes list of the user
+     *
+     */
+    public void deleteStudentFromClass(final String cid, final String uid){
+        DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
+        DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
+        classRef.child(ROSTER).child(uid).removeValue();
+        userRef.child(CLASSES).child(cid).removeValue();
+
+        //
+    }
+
+    /**
+     * @param cid a string of the class number
+     * @param uid a string of the Instructors user id
+     *
+     *  This method removes the entirity of the class and everything associated with it
+     *
+     */
+    public void deleteClass(final String cid, final String uid){
+        DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
+        DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
+
+        //Delete Discussion Board
+        mDatabase.getReference(DISCUSSION_BOARD).child(cid).removeValue();
+
+        //Delete All UIDS in Roster
+        classRef.child(ROSTER).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot classSnapshot: dataSnapshot.getChildren()){
+
+                    String deleteUid;
+                    deleteUid = classSnapshot.getKey();
+                    deleteStudentFromClass(cid, deleteUid);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+
+        //Delete from Profs Classes
+        userRef.child(CLASSES).child(cid).removeValue();
+
+        //Delete the CID
+        mDatabase.getReference(CIDS).child(cid).removeValue();
     }
 
     /**
