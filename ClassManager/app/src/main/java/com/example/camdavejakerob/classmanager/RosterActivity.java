@@ -45,12 +45,12 @@ public class RosterActivity extends AppCompatActivity{
                 TextView name = view.findViewById(R.id.roster_item_name);
                 String userSelectedName = name.getText().toString();
 
-                //TextView chatIdKey = view.findViewById(R.id.roster_item_key);
-                //String chatId = chatIdKey.getText().toString();
+                TextView chatIdKey = view.findViewById(R.id.chatId);
+                String chatId = chatIdKey.getText().toString();
 
                 // Create new intent to go to {@link ChatActivity}
                 Intent intent = new Intent(RosterActivity.this, ChatActivity.class);
-                //intent.putExtra("chatId", chatId);
+                intent.putExtra("chatId", chatId);
                 intent.putExtra("recipientUid", userSelectedId);
                 intent.putExtra("recipientName", userSelectedName);
                 startActivity(intent);

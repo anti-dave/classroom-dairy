@@ -16,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by Rob on 3/13/2018.
@@ -30,6 +31,9 @@ public class DatabaseHelper {
     private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor", INSTRUCTOR_PROMPTED = "Instructor_Prompt_Bool";
     private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades", SUBMISSIONS = "submissions";
     private String TAG = "DATABASE_HELPER";
+    private String MESSAGE_ROOMS = "MessageRooms";
+    private String MESSAGE_TEXT = "messageText";
+    private String MESSAGE_TIME = "messageTime";
 
     private FirebaseDatabase mDatabase;
     private FirebaseStorage mStorage;
@@ -84,70 +88,54 @@ public class DatabaseHelper {
     }
 
     /**
+     * Gathers all the recipients the user has chats with and sets an adapter to populate a listview with them
      *
      * @param context context of the activity that the app is currently in
      * @param listView ListView intended to display the information
-     * @param uid
+     * @param uid id of the user currently runnign the app
      */
-    public void getAllMessageRecipients(final Context context, final ListView listView, final String uid){
+    public void getAllChats(final Context context, final ListView listView, final String uid){
 
         mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 MessageListAdapter chatAdapter;
-                final ArrayList<User> users = new ArrayList<User>();
+                final ArrayList<User> chats = new ArrayList<User>();
 
                 for(DataSnapshot chatData: dataSnapshot.child(UIDS)
                         .child(uid).child(MESSAGES).getChildren()){
 
-                        String name, recipientUid;
+                    String recipientName, recipientUserId, lastMessageText, lastMessageTime, chatId;
 
-                        recipientUid = chatData.getKey().toString();
-                        name = dataSnapshot
-                                .child(UIDS)
-                                .child(recipientUid)
-                                .child(USER_NAME)
-                                .getValue()
-                                .toString();
+                    recipientUserId = chatData.getKey();
+                    chatId = chatData.getValue().toString();
+                    recipientName = dataSnapshot
+                            .child(UIDS)
+                            .child(recipientUserId)
+                            .child(USER_NAME)
+                            .getValue()
+                            .toString();
 
-                        users.add(new User(uid, name, false));
+                    lastMessageText = "";
+                    lastMessageTime = "";
+
+                    if(dataSnapshot.child(MESSAGE_ROOMS).child(chatId).hasChildren() ) {
+
+                        Iterable<DataSnapshot> messages;
+                        messages = dataSnapshot.child(MESSAGE_ROOMS).child(chatId).getChildren();
+
+                        Iterator<DataSnapshot> lastMessageIter = messages.iterator();
+                        DataSnapshot lastMessage = lastMessageIter.next();
+
+                        lastMessageText = lastMessage.child(MESSAGE_TEXT).getValue().toString();
+                        lastMessageTime = lastMessage.child(MESSAGE_TIME).getValue().toString();
+                    }
+
+                    chats.add(new User(uid, recipientName, chatId, lastMessageText, lastMessageTime));
                 }
-                chatAdapter = new MessageListAdapter(context,users);
+                chatAdapter = new MessageListAdapter(context, chats);
                 listView.setAdapter(chatAdapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: " + databaseError.toString());
-            }
-        });
-    }
-
-    /**
-     *
-     * @param context context of the activity that the app is currently in
-     * @param recipientUid
-     */
-    public void getChatKeyFromUid(final Context context, final String recipientUid){
-        String userId = FirebaseAuth.getInstance().getUid();
-        if(userId == null){ return; }
-
-        //reference to all user id's
-        mDatabase.getReference(UIDS)
-                .child(userId)
-                .child(MESSAGES)
-                .child(recipientUid)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String uid, name, chatId;
-
-                uid = FirebaseAuth.getInstance().getUid();
-                name = dataSnapshot.child(UIDS).getValue().toString();
-                chatId = dataSnapshot.child(UIDS).getValue().toString();
-
             }
 
             @Override

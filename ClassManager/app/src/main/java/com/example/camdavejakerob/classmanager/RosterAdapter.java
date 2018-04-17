@@ -13,6 +13,7 @@ import java.util.List;
  * Created by Rob on 3/26/2018.
  */
 
+
 public class RosterAdapter extends ArrayAdapter<User> {
 
     public RosterAdapter(Context context, List<User> users){
@@ -22,8 +23,6 @@ public class RosterAdapter extends ArrayAdapter<User> {
     @Override
     public View getView(int position, View view, ViewGroup parent){
         User user = getItem(position);
-
-
 
         if(view == null){
             view = LayoutInflater.from(getContext()).inflate(
@@ -35,6 +34,9 @@ public class RosterAdapter extends ArrayAdapter<User> {
 
         TextView name = (TextView) view.findViewById(R.id.roster_item_name);
         name.setText(user.getName());
+
+        TextView chatId = (TextView) view.findViewById(R.id.chatId);
+        chatId.setText(user.getChatId());
 
         return view;
     }

@@ -87,7 +87,7 @@
         </activity>
 
         <activity android:name=".ChatActivity"
-            android:label="Discussion Board"
+            android:label="Chats"
             android:theme="@style/Tile2">
         </activity>
 
