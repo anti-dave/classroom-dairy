@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -19,9 +20,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.api.client.util.DateTime;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventAttendee;
+import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.services.calendar.model.EventReminder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +38,8 @@ import java.util.ArrayList;
 
 public class NewAssignmentActivity extends AppCompatActivity {
 
-    private EditText mName, mDueDate;
+    private EditText mName;
+    private DatePicker mDueDate;
     private TextView mFilePath, mFileName;
     private LinearLayout mFindFileLayout;
     private ListView mFilesListView;
@@ -49,7 +56,7 @@ public class NewAssignmentActivity extends AppCompatActivity {
         mCurrentClass = (Class) i.getParcelableExtra("CURRENT_CLASS");
 
         mName = (EditText) findViewById(R.id.new_assignment_name);
-        mDueDate = (EditText) findViewById(R.id.new_assignment_due_date);
+        mDueDate = (DatePicker) findViewById(R.id.new_assignment_due_date);
         mFilePath = (TextView) findViewById(R.id.new_assignment_file_path);
         mFileName = (TextView) findViewById(R.id.new_assignment_file_name);
         mFindFileLayout = (LinearLayout) findViewById(R.id.new_assignment_find_file_view);
@@ -131,9 +138,31 @@ public class NewAssignmentActivity extends AppCompatActivity {
                             //tell them success!
                             Toast.makeText(NewAssignmentActivity.this, "Assignment created!", Toast.LENGTH_SHORT).show();
                             // update database
-                            Assignment assignment = new Assignment(mDueDate.getText().toString(), "empty", mName.getText().toString());
+                            String date = (mDueDate.getMonth() + 1) + "/" + mDueDate.getDayOfMonth() + "/" + mDueDate.getYear();
+
+                            Assignment assignment = new Assignment(date, "empty", mName.getText().toString());
                             DatabaseHelper databaseHelper = new DatabaseHelper();
                             databaseHelper.writeAssignment(mCurrentClass.getCourseID(),assignment);
+
+                            // set an event in the calendar
+                            /*---------------------------------------------- this needs to be deleted but im leaving it as a template for now
+                            CalendarActivity calendarActivity = new CalendarActivity();
+
+                            Event newAssignmentEvent = calendarActivity.buildEvent(
+                                    assignment.getName(),mCurrentClass.getRoom(),"assignment due");
+
+                            DateTime start, end;
+                            start = new DateTime(mDueDate.getYear() + "-" + mDueDate.getMonth() + "-" +
+                                    (mDueDate.getDayOfMonth() + 1) + "T09:00:00-07:00");
+                            end = new DateTime(mDueDate.getYear() + "-" + mDueDate.getMonth() + "-" +
+                                    (mDueDate.getDayOfMonth() + 1) + "T17:00:00-07:00");
+                            GeneralTime alertTime = calendarActivity.buildTime(start, end,"America/New_York");
+
+                            try {
+                                calendarActivity.addCalendarEvent(newAssignmentEvent, alertTime, );
+                            }
+                            */
+
                             // return to AssignmentActivity
                             NewAssignmentActivity.this.finish();
                         }
@@ -146,10 +175,9 @@ public class NewAssignmentActivity extends AppCompatActivity {
         });
     }
 
-    // make sure that each field is field
+    // make sure that each field is filled
     private boolean validData(){
         return mName.getText().toString() != ""
-                && mDueDate.getText().toString() != ""
                 && mFilePath.getText().toString() != "";
     }
 

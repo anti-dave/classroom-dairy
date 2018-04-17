@@ -1,10 +1,15 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.*;
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +28,8 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
+
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class ClassInfoActivity extends AppCompatActivity {
 
@@ -60,9 +67,17 @@ public class ClassInfoActivity extends AppCompatActivity {
                             .setPositiveButton("Upload", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent uploadIntent = new Intent(ClassInfoActivity.this,UploadSyllabusActivity.class);
-                                    uploadIntent.putExtra("CURRENT_CLASS", mCurrentClass);
-                                    startActivity(uploadIntent);
+
+                                    if(ActivityCompat.checkSelfPermission(ClassInfoActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                            == PackageManager.PERMISSION_GRANTED) {
+                                        Intent uploadIntent = new Intent(ClassInfoActivity.this, UploadSyllabusActivity.class);
+                                        uploadIntent.putExtra("CURRENT_CLASS", mCurrentClass);
+                                        startActivity(uploadIntent);
+                                    } else {
+                                        ActivityCompat.requestPermissions(ClassInfoActivity.this,
+                                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1024);
+                                    }
+
                                 }
                             })
                             .setNeutralButton("View", new DialogInterface.OnClickListener() {

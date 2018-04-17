@@ -22,6 +22,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -129,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(infoIntent);
             }
         });
-
     } //OnCreate
 
     private void updateCurUserData(){

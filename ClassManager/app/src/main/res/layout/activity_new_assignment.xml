@@ -26,27 +26,15 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <DatePicker
+        android:id="@+id/new_assignment_due_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:text="@string/due_date"
-            android:textColor="@android:color/black" />
-
-        <EditText
-            android:id="@+id/new_assignment_due_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/date_hint"
-            android:inputType="date"/>
-
-    </LinearLayout>
+        android:datePickerMode="spinner"
+        android:calendarViewShown="false"
+        android:minDate="01/01/2018"
+        android:maxDate="12/31/2025">
+    </DatePicker>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -91,7 +79,7 @@
         </LinearLayout>
 
     </LinearLayout>
-    
+
     <ListView
         android:id="@+id/new_assignment_file_list"
         android:layout_width="match_parent"
@@ -112,5 +100,7 @@
             android:text="@string/add"/>
 
     </LinearLayout>
+
+
 
 </LinearLayout>
