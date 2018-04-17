@@ -19,6 +19,7 @@
             android:orientation="horizontal"
             android:padding="16dp">
             <TextView
+                android:paddingRight="4dp"
                 android:text="@string/account_level_prompt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
