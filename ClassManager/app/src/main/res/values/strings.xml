@@ -56,7 +56,7 @@
 
     <!-- Utility -->
     <string name="no_internet_connection">No Internet</string>
-    <string name="account_level_prompt">Account Level:</string>
+    <string name="account_level_prompt">Account Level: </string>
 
     <!-- Strings related to Calendar Activity  -->
     <string name="calendarAccountLabel">Google Account: </string>
