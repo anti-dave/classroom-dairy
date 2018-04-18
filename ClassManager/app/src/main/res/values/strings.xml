@@ -115,4 +115,12 @@
     <string name="file_path_placeholder">file path here</string>
     <string name="file_name_placeholder">file name</string>
 
+    <!-- Strings related to Attendance Activity -->
+    <string name="attendanceCheckinButton">Check-In</string>
+    <string name="attendanceCheckinLabel">Press to check-in to this class</string>
+    <string name="attendancePlaceHolderText">Place Holder Text</string>
+    <string name="attendanceClassLabel">Class: </string>
+    <string name="attendanceClassTime">Time: </string>
+    <string name="attendanceClassDays">Days: </string>
+
 </resources>
