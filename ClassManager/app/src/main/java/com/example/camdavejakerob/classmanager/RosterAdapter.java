@@ -25,8 +25,13 @@ public class RosterAdapter extends ArrayAdapter<User> {
         User user = getItem(position);
 
         if(view == null){
-            view = LayoutInflater.from(getContext()).inflate(
-                    R.layout.roster_item,parent,false);
+            if(user.isInstructor()) {
+                view = LayoutInflater.from(getContext()).inflate(
+                        R.layout.roster_header,parent,false);
+            } else {
+                view = LayoutInflater.from(getContext()).inflate(
+                        R.layout.roster_item,parent,false);
+            }
         }
 
         TextView uid = (TextView) view.findViewById(R.id.uid);

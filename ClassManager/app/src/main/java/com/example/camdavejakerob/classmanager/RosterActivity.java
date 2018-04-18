@@ -3,7 +3,6 @@ package com.example.camdavejakerob.classmanager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -29,15 +28,11 @@ public class RosterActivity extends AppCompatActivity{
         classId = getIntent().getStringExtra(CLASS_ID);
         mListView = (ListView) findViewById(R.id.roster_students);
         mDatabase = new DatabaseHelper();
-        mDatabase.getEnrolledStudents(this, mListView, classId);
+        mDatabase.getEnrolledMembers(this, mListView, classId);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, final long id) {
-                Toast.makeText(RosterActivity.this,
-                        "You have chosen: ",
-                        Toast.LENGTH_LONG)
-                        .show();
 
                 TextView uid = view.findViewById(R.id.uid);
                 String userSelectedId = uid.getText().toString();

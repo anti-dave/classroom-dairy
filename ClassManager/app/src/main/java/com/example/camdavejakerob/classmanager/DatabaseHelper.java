@@ -4,7 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -242,7 +245,7 @@ public class DatabaseHelper {
      * @param listView ListView intended to display the information
      * @param cid the class id for the desired information
      */
-    public void getEnrolledStudents(final Context context, final ListView listView, final String cid){
+    public void getEnrolledMembers(final Context context, final ListView listView, final String cid){
 
         mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -254,15 +257,16 @@ public class DatabaseHelper {
                 for(DataSnapshot rosterData: dataSnapshot.child(CIDS)
                         .child(cid).child(ROSTER).getChildren()){
 
-                    if((Boolean) rosterData.getValue()) {
-                        String name, uid;
+                    String name, uid;
 
-                        uid = rosterData.getKey().toString();
-                        name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME).getValue().toString();
+                    uid = rosterData.getKey().toString();
 
-                        users.add(new User(uid, name, false));
-                    }
+                    name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME).getValue().toString();
+
+                    users.add(new User(uid, name, false));
+
                 }
+
                 rosterAdapter = new RosterAdapter(context,users);
                 listView.setAdapter(rosterAdapter);
             }
