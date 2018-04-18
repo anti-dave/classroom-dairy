@@ -82,8 +82,9 @@ public class ClassInfoActivity extends AppCompatActivity {
         final LinearLayout attendanceButton = findViewById(R.id.attendance);
         attendanceButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent  syllabusIntent = new Intent(ClassInfoActivity.this, InfoActivity.class);
-                startActivity( syllabusIntent);
+                Intent attendanceIntent = new Intent(ClassInfoActivity.this, AttendanceActivity.class);
+                attendanceIntent.putExtra("CURRENT_CLASS", mCurrentClass);
+                startActivity(attendanceIntent);
             }
         });
 
