@@ -11,14 +11,13 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:allowBackup="true"
         android:name=".ClassManagerApp"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
@@ -29,55 +28,51 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".AssignmentActivity"
-            android:theme="@style/Tile3"/>
-
+        <activity
+            android:name=".AssignmentActivity"
+            android:theme="@style/Tile3" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
 
+        <service android:name=".NotificationIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".RegistrationActivity"
             android:label="@string/title_activity_login" />
-
         <activity
             android:name=".ClassAddListActivity"
             android:label="@string/title_activity_class_add_list"
-            android:theme="@style/Tile0"/>
-
+            android:theme="@style/Tile0" />
         <activity
             android:name=".ClassCreatorActivity"
             android:label="@string/title_activity_creator"
-            android:theme="@style/Tile0"/>
-
+            android:theme="@style/Tile0" />
         <activity
             android:name=".DiscussionBoardActivity"
             android:label="@string/title_discussion_board"
-            android:theme="@style/Tile2"/>
-
+            android:theme="@style/Tile2" />
         <activity
             android:name=".ClassActivity"
             android:label="My Classes"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Tile0">
-        </activity>
-
+            android:theme="@style/Tile0"></activity>
         <activity
             android:name=".CalendarActivity"
             android:label="Class Calendar"
-            android:parentActivityName=".MainActivity">
-        </activity>
-
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".ClassInfoActivity"
             android:parentActivityName=".ClassActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/ClassInfoTheme">
-        </activity>
-
-        <activity android:name=".InfoActivity"
+            android:theme="@style/ClassInfoTheme"></activity>
+        <activity
+            android:name=".InfoActivity"
             android:label="Information"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Tile5">
@@ -85,46 +80,35 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-
-        <activity android:name=".ChatActivity"
+        <activity
+            android:name=".ChatActivity"
             android:label="Chats"
-            android:theme="@style/Tile2">
-        </activity>
-
-        <activity android:name=".UploadSyllabusActivity"
+            android:theme="@style/Tile2"></activity>
+        <activity
+            android:name=".UploadSyllabusActivity"
             android:label="Upload Syllabus"
             android:parentActivityName=".ClassInfoActivity"
-            android:theme="@style/Tile0">
-        </activity>
-
+            android:theme="@style/Tile0"></activity>
         <activity
             android:name=".RosterActivity"
             android:label="Class Roster"
-            android:theme="@style/Tile5">
-        </activity>
-
+            android:theme="@style/Tile5"></activity>
         <activity
             android:name=".GradesActivity"
             android:label="My Grades"
-            android:theme="@style/Tile4">
-        </activity>
-
+            android:theme="@style/Tile4"></activity>
         <activity
             android:name=".MessageActivity"
             android:label="Messages"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/Tile3">
-        </activity>
-
+            android:theme="@style/Tile3"></activity>
         <activity
             android:name=".MessageListActivity"
             android:label="Messages"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/Tile3">
-        </activity>
-
-
-        <activity android:name=".SettingActivity"
+            android:theme="@style/Tile3"></activity>
+        <activity
+            android:name=".SettingActivity"
             android:label="Settings"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Tile4">
@@ -132,27 +116,25 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-
         <activity
             android:name=".NewAssignmentActivity"
             android:label="Create New Assignment"
             android:parentActivityName=".AssignmentActivity"
-            android:theme="@style/Tile3">
-        </activity>
-
+            android:theme="@style/Tile3"></activity>
         <activity
             android:name=".SubmitAssignmentActivity"
             android:label="Select File"
             android:parentActivityName=".AssignmentActivity"
-            android:theme="@style/Tile3">
-        </activity>
-
+            android:theme="@style/Tile3"></activity>
         <activity
             android:name=".GradeAssignmentActivity"
             android:label="Grade Assignments"
-            android:theme="@style/Tile4">
-        </activity>
+            android:theme="@style/Tile4"></activity>
 
+        <service
+            android:name=".NotificationService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

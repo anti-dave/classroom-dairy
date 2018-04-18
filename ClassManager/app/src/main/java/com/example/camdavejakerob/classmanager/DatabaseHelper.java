@@ -258,13 +258,15 @@ public class DatabaseHelper {
                         .child(cid).child(ROSTER).getChildren()){
 
                     String name, uid;
-
                     uid = rosterData.getKey().toString();
-
                     name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME).getValue().toString();
 
-                    users.add(new User(uid, name, false));
 
+                    if((Boolean) rosterData.getValue()) {
+                        users.add(new User(uid, name, false));
+                    } else {
+                        users.add(new User(uid, name, true));
+                    }
                 }
 
                 rosterAdapter = new RosterAdapter(context,users);

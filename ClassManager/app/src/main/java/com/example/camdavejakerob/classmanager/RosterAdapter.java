@@ -1,6 +1,8 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,8 @@ import java.util.List;
 
 public class RosterAdapter extends ArrayAdapter<User> {
 
+    private String TAG = "RosterAdapter";
+
     public RosterAdapter(Context context, List<User> users){
         super(context, 0, users);
     }
@@ -28,9 +32,14 @@ public class RosterAdapter extends ArrayAdapter<User> {
             if(user.isInstructor()) {
                 view = LayoutInflater.from(getContext()).inflate(
                         R.layout.roster_header,parent,false);
+                view.setBackgroundColor(Color.WHITE);
+
+                Log.d(TAG, "Instructor  Firing");
+
             } else {
                 view = LayoutInflater.from(getContext()).inflate(
                         R.layout.roster_item,parent,false);
+                Log.d(TAG, "Not Firing");
             }
         }
 
