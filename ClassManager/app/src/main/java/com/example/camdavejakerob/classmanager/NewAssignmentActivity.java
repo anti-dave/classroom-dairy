@@ -135,33 +135,16 @@ public class NewAssignmentActivity extends AppCompatActivity {
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
                             //tell them success!
                             Toast.makeText(NewAssignmentActivity.this, "Assignment created!", Toast.LENGTH_SHORT).show();
+
                             // update database
                             String date = (mDueDate.getMonth() + 1) + "/" + mDueDate.getDayOfMonth() + "/" + mDueDate.getYear();
 
                             Assignment assignment = new Assignment(date, "empty", mName.getText().toString());
                             DatabaseHelper databaseHelper = new DatabaseHelper();
                             databaseHelper.writeAssignment(mCurrentClass.getCourseID(),assignment);
-
-                            // set an event in the calendar
-                            /*---------------------------------------------- this needs to be deleted but im leaving it as a template for now
-                            CalendarActivity calendarActivity = new CalendarActivity();
-
-                            Event newAssignmentEvent = calendarActivity.buildEvent(
-                                    assignment.getName(),mCurrentClass.getRoom(),"assignment due");
-
-                            DateTime start, end;
-                            start = new DateTime(mDueDate.getYear() + "-" + mDueDate.getMonth() + "-" +
-                                    (mDueDate.getDayOfMonth() + 1) + "T09:00:00-07:00");
-                            end = new DateTime(mDueDate.getYear() + "-" + mDueDate.getMonth() + "-" +
-                                    (mDueDate.getDayOfMonth() + 1) + "T17:00:00-07:00");
-                            GeneralTime alertTime = calendarActivity.buildTime(start, end,"America/New_York");
-
-                            try {
-                                calendarActivity.addCalendarEvent(newAssignmentEvent, alertTime, );
-                            }
-                            */
 
                             // return to AssignmentActivity
                             NewAssignmentActivity.this.finish();

@@ -104,7 +104,7 @@ public class AssignmentActivity extends AppCompatActivity {
                     AlertDialog.Builder studentAlertBuilder = new AlertDialog.Builder(AssignmentActivity.this);
                     studentAlertBuilder.setCancelable(true)
                             .setTitle(assignmentName.getText().toString())
-                            .setMessage("View assignment or submit work?")
+                            //.setMessage("View assignment or submit work?")
                             .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -144,10 +144,14 @@ public class AssignmentActivity extends AppCompatActivity {
                                             }
                                         });
                                 }
-                            });
-
-                    AlertDialog studentAlert = studentAlertBuilder.create();
-                    studentAlert.show();
+                            })
+                            .setNegativeButton("Set Reminder", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    DatabaseHelper databaseHelper = new DatabaseHelper();
+                                    databaseHelper.setAssignmentCalendarAlert(AssignmentActivity.this, mCurUser.getUserId(),mCurrentClass,assignmentName.getText().toString());
+                                }
+                            }).show();
                 }
             }
         });
