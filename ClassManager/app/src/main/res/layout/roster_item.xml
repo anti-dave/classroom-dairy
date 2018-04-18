@@ -27,16 +27,13 @@
             android:visibility="gone"
             android:text="class_id"
             />
-        <!-- do we need this?
+
         <TextView
-            android:id="@+id/roster_item_email"
-            android:textSize="18dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="name@student.uml.edu"
-            android:textColor="@android:color/black"
-            android:textStyle="italic"/>
-        -->
+            android:visibility="gone"
+            android:id="@+id/chatId" />
+
     </LinearLayout>
 
 </LinearLayout>

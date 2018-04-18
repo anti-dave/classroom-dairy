@@ -1,14 +1,18 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -159,4 +163,78 @@ public class ClassInfoActivity extends AppCompatActivity {
             }
         });
     }
+    /**
+     * Creates the menu with oncreate.
+     *
+     * @param menu
+     * @return bool on whether it was successful.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        final User user = ((ClassManagerApp) ClassInfoActivity.this.getApplication()).getCurUser();
+
+        //if instructor do instructor
+        if( user.isInstructor() ) {
+            getMenuInflater().inflate(R.menu.teacher_class_info_dropdown, menu);
+        } else {
+            //if teacher do teacher
+            getMenuInflater().inflate(R.menu.student_class_info_dropdown, menu);
+        }
+        return true;
+    }
+
+    /**
+     * Logic for when menu is pressed.
+     *
+     * @param item
+     * @return bool on whether it was successful.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        DatabaseHelper database = new DatabaseHelper();
+
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+                    // This activity is NOT part of this app's task, so create a new task
+                    // when navigating up, with a synthesized back stack.
+                    TaskStackBuilder.create(this)
+                            // Add all of this activity's parents to the back stack
+                            .addNextIntentWithParentStack(upIntent)
+                            // Navigate up to the closest parent
+                            .startActivities();
+                } else {
+                    // This activity is part of this app's task, so simply
+                    // navigate up to the logical parent activity.
+                    NavUtils.navigateUpTo(this, upIntent);
+                }
+                return true;
+
+            case R.id.action_cancel_class:
+                //add class action
+                Toast.makeText(ClassInfoActivity.this,
+                        "Delete Class",
+                        Toast.LENGTH_LONG)
+                        .show();
+
+                database.deleteClass( mCurrentClass.getCourseID(), FirebaseAuth.getInstance().getCurrentUser().getUid() );
+                finish();
+
+            case R.id.action_drop_class:
+                //add class action
+                Toast.makeText(ClassInfoActivity.this,
+                        "Drop Class",
+                        Toast.LENGTH_LONG)
+                        .show();
+
+                database.deleteStudentFromClass( mCurrentClass.getCourseID(), FirebaseAuth.getInstance().getCurrentUser().getUid() );
+                finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

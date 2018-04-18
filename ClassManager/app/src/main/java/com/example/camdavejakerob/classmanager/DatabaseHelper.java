@@ -16,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by Rob on 3/13/2018.
@@ -30,6 +31,10 @@ public class DatabaseHelper {
     private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor", INSTRUCTOR_PROMPTED = "Instructor_Prompt_Bool";
     private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades", SUBMISSIONS = "submissions";
     private String TAG = "DATABASE_HELPER";
+    private String MESSAGE_ROOMS = "MessageRooms";
+    private String MESSAGE_TEXT = "messageText";
+    private String MESSAGE_TIME = "messageTime";
+    private String DISCUSSION_BOARD = "Discussion Boards";
 
     private FirebaseDatabase mDatabase;
     private FirebaseStorage mStorage;
@@ -46,6 +51,11 @@ public class DatabaseHelper {
      *
      ****************************************************************************************************************/
 
+    /**
+     * This updates the global user variable that is used to tell if the current user is an instructor or student
+     *
+     * @param context the context of the activity that the app is currently in
+     */
     public void getCurrentUser(final Context context){
         String userId = FirebaseAuth.getInstance().getUid();
         if(userId == null){ return; }
@@ -78,31 +88,54 @@ public class DatabaseHelper {
         });
     }
 
-    public void getAllMessageRecipients(final Context context, final ListView listView, final String uid){
+    /**
+     * Gathers all the recipients the user has chats with and sets an adapter to populate a listview with them
+     *
+     * @param context context of the activity that the app is currently in
+     * @param listView ListView intended to display the information
+     * @param uid id of the user currently runnign the app
+     */
+    public void getAllChats(final Context context, final ListView listView, final String uid){
 
         mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 MessageListAdapter chatAdapter;
-                final ArrayList<User> users = new ArrayList<User>();
+                final ArrayList<User> chats = new ArrayList<User>();
 
                 for(DataSnapshot chatData: dataSnapshot.child(UIDS)
                         .child(uid).child(MESSAGES).getChildren()){
 
-                        String name, recipientUid;
+                    String recipientName, recipientUserId, lastMessageText, lastMessageTime, chatId;
 
-                        recipientUid = chatData.getKey().toString();
-                        name = dataSnapshot
-                                .child(UIDS)
-                                .child(recipientUid)
-                                .child(USER_NAME)
-                                .getValue()
-                                .toString();
+                    recipientUserId = chatData.getKey();
+                    chatId = chatData.getValue().toString();
+                    recipientName = dataSnapshot
+                            .child(UIDS)
+                            .child(recipientUserId)
+                            .child(USER_NAME)
+                            .getValue()
+                            .toString();
 
-                        users.add(new User(uid, name, false));
+                    lastMessageText = "";
+                    lastMessageTime = "";
+
+                    if(dataSnapshot.child(MESSAGE_ROOMS).child(chatId).hasChildren() ) {
+
+                        Iterable<DataSnapshot> messages;
+                        messages = dataSnapshot.child(MESSAGE_ROOMS).child(chatId).getChildren();
+
+                        Iterator<DataSnapshot> lastMessageIter = messages.iterator();
+                        DataSnapshot lastMessage = lastMessageIter.next();
+
+                        lastMessageText = lastMessage.child(MESSAGE_TEXT).getValue().toString();
+                        lastMessageTime = lastMessage.child(MESSAGE_TIME).getValue().toString();
+                    }
+
+                    chats.add(new User(uid, recipientName, chatId, lastMessageText, lastMessageTime));
                 }
-                chatAdapter = new MessageListAdapter(context,users);
+                chatAdapter = new MessageListAdapter(context, chats);
                 listView.setAdapter(chatAdapter);
             }
 
@@ -113,34 +146,14 @@ public class DatabaseHelper {
         });
     }
 
-    public void getChatKeyFromUid(final Context context, final String recipientUid){
-        String userId = FirebaseAuth.getInstance().getUid();
-        if(userId == null){ return; }
-
-        //reference to all user id's
-        mDatabase.getReference(UIDS)
-                .child(userId)
-                .child(MESSAGES)
-                .child(recipientUid)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String uid, name, chatId;
-
-                uid = FirebaseAuth.getInstance().getUid();
-                name = dataSnapshot.child(UIDS).getValue().toString();
-                chatId = dataSnapshot.child(UIDS).getValue().toString();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: " + databaseError.toString());
-            }
-        });
-    }
-
+    /**
+     * populates a list view with all of the submitted work for a given assignment
+     *
+     * @param cid class id that the assignment is for
+     * @param assignmentName the name of the assignment
+     * @param listView ListView intended to display the information
+     * @param context context of the activity that the app is currently in
+     */
     public void getAllAssignmentSubmissions(final String cid, final String assignmentName, final ListView listView, final Context context){
         mDatabase.getReference().addValueEventListener(new ValueEventListener() {
             @Override
@@ -222,6 +235,13 @@ public class DatabaseHelper {
         });
     }
 
+    /**
+     * used to show all of the students enrolled in a given class
+     *
+     * @param context context of the activity that the app is currently in
+     * @param listView ListView intended to display the information
+     * @param cid the class id for the desired information
+     */
     public void getEnrolledStudents(final Context context, final ListView listView, final String cid){
 
         mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -255,11 +275,12 @@ public class DatabaseHelper {
     }
 
     /**
+     * Displays the assignment name and the grade of each assignment for the given user
      *
-     * @param context
-     * @param listView
-     * @param uid
-     * @param cid
+     * @param context context of the activity that the app is currently in
+     * @param listView ListView intended to display the information
+     * @param uid the user id who's grades you are looking for
+     * @param cid the class id that you are currently viewing
      */
     public void getUserGrades(final Context context, final ListView listView, final String uid, final String cid){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
@@ -296,11 +317,12 @@ public class DatabaseHelper {
     }
 
     /**
+     *  populates the given ListView with the assignments for the given class and displays grades, due date and name of the assignment
      *
-     * @param context
-     * @param listView
-     * @param uid
-     * @param cid
+     * @param context context of the activity that the app is currently in
+     * @param listView ListView intended to display the information
+     * @param uid user id of the user requesting the information
+     * @param cid class id of the class for which you desire this information
      */
     public void getUserAssignment(final Context context, final ListView listView, final String uid, final String cid){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
@@ -338,8 +360,8 @@ public class DatabaseHelper {
     /**
      * updates a list view with all available classes in the database
      *
-     * @param context
-     * @param listView
+     * @param context context of the activity that the app is currently in
+     * @param listView the ListView intended to display the information
      */
     public void updateListViewListOfClasses(final Context context, final ListView listView){
         mDatabase.getReference(CIDS).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -375,10 +397,11 @@ public class DatabaseHelper {
     }
 
     /**
+     * This populates a given ListView with all of classes that the given user is enrolled in
      *
-     * @param context
-     * @param listView
-     * @param uid
+     * @param context context to the activity the app is currently in currently
+     * @param listView the ListView which you intend to populate
+     * @param uid the user id you wish to get the information for
      */
     public void updateListViewUserClasses(final Context context, final ListView listView, final String uid){
         mDatabase.getReference().addValueEventListener(new ValueEventListener() {
@@ -458,6 +481,61 @@ public class DatabaseHelper {
     }
 
     /**
+     * @param cid a string of the class number
+     * @param uid a string of the user id
+     *
+     *  This method removes the user id from the roster list and the class id from the classes list of the user
+     *
+     */
+    public void deleteStudentFromClass(final String cid, final String uid){
+        DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
+        DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
+        classRef.child(ROSTER).child(uid).removeValue();
+        userRef.child(CLASSES).child(cid).removeValue();
+
+        //
+    }
+
+    /**
+     * @param cid a string of the class number
+     * @param uid a string of the Instructors user id
+     *
+     *  This method removes the entirity of the class and everything associated with it
+     *
+     */
+    public void deleteClass(final String cid, final String uid){
+        DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
+        DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
+
+        //Delete Discussion Board
+        mDatabase.getReference(DISCUSSION_BOARD).child(cid).removeValue();
+
+        //Delete All UIDS in Roster
+        classRef.child(ROSTER).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot classSnapshot: dataSnapshot.getChildren()){
+
+                    String deleteUid;
+                    deleteUid = classSnapshot.getKey();
+                    deleteStudentFromClass(cid, deleteUid);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+
+        //Delete from Profs Classes
+        userRef.child(CLASSES).child(cid).removeValue();
+
+        //Delete the CID
+        mDatabase.getReference(CIDS).child(cid).removeValue();
+    }
+
+    /**
      * This method assumes all data was validated before its called
      *
      * @param name: a string of the classes title
@@ -498,6 +576,13 @@ public class DatabaseHelper {
 
     }
 
+    /**
+     * calls the writeNewUser method to add the user to the database as well as prompts the current user to
+     *  choose if they are an instructor or a student
+     *
+     * @param context context of the activity the app is currently in
+     * @param user the user data for the user trying to register in the app
+     */
     public void addUser(final Context context, final FirebaseUser user){
 
         mDatabase.getReference(UIDS).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -535,13 +620,14 @@ public class DatabaseHelper {
 
     }
 
-    public void updateUserToInstructor(String uid, boolean bool){
-        mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).setValue(bool);
-        mDatabase.getReference(UIDS).child(uid).child(INSTRUCTOR).child(INSTRUCTOR_PROMPTED).setValue(true);
-        Log.d(TAG, "Instructor set ");
-    }
-
-
+    /**
+     * adds the students submission to the database with the url to download
+     *
+     * @param uid the user id of the student submitting the work
+     * @param cid the class for which the assignment is being submitted
+     * @param assignmentName the name of the assignment that the work is being submitted for
+     * @param downloadUrl the url to download the work from Firebase Storage
+     */
     public void writeAssignmentSubmission(String uid, String cid, String assignmentName, String downloadUrl){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS).child(assignmentName)
                 .child(SUBMISSIONS).child(uid).setValue(downloadUrl);

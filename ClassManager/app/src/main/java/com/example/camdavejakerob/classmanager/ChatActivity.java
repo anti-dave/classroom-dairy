@@ -1,33 +1,24 @@
 package com.example.camdavejakerob.classmanager;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-import java.security.MessageDigestSpi;
 import java.util.Random;
 
-import static java.lang.Math.random;
 
 /**
  * Created by Davey on 2/27/2018.
@@ -36,31 +27,22 @@ import static java.lang.Math.random;
 public class ChatActivity extends AppCompatActivity {
 
     private static final String TAG = "ChatActivity";
-    private int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<ChatMessage> adapter;
     private String ChatKeys = "Chat Keys";
     private String MessageRoom = "MessageRooms";
     private String Messages = "Messages";
     private String CIDS = "cids", UIDS = "uids";
-    String AllUsers = "All Users";
-
-    /** Content URI for the chats (null if it's a new chat) */
-    private Uri mCurrentChatUri;
+    private String key = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        // See which chat this is & get End User from intent
         Intent intent = getIntent();
-        mCurrentChatUri = intent.getData();
         final String chatId = intent.getStringExtra("chatId");
         final String endUserId = intent.getStringExtra("recipientUid");
         final String endUserName = intent.getStringExtra("recipientName");
-
-        Integer rand = new Random().nextInt();
-        final String key = rand.toString();
 
         DatabaseReference db = FirebaseDatabase
                 .getInstance()
@@ -77,12 +59,11 @@ public class ChatActivity extends AppCompatActivity {
                         .child(UIDS)
                         .child(endUserId);
 
-        //may have to add a mechanism that checks for class discussion boards
-        //Check if the recipients name is in the users message queue
-        //if(user.child(Messages).child( recipient.child("name").toString() ) == null ) {
-        if( chatId == null ) {
+        //Check if the recipient has been messaged prior
+        if( chatId == null || chatId.isEmpty()) {
 
-            //key = rand.toString();
+            Integer rand = new Random().nextInt();
+            key = rand.toString();
 
             //Push key into message queue of recipients chat
             user
@@ -100,6 +81,7 @@ public class ChatActivity extends AppCompatActivity {
 
             displayChatMessages(key);
         } else {
+            key = chatId;
             //Retrieve key from message queue with recipients name on it
             displayChatMessages(key);
         }
@@ -133,20 +115,20 @@ public class ChatActivity extends AppCompatActivity {
     private void displayChatMessages(String chatId) {
         ListView listOfMessages = (ListView)findViewById(R.id.list_of_messages);
 
-            Query ref =
-                    FirebaseDatabase
-                            .getInstance()
-                            .getReference(MessageRoom)
-                            .child(chatId);
+        Query ref =
+                FirebaseDatabase
+                        .getInstance()
+                        .getReference(MessageRoom)
+                        .child(chatId);
 
-            FirebaseListOptions<ChatMessage> options =
-                    new FirebaseListOptions.Builder<ChatMessage>()
-                            .setLayout(R.layout.chat_message)
-                            .setQuery(ref, ChatMessage.class)
-                            .setLifecycleOwner(this)
-                            .build();
+        FirebaseListOptions<ChatMessage> options =
+                new FirebaseListOptions.Builder<ChatMessage>()
+                        .setLayout(R.layout.chat_message)
+                        .setQuery(ref, ChatMessage.class)
+                        .setLifecycleOwner(this)
+                        .build();
 
-            adapter = new FirebaseListAdapter<ChatMessage>(options) {
+        adapter = new FirebaseListAdapter<ChatMessage>(options) {
 
             @Override
             //populateView as alternative to getView

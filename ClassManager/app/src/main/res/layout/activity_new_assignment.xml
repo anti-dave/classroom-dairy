@@ -15,14 +15,14 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:text="Assignment Name: "
+            android:text="@string/assignment_name"
             android:textColor="@android:color/black" />
 
         <EditText
             android:id="@+id/new_assignment_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="homework/project"/>
+            android:hint="@string/homework_project__hint"/>
 
     </LinearLayout>
 
@@ -36,14 +36,14 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:text="Due Date: "
+            android:text="@string/due_date"
             android:textColor="@android:color/black" />
 
         <EditText
             android:id="@+id/new_assignment_due_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="11/8/2016"
+            android:hint="@string/date_hint"
             android:inputType="date"/>
 
     </LinearLayout>
@@ -56,7 +56,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Assignment: "
+            android:text="@string/assignment_in_upload"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@android:color/black" />
@@ -85,7 +85,7 @@
                 android:id="@+id/new_assignment_find_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="find file"
+                android:text="@string/find_file"
                 />
 
         </LinearLayout>
@@ -109,7 +109,7 @@
             android:id="@+id/new_assignment_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="add"/>
+            android:text="@string/add"/>
 
     </LinearLayout>
 
