@@ -1,6 +1,8 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Context;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,33 +17,36 @@ import java.util.List;
 
 public class MessageListAdapter extends ArrayAdapter<User> {
 
-    public MessageListAdapter(Context context, List<User> users) {
-        super(context, 0, users);
+    public MessageListAdapter(Context context, List<User> chats) {
+        super(context, 0, chats);
     }
+
+    private String TAG = "This Activity";
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        User user = getItem(position);
+        User chat = getItem(position);
 
         if (view == null) {
             view = LayoutInflater.from(getContext()).inflate(
                     R.layout.message_list_item, parent, false);
         }
 
-        DatabaseHelper mDatabase = new DatabaseHelper();
-
-        //TextView chatId = (TextView) view.findViewById(R.id.chatId);
-
-        /*uid.setText(
-                mDatabase.getChatKeyFromUid(
-                        MessageListAdapter,
-                        user.getUserId().toString() ) );*/
+        TextView chatId = (TextView) view.findViewById(R.id.chatId);
+        chatId.setText(chat.getChatId());
 
         TextView uid = (TextView) view.findViewById(R.id.uid);
-        uid.setText(user.getUserId());
+        uid.setText(chat.getUserId());
 
         TextView name = (TextView) view.findViewById(R.id.chatName);
-        name.setText(user.getName());
+        name.setText(chat.getName());
+
+        TextView lastMesageText = (TextView) view.findViewById(R.id.last_message);
+        lastMesageText.setText(chat.getLastMessageText());
+
+        TextView lastMesageTime = (TextView) view.findViewById(R.id.last_message_time);
+        lastMesageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)",
+                Long.parseLong(chat.getLastMessageTime()) ));
 
         return view;
     }

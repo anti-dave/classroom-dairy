@@ -5,7 +5,7 @@
     tools:context=".ClassActivityDropdown">
 
     <item
-        android:id="@+id/action_create_class"
-        android:title="@string/action_create_class"
+        android:id="@+id/action_cancel_class"
+        android:title="@string/action_cancel_class"
         app:showAsAction="never" />
 </menu>

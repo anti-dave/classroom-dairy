@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         messagesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 updateCurUserData();
-                Intent messagesIntent = new Intent(MainActivity.this, MessageActivity.class);
+                Intent messagesIntent = new Intent(MainActivity.this, MessageListActivity.class);
                 startActivity(messagesIntent);
             }
         });

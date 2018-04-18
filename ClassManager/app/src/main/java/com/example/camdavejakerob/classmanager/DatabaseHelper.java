@@ -16,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by Rob on 3/13/2018.
@@ -30,6 +31,10 @@ public class DatabaseHelper {
     private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor", INSTRUCTOR_PROMPTED = "Instructor_Prompt_Bool";
     private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades", SUBMISSIONS = "submissions";
     private String TAG = "DATABASE_HELPER";
+    private String MESSAGE_ROOMS = "MessageRooms";
+    private String MESSAGE_TEXT = "messageText";
+    private String MESSAGE_TIME = "messageTime";
+    private String DISCUSSION_BOARD = "Discussion Boards";
 
     private FirebaseDatabase mDatabase;
     private FirebaseStorage mStorage;
@@ -84,70 +89,54 @@ public class DatabaseHelper {
     }
 
     /**
+     * Gathers all the recipients the user has chats with and sets an adapter to populate a listview with them
      *
      * @param context context of the activity that the app is currently in
      * @param listView ListView intended to display the information
-     * @param uid
+     * @param uid id of the user currently runnign the app
      */
-    public void getAllMessageRecipients(final Context context, final ListView listView, final String uid){
+    public void getAllChats(final Context context, final ListView listView, final String uid){
 
         mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 MessageListAdapter chatAdapter;
-                final ArrayList<User> users = new ArrayList<User>();
+                final ArrayList<User> chats = new ArrayList<User>();
 
                 for(DataSnapshot chatData: dataSnapshot.child(UIDS)
                         .child(uid).child(MESSAGES).getChildren()){
 
-                        String name, recipientUid;
+                    String recipientName, recipientUserId, lastMessageText, lastMessageTime, chatId;
 
-                        recipientUid = chatData.getKey().toString();
-                        name = dataSnapshot
-                                .child(UIDS)
-                                .child(recipientUid)
-                                .child(USER_NAME)
-                                .getValue()
-                                .toString();
+                    recipientUserId = chatData.getKey();
+                    chatId = chatData.getValue().toString();
+                    recipientName = dataSnapshot
+                            .child(UIDS)
+                            .child(recipientUserId)
+                            .child(USER_NAME)
+                            .getValue()
+                            .toString();
 
-                        users.add(new User(uid, name, false));
+                    lastMessageText = "";
+                    lastMessageTime = "";
+
+                    if(dataSnapshot.child(MESSAGE_ROOMS).child(chatId).hasChildren() ) {
+
+                        Iterable<DataSnapshot> messages;
+                        messages = dataSnapshot.child(MESSAGE_ROOMS).child(chatId).getChildren();
+
+                        Iterator<DataSnapshot> lastMessageIter = messages.iterator();
+                        DataSnapshot lastMessage = lastMessageIter.next();
+
+                        lastMessageText = lastMessage.child(MESSAGE_TEXT).getValue().toString();
+                        lastMessageTime = lastMessage.child(MESSAGE_TIME).getValue().toString();
+                    }
+
+                    chats.add(new User(uid, recipientName, chatId, lastMessageText, lastMessageTime));
                 }
-                chatAdapter = new MessageListAdapter(context,users);
+                chatAdapter = new MessageListAdapter(context, chats);
                 listView.setAdapter(chatAdapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: " + databaseError.toString());
-            }
-        });
-    }
-
-    /**
-     *
-     * @param context context of the activity that the app is currently in
-     * @param recipientUid
-     */
-    public void getChatKeyFromUid(final Context context, final String recipientUid){
-        String userId = FirebaseAuth.getInstance().getUid();
-        if(userId == null){ return; }
-
-        //reference to all user id's
-        mDatabase.getReference(UIDS)
-                .child(userId)
-                .child(MESSAGES)
-                .child(recipientUid)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String uid, name, chatId;
-
-                uid = FirebaseAuth.getInstance().getUid();
-                name = dataSnapshot.child(UIDS).getValue().toString();
-                chatId = dataSnapshot.child(UIDS).getValue().toString();
-
             }
 
             @Override
@@ -489,6 +478,61 @@ public class DatabaseHelper {
         DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
         classRef.child(ROSTER).child(uid).setValue(true);
         userRef.child(CLASSES).child(cid).setValue(true);
+    }
+
+    /**
+     * @param cid a string of the class number
+     * @param uid a string of the user id
+     *
+     *  This method removes the user id from the roster list and the class id from the classes list of the user
+     *
+     */
+    public void deleteStudentFromClass(final String cid, final String uid){
+        DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
+        DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
+        classRef.child(ROSTER).child(uid).removeValue();
+        userRef.child(CLASSES).child(cid).removeValue();
+
+        //
+    }
+
+    /**
+     * @param cid a string of the class number
+     * @param uid a string of the Instructors user id
+     *
+     *  This method removes the entirity of the class and everything associated with it
+     *
+     */
+    public void deleteClass(final String cid, final String uid){
+        DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
+        DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
+
+        //Delete Discussion Board
+        mDatabase.getReference(DISCUSSION_BOARD).child(cid).removeValue();
+
+        //Delete All UIDS in Roster
+        classRef.child(ROSTER).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot classSnapshot: dataSnapshot.getChildren()){
+
+                    String deleteUid;
+                    deleteUid = classSnapshot.getKey();
+                    deleteStudentFromClass(cid, deleteUid);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+
+        //Delete from Profs Classes
+        userRef.child(CLASSES).child(cid).removeValue();
+
+        //Delete the CID
+        mDatabase.getReference(CIDS).child(cid).removeValue();
     }
 
     /**

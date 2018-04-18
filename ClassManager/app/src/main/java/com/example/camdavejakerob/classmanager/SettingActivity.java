@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -19,14 +20,23 @@ public class SettingActivity extends AppCompatActivity {
 
     private static final int SIGN_IN_REQUEST_CODE = 1;
 
-    private DatabaseHelper databaseHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
         Button logoutButton = (Button) findViewById(R.id.logout);
+
+        final User user = ((ClassManagerApp) SettingActivity.this.getApplication()).getCurUser();
+
+        TextView account_level = findViewById(R.id.account_level);
+
+        //if instructor do instructor
+        if( user.isInstructor() ) {
+            account_level.setText("Teacher");
+        } else {
+            account_level.setText("Student");
+        }
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

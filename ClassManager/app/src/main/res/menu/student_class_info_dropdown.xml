@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ClassActivityDropdown">
+    tools:context=".StudenyClassActivityDropdown">
 
     <item
-        android:id="@+id/action_create_class"
-        android:title="@string/action_create_class"
+        android:id="@+id/action_drop_class"
+        android:title="@string/action_drop_class"
         app:showAsAction="never" />
 </menu>

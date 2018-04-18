@@ -6,22 +6,15 @@ import android.os.Parcelable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 
 
 public class ClassActivity extends AppCompatActivity {
@@ -110,16 +103,6 @@ public class ClassActivity extends AppCompatActivity {
                     // navigate up to the logical parent activity.
                     NavUtils.navigateUpTo(this, upIntent);
                 }
-                return true;
-
-            case R.id.action_remove_class:
-                //add class action
-                Toast.makeText(ClassActivity.this,
-                        "Add Class",
-                        Toast.LENGTH_LONG)
-                        .show();
-                Intent addClassIntent = new Intent(ClassActivity.this, ClassAddListActivity.class);
-                startActivity(addClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
                 return true;
 
             case R.id.action_add_class:

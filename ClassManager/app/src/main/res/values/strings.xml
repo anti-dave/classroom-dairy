@@ -45,6 +45,7 @@
     <string name="action_create_class">Create Class</string>
     <string name="action_remove_class">Remove Class</string>
     <string name="action_drop_class">Drop Class</string>
+    <string name="action_cancel_class">Delete Class</string>
 
     <!-- Strings related to Class Editor Activity  -->
     <string name="class_name_hint">Class</string>
@@ -55,6 +56,7 @@
 
     <!-- Utility -->
     <string name="no_internet_connection">No Internet</string>
+    <string name="account_level_prompt">Account Level: </string>
 
     <!-- Strings related to Calendar Activity  -->
     <string name="calendarAccountLabel">Google Account: </string>
