@@ -1,12 +1,15 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -181,7 +184,7 @@ public class CalendarActivity extends AppCompatActivity
 
         try
         {
-            addCalendarEvent(event, time, "person@gmail.com");
+            addCalendarEvent(CalendarActivity.this, event, time, "person@gmail.com");
 
         } catch (IOException e)
         {
@@ -202,11 +205,11 @@ public class CalendarActivity extends AppCompatActivity
                 + ((hour>9)? hour : "0" + hour) + ":";
     }*/
 
-    public void addCalendarEvent(Event event, GeneralTime time, String userEmail) throws IOException
+    public void addCalendarEvent(Context context, Event event, GeneralTime time, String userEmail) throws IOException
     {
         if (accountCredential == null)
             accountCredential = GoogleAccountCredential.usingOAuth2(
-            getApplicationContext(), Arrays.asList(SCOPES))
+                    context, Arrays.asList(SCOPES))
             .setBackOff(new ExponentialBackOff());
 
         if (service == null)

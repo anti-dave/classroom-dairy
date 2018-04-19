@@ -1,11 +1,14 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.ListView;
 
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.Event;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -15,8 +18,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.TimeZone;
 
 /**
  * Created by Rob on 3/13/2018.
@@ -26,10 +35,13 @@ public class DatabaseHelper {
 
     //Strings used frequently for accessing data in Firebase
     private String CIDS = "cids", UIDS = "uids";
-    private String ROSTER = "roster", DAYS = "daysOfClass", TIME_END = "endTime", TIME_START = "startTime";
+    private String ROSTER = "roster", DAYS = "daysOfClass", TIME_END = "endTime",
+            TIME_START = "startTime";
     private String SYLLABUS = "syllabus", MESSAGES = "Messages", CLASS_NAME = "name", ROOM = "room";
-    private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor", INSTRUCTOR_PROMPTED = "Instructor_Prompt_Bool";
-    private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades", SUBMISSIONS = "submissions";
+    private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor",
+            INSTRUCTOR_PROMPTED = "Instructor_Prompt_Bool";
+    private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades",
+            SUBMISSIONS = "submissions";
     private String TAG = "DATABASE_HELPER";
     private String MESSAGE_ROOMS = "MessageRooms";
     private String MESSAGE_TEXT = "messageText";
@@ -60,7 +72,8 @@ public class DatabaseHelper {
         String userId = FirebaseAuth.getInstance().getUid();
         if(userId == null){ return; }
 
-        mDatabase.getReference(UIDS).child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.getReference(UIDS).child(userId).
+                addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -88,12 +101,58 @@ public class DatabaseHelper {
         });
     }
 
+
+    public void setAssignmentCalendarAlert(final Context context, final String uid,
+                                           final Class curClass, final String assignment){
+
+        mDatabase.getReference(CIDS).child(curClass.getCourseID())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                CalendarActivity calendarActivity = new CalendarActivity();
+
+                Event newAssignmentEvent = calendarActivity.buildEvent(
+                        assignment, curClass.getRoom(),"assignment due");
+
+                DateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy");
+                DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String dueDate = dataSnapshot.child(ASSIGNMENTS).child(assignment)
+                        .child(DUE_DATE).getValue().toString();
+                try {
+
+                    Date date = inputFormat.parse(dueDate);
+                    String outputDateStr = outputFormat.format(date);
+                    DateTime start = new DateTime(outputDateStr + "T09:00:00-07:00");
+                    DateTime end = new DateTime(outputDateStr + "T17:00:00-07:00");
+
+                    GeneralTime alertTime = calendarActivity.buildTime(start, end,
+                            TimeZone.getDefault().toString());
+
+                    calendarActivity.addCalendarEvent(context, newAssignmentEvent, alertTime,
+                            FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
+    }
+
     /**
      * Gathers all the recipients the user has chats with and sets an adapter to populate a listview with them
      *
      * @param context context of the activity that the app is currently in
      * @param listView ListView intended to display the information
-     * @param uid id of the user currently runnign the app
+     * @param uid id of the user currently running the app
      */
     public void getAllChats(final Context context, final ListView listView, final String uid){
 
@@ -154,7 +213,9 @@ public class DatabaseHelper {
      * @param listView ListView intended to display the information
      * @param context context of the activity that the app is currently in
      */
-    public void getAllAssignmentSubmissions(final String cid, final String assignmentName, final ListView listView, final Context context){
+    public void getAllAssignmentSubmissions(final String cid, final String assignmentName,
+                                            final ListView listView, final Context context){
+
         mDatabase.getReference().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -186,13 +247,15 @@ public class DatabaseHelper {
                             // set the text view giving the affirmative
                             submitted = true;
                             // set the invisible textview with the download path
-                            path = assignmentSnapshot.child(SUBMISSIONS).child(uid).getValue().toString();
+                            path = assignmentSnapshot.child(SUBMISSIONS).child(uid)
+                                    .getValue().toString();
 
                             // check for grade
                             if(assignmentSnapshot.child(GRADES).child(uid).exists()) {
                                 //IF YES
                                 // show grade
-                                grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+                                grade = assignmentSnapshot.child(GRADES).child(uid)
+                                        .getValue().toString();
                             } else {
                                 //IF NO
                                 // say its not graded yet
@@ -209,7 +272,8 @@ public class DatabaseHelper {
                             if(assignmentSnapshot.child(GRADES).child(uid).exists()) {
                                 //IF YES
                                 // show grade
-                                grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+                                grade = assignmentSnapshot.child(GRADES).child(uid)
+                                        .getValue().toString();
                             } else {
                                 //IF NO
                                 // say its not graded yet
@@ -230,7 +294,8 @@ public class DatabaseHelper {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG,"onCancelled: getAllAssignmentSubmissions " + databaseError.toString());
+                Log.d(TAG,"onCancelled: getAllAssignmentSubmissions "
+                        + databaseError.toString());
             }
         });
     }
@@ -242,7 +307,8 @@ public class DatabaseHelper {
      * @param listView ListView intended to display the information
      * @param cid the class id for the desired information
      */
-    public void getEnrolledStudents(final Context context, final ListView listView, final String cid){
+    public void getEnrolledStudents(final Context context, final ListView listView,
+                                    final String cid){
 
         mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -258,7 +324,8 @@ public class DatabaseHelper {
                         String name, uid;
 
                         uid = rosterData.getKey().toString();
-                        name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME).getValue().toString();
+                        name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME)
+                                .getValue().toString();
 
                         users.add(new User(uid, name, false));
                     }
@@ -282,7 +349,9 @@ public class DatabaseHelper {
      * @param uid the user id who's grades you are looking for
      * @param cid the class id that you are currently viewing
      */
-    public void getUserGrades(final Context context, final ListView listView, final String uid, final String cid){
+    public void getUserGrades(final Context context, final ListView listView,
+                              final String uid, final String cid){
+
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -300,7 +369,8 @@ public class DatabaseHelper {
                             if(assignmentSnapshot.child(GRADES).child(uid).getValue() == null){
                                 grade = "This has not been graded yet.";
                             } else {
-                                grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+                                grade = assignmentSnapshot.child(GRADES).child(uid)
+                                        .getValue().toString();
                             }
 
                             assignments.add(new Assignment(dueDate,grade,name));
@@ -317,14 +387,16 @@ public class DatabaseHelper {
     }
 
     /**
-     *  populates the given ListView with the assignments for the given class and displays grades, due date and name of the assignment
+     *  populates the given ListView with the assignments for the given class and displays grades,
+     *      due date and name of the assignment
      *
      * @param context context of the activity that the app is currently in
      * @param listView ListView intended to display the information
      * @param uid user id of the user requesting the information
      * @param cid class id of the class for which you desire this information
      */
-    public void getUserAssignment(final Context context, final ListView listView, final String uid, final String cid){
+    public void getUserAssignment(final Context context, final ListView listView,
+                                  final String uid, final String cid){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -342,7 +414,8 @@ public class DatabaseHelper {
                             if(assignmentSnapshot.child(GRADES).child(uid).getValue() == null){
                                 grade = "not yet graded";
                             } else {
-                                grade = assignmentSnapshot.child(GRADES).child(uid).getValue().toString();
+                                grade = assignmentSnapshot.child(GRADES).child(uid)
+                                        .getValue().toString();
                             }
 
                             assignments.add(new Assignment(dueDate,grade,name));
@@ -403,7 +476,8 @@ public class DatabaseHelper {
      * @param listView the ListView which you intend to populate
      * @param uid the user id you wish to get the information for
      */
-    public void updateListViewUserClasses(final Context context, final ListView listView, final String uid){
+    public void updateListViewUserClasses(final Context context, final ListView listView,
+                                          final String uid){
         mDatabase.getReference().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -411,7 +485,8 @@ public class DatabaseHelper {
                 ClassAdapter classAdapter;
                 final ArrayList<Class> classes = new ArrayList<Class>();
 
-                for(DataSnapshot classSnapshot: dataSnapshot.child(UIDS).child(uid).child(CLASSES).getChildren()){
+                for(DataSnapshot classSnapshot: dataSnapshot.child(UIDS)
+                        .child(uid).child(CLASSES).getChildren()){
 
                     String cid = classSnapshot.getKey().toString();
 
@@ -450,7 +525,8 @@ public class DatabaseHelper {
      */
     public void writeAssignment(String cid, Assignment assignment){
         DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
-        classRef.child(ASSIGNMENTS).child(assignment.getName()).child(DUE_DATE).setValue(assignment.getDueDate());
+        classRef.child(ASSIGNMENTS).child(assignment.getName()).child(DUE_DATE)
+                .setValue(assignment.getDueDate());
     }
 
     /**
@@ -628,7 +704,8 @@ public class DatabaseHelper {
      * @param assignmentName the name of the assignment that the work is being submitted for
      * @param downloadUrl the url to download the work from Firebase Storage
      */
-    public void writeAssignmentSubmission(String uid, String cid, String assignmentName, String downloadUrl){
+    public void writeAssignmentSubmission(String uid, String cid, String assignmentName,
+                                          String downloadUrl){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS).child(assignmentName)
                 .child(SUBMISSIONS).child(uid).setValue(downloadUrl);
     }
