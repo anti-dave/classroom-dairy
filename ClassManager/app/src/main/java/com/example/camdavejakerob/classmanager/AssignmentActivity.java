@@ -148,8 +148,10 @@ public class AssignmentActivity extends AppCompatActivity {
                             .setNegativeButton("Set Reminder", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    DatabaseHelper databaseHelper = new DatabaseHelper();
-                                    databaseHelper.setAssignmentCalendarAlert(AssignmentActivity.this, mCurUser.getUserId(),mCurrentClass,assignmentName.getText().toString());
+                                    Toast.makeText(AssignmentActivity.this, "Something went wrong. Failed to add reminder.", Toast.LENGTH_LONG).show();
+                                    ///////  This does not currently work
+                                    //DatabaseHelper databaseHelper = new DatabaseHelper();
+                                    //databaseHelper.setAssignmentCalendarAlert(AssignmentActivity.this, mCurUser.getUserId(),mCurrentClass,assignmentName.getText().toString());
                                 }
                             }).show();
                 }
