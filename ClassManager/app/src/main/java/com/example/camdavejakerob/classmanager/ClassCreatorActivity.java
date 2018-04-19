@@ -89,18 +89,30 @@ public class ClassCreatorActivity extends AppCompatActivity {
                     int startHour = startTimepicker.getCurrentHour();
                     int startMinute = startTimepicker.getCurrentMinute();
 
+                    String stateStart = "am";
+                    if(startHour > 12){
+                        startHour -= 12;
+                        stateStart = "pm";
+                    }
+                    startTime =
+                            String.valueOf(startHour)
+                                    + ":"
+                                    + String.valueOf(startMinute)
+                                    + stateStart;
+
                     int endHour = endTimepicker.getCurrentHour();
                     int endMinute = endTimepicker.getCurrentMinute();
 
-                    startTime =
-                            String.valueOf(startHour)
-                            + ":"
-                            + String.valueOf(startMinute) ;
-
+                    String stateEnd = "am";
+                    if(endHour > 12){
+                        endHour -= 12;
+                        stateEnd = "pm";
+                    }
                     endTime =
                             String.valueOf(endHour)
                                     + ":"
-                                    + String.valueOf(endMinute) ;
+                                    + String.valueOf(endMinute)
+                                    + stateEnd;
 
                     database.writeNewClass(
                             classId,

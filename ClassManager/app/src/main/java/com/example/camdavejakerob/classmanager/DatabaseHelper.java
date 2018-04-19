@@ -1,6 +1,5 @@
 package com.example.camdavejakerob.classmanager;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -568,8 +567,6 @@ public class DatabaseHelper {
         DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
         classRef.child(ROSTER).child(uid).removeValue();
         userRef.child(CLASSES).child(cid).removeValue();
-
-        //
     }
 
     /**
@@ -582,6 +579,8 @@ public class DatabaseHelper {
     public void deleteClass(final String cid, final String uid){
         DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
         DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
+
+        //TODO: delete files in storage - rob
 
         //Delete Discussion Board
         mDatabase.getReference(DISCUSSION_BOARD).child(cid).removeValue();
