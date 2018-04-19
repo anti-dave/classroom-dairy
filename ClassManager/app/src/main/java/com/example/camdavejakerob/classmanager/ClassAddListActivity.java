@@ -1,9 +1,11 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -70,34 +72,36 @@ public class ClassAddListActivity  extends AppCompatActivity {
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, final long id) {
-                Toast.makeText(ClassAddListActivity.this,
-                        "You have chosen: ",
-                        Toast.LENGTH_LONG)
-                        .show();
 
-                TextView classId = (TextView)view.findViewById(R.id.class_id);
+                final TextView className = (TextView)view.findViewById(R.id.class_name);
+                final TextView classId = (TextView)view.findViewById(R.id.class_id);
 
-                if(FirebaseDatabase.getInstance().getReference(UIDS)
-                        .child(FirebaseAuth.getInstance().getUid())
-                        .child("intructor")
-                        .equals(true)) {
-                    database.enrollUserToClass(
-                            classId.getText().toString(),
-                            FirebaseAuth.getInstance().getUid());
-                } else {
-                    database.enrollUserToClass(
-                            classId.getText().toString(),
-                            FirebaseAuth.getInstance().getUid());
+                AlertDialog.Builder builder = new AlertDialog
+                        .Builder(ClassAddListActivity.this);
 
-                    //Robs thing
-                    /*FirebaseDatabase
-                            .getInstance()
-                            .getReference(courseID)
-                            .child(newClassId)
-                            .child("roster")
-                            .child(currentUserId)
-                            .setValue(false);*/
-                }
+                builder.setTitle("Enroll in " + className.getText().toString())
+                        .setMessage("are you sure?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //enroll the student
+                                database.enrollUserToClass(classId.getText().toString(),
+                                        FirebaseAuth.getInstance().getUid());
+                                // tell student it was success
+                                Toast.makeText(ClassAddListActivity.this,
+                                        "You are enrolled in " +
+                                                className.getText().toString(),
+                                        Toast.LENGTH_SHORT);
+                                // exit activity
+                                ClassAddListActivity.this.finish();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //do nothing
+                            }
+                        }).show();
             }
         });
     }
