@@ -1,34 +1,12 @@
 package com.example.camdavejakerob.classmanager;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.TaskStackBuilder;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -42,30 +20,17 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import static android.Manifest.permission.READ_CONTACTS;
-
-/**
- * A login screen that offers login via email/password.
- */
 public class LoginActivity extends AppCompatActivity{
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
     private static final int REQUEST_READ_CONTACTS = 0;
     private static final String TAG = "LoginActivity";
-
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
 
     private TextView mStatusTextView;
     private TextView mDetailTextView;
     private EditText mEmailField;
-    private EditText mPasswordField;
+    private EditText mSignInPasswordField;
+    private EditText mRegistrationPasswordField;
     private EditText firstNameField;
     private EditText lastNameField;
 
@@ -86,11 +51,17 @@ public class LoginActivity extends AppCompatActivity{
         // Views
         mStatusTextView = findViewById(R.id.status);
         mDetailTextView = findViewById(R.id.detail);
+        mEmailField = findViewById(R.id.email_field);
+        mSignInPasswordField = findViewById(R.id.signIn_password);
+        mRegistrationPasswordField = findViewById(R.id.registration_password);
+        firstNameField = findViewById(R.id.firstName);
+        lastNameField = findViewById(R.id.lastName);
 
-        final Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        final Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
+        final Button mEmailEntry = (Button) findViewById(R.id.email_entry_button);
         final Button mResendVerificationButton = (Button) findViewById(R.id.resend_verification_link);
         final Button mFinishButton = (Button) findViewById(R.id.finish_button);
+        final Button mSigninButton = (Button) findViewById(R.id.sign_in_button);
+        final Button mRegisterButton = (Button) findViewById(R.id.register_button);
 
         mResendVerificationButton.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
@@ -98,86 +69,56 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        mEmailEntry.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
 
-                //see if user is already in DB
-                /*mAuth.fetchProvidersForEmail(user.getEmail()).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                        if(task.isSuccessful()){
-                            ///////// getProviders().size() will return size 1. if email ID is available.
-                            task.getResult().getProviders().size();
-                        }
-                    }
-                });
-                */
-
-                mEmailField = findViewById(R.id.field_email);
-                mPasswordField = findViewById(R.id.field_password);
-
-                signIn(mEmailField.getText().toString()
-                        , mPasswordField.getText().toString() );
+                if( validateEmail() ) {
+                   updateUI();
+                }
             }
         });
 
-        mEmailRegisterButton.setOnClickListener(new OnClickListener() {
-            @Override
+        mSigninButton.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
-                mEmailField = findViewById(R.id.field_email);
-                mPasswordField = findViewById(R.id.field_password);
 
                 String email = mEmailField.getText().toString();
-                String pass = mPasswordField.getText().toString();
+                String pass = mSignInPasswordField.getText().toString();
 
-                createAccount(email
-                        , pass );
+                signIn(email, pass );
             }
         });
 
         mFinishButton.setOnClickListener(new OnClickListener() {
-            @Override
             public void onClick(View view) {
 
                 mAuth.getCurrentUser().reload();
 
                 if ( mAuth.getCurrentUser().isEmailVerified() ) {
-                    if (credentialValidation()) {
-
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        String credentials = firstName + " " + lastName;
-
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setDisplayName(credentials).build();
-
-                        user.updateProfile(profileUpdates)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "User profile updated.");
-                                }
-                            }
-                        });
-
-                        DatabaseHelper databaseHelper = new DatabaseHelper();
-                        databaseHelper.addUser(LoginActivity.this, user);
-
-                        //finish();
-                    }
+                    finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "Not Verified Yet",
                             Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+        mRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String email = mEmailField.getText().toString();
+                String pass = mRegistrationPasswordField.getText().toString();
+
+                    if (credentialValidation()) {
+                        createAccount(email, pass);
+                        updateRegistrationUi();
+                    }
+                }
+            });
     }
 
     private Boolean credentialValidation() {
         boolean valid = true;
-
-        firstNameField = findViewById(R.id.firstName);
-        lastNameField = findViewById(R.id.lastName);
 
         String firstName = firstNameField.getText().toString();
         String lastName = lastNameField.getText().toString();
@@ -225,46 +166,77 @@ public class LoginActivity extends AppCompatActivity{
         updateUI(currentUser);
     }
 
+    //This is after inputting an email
+    private void updateUI() {
+
+        String email = mEmailField.getText().toString();
+
+        //see if user is already in DB
+        mAuth.fetchProvidersForEmail( email ).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
+            @Override
+            public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                if(task.isSuccessful()){
+                    ///////// getProviders().size() will return size 1. if email ID is available.
+                    int num = task.getResult().getProviders().size();
+
+                    //signIn
+                    if( (num > 0) ) {
+                        findViewById(R.id.email_form).setVisibility(View.GONE);
+                        findViewById(R.id.sign_in_form).setVisibility(View.VISIBLE);
+                        findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+                        findViewById(R.id.signIn_password).setVisibility(View.VISIBLE);
+
+                        findViewById(R.id.sign_in_button).setEnabled(true);
+                        //findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+                        //mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
+                        //        user.getEmail(), user.isEmailVerified()));
+                    }
+                    //Register
+                    else {
+                        //mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
+                        findViewById(R.id.email_form).setVisibility(View.GONE);
+                        findViewById(R.id.registration_form).setVisibility(View.VISIBLE);
+
+                        findViewById(R.id.registration_buttons).setVisibility(View.VISIBLE);
+                        findViewById(R.id.register_button).setEnabled(true);
+                        findViewById(R.id.resend_verification_link).setEnabled(true);
+                    }
+                }
+            }
+        });
+    }
+
+    private void updateRegistrationUi() {
+
+        findViewById(R.id.registration_form).setVisibility(View.GONE);
+        findViewById(R.id.registration_buttons).setVisibility(View.GONE);
+        findViewById(R.id.register_button).setEnabled(false);
+        findViewById(R.id.resend_verification_link).setEnabled(false);
+
+        findViewById(R.id.finish_button).setVisibility(View.VISIBLE);
+        findViewById(R.id.finish_button).setEnabled(true);
+    }
+
+    //Is if signIn Fails
     private void updateUI(FirebaseUser user) {
 
-        //hideProgressDialog();
-
+        //Already a user, inflate password and sign in button
         if (user != null) {
-            //mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
-            //        user.getEmail(), user.isEmailVerified()));
 
-            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-
-            findViewById(R.id.sign_in_buttons).setVisibility(View.GONE);
-            findViewById(R.id.email_field).setVisibility(View.GONE);
-
-            findViewById(R.id.field_password).setVisibility(View.VISIBLE);
-
-            findViewById(R.id.credential_fields).setVisibility(View.VISIBLE);
-
-            findViewById(R.id.signed_in_buttons).setVisibility(View.VISIBLE);
-            findViewById(R.id.resend_verification_link).setEnabled(true);
-            findViewById(R.id.finish_button).setEnabled(true);
-
-            //finish();
-
+            //Not a user, inflate password, firstname, lastname, and register button
         } else {
-            //mStatusTextView.setText("Signed out");
-            //mDetailTextView.setText(null);
-
-            findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);
-            findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
-            findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
+            findViewById(R.id.registration_form).setVisibility(View.VISIBLE);
+            findViewById(R.id.registration_buttons).setVisibility(View.VISIBLE);
+            findViewById(R.id.register_button).setEnabled(true);
+            findViewById(R.id.resend_verification_link).setEnabled(true);
         }
     }
 
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount:" + email);
-        if (!validateForm()) {
+        if (!validateRegistration()) {
             return;
         }
-
-        //showProgressDialog();
 
         // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -277,6 +249,24 @@ public class LoginActivity extends AppCompatActivity{
 
                             FirebaseUser user = mAuth.getCurrentUser();
 
+                            String credentials = firstName + " " + lastName;
+
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(credentials).build();
+
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d(TAG, "User profile updated.");
+                                            }
+                                        }
+                                    });
+
+                            DatabaseHelper databaseHelper = new DatabaseHelper();
+                            databaseHelper.addUser(LoginActivity.this, user);
+
                             sendEmailVerification();
                             updateUI(user);
                         } else {
@@ -286,10 +276,6 @@ public class LoginActivity extends AppCompatActivity{
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
-
-                        // [START_EXCLUDE]
-                        //hideProgressDialog();
-                        // [END_EXCLUDE]
                     }
                 });
         // [END create_user_with_email]
@@ -297,11 +283,6 @@ public class LoginActivity extends AppCompatActivity{
 
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
-        if (!validateForm()) {
-            return;
-        }
-
-        //showProgressDialog();
 
         // [START sign_in_with_email]
         mAuth.signInWithEmailAndPassword(email, password)
@@ -363,7 +344,7 @@ public class LoginActivity extends AppCompatActivity{
         // [END send_email_verification]
     }
 
-    private boolean validateForm() {
+    private Boolean validateEmail() {
         boolean valid = true;
 
         String email = mEmailField.getText().toString();
@@ -373,20 +354,27 @@ public class LoginActivity extends AppCompatActivity{
         } else {
             mEmailField.setError(null);
         }
+        return valid;
+    }
 
-        String password = mPasswordField.getText().toString();
+    private boolean validateRegistration() {
+        boolean valid = true;
+
+        String password = mRegistrationPasswordField.getText().toString();
         if (TextUtils.isEmpty(password)) {
-            mPasswordField.setError("Required.");
+            mRegistrationPasswordField.setError("Required.");
             valid = false;
         } else if ( password.length() < 6 ) {
-            mPasswordField.setError("Must be greater than 6 Characters.");
+            mRegistrationPasswordField.setError("Must be greater than 6 Characters.");
             valid = false;
         } else {
-            mPasswordField.setError(null);
+            mRegistrationPasswordField.setError(null);
         }
 
         return valid;
     }
+
+
 
     /*Intent upIntent = NavUtils.getParentActivityIntent(this);
                 if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
