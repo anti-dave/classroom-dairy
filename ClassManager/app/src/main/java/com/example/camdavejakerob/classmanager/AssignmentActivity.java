@@ -150,6 +150,7 @@ public class AssignmentActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Toast.makeText(AssignmentActivity.this, "Something went wrong. Failed to add reminder.", Toast.LENGTH_LONG).show();
                                     ///////  This does not currently work
+                                    /////// if we can get the calendar working then remove the toast and uncomment the two lines below
                                     //DatabaseHelper databaseHelper = new DatabaseHelper();
                                     //databaseHelper.setAssignmentCalendarAlert(AssignmentActivity.this, mCurUser.getUserId(),mCurrentClass,assignmentName.getText().toString());
                                 }
