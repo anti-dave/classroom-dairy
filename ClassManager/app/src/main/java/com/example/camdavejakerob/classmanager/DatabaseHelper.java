@@ -3,9 +3,12 @@ package com.example.camdavejakerob.classmanager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ListView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.firebase.auth.FirebaseAuth;
@@ -563,10 +566,60 @@ public class DatabaseHelper {
      *
      */
     public void deleteStudentFromClass(final String cid, final String uid){
-        DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
+        final DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
         DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
         classRef.child(ROSTER).child(uid).removeValue();
         userRef.child(CLASSES).child(cid).removeValue();
+
+        /*mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // make sure user is a student
+                if(!((Boolean) dataSnapshot.child(UIDS).child(uid).child(INSTRUCTOR).getValue())) {
+                    // get students name
+                    final String userName = dataSnapshot.child(UIDS).child(uid)
+                            .child(USER_NAME).getValue().toString();
+
+                    // iterate through assignment list
+                    for(DataSnapshot assignment:
+                            dataSnapshot.child(CIDS).child(cid).child(ASSIGNMENTS).getChildren()) {
+
+                        // get assignment name
+                        final String assignmentName = assignment.getKey();
+
+                        // remove the grades for this student and this assignment
+                        classRef.child(ASSIGNMENTS).child(assignmentName)
+                                .child(GRADES).child(uid).removeValue();
+
+                        // delete assignment submission in storage
+                        mStorage.getReference().child(cid).child(assignmentName)
+                                .child(userName + ".pdf").delete()
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                })
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "onSuccess: removed" +
+                                                assignmentName + " for " + userName);
+                                    }
+                                });
+
+                        // delete the link to the assignment in the database
+                        classRef.child(ASSIGNMENTS).child(SUBMISSIONS).child(uid).removeValue();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });*/
     }
 
     /**
@@ -580,23 +633,62 @@ public class DatabaseHelper {
         DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
         DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
 
-        //TODO: delete files in storage - rob
-
         //Delete Discussion Board
         mDatabase.getReference(DISCUSSION_BOARD).child(cid).removeValue();
 
         //Delete All UIDS in Roster
-        classRef.child(ROSTER).addListenerForSingleValueEvent(new ValueEventListener() {
+        classRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                for(DataSnapshot classSnapshot: dataSnapshot.getChildren()){
+                //remove the each student
+                for(DataSnapshot rosterSnapshot: dataSnapshot.child(ROSTER).getChildren()){
 
-                    String deleteUid;
-                    deleteUid = classSnapshot.getKey();
-                    deleteStudentFromClass(cid, deleteUid);
+                    deleteStudentFromClass(cid, rosterSnapshot.getKey());
                 }
+
+
+                //get syllabus file name
+                /*final String syllabusFileName = dataSnapshot.child(CLASS_NAME).getValue().toString()
+                        + " syllabus.pdf";
+                //Delete Syllabus
+                mStorage.getReference().child(cid).child(syllabusFileName).delete()
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                e.printStackTrace();
+                            }
+                        })
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "onSuccess: deleted file " + syllabusFileName);
+                            }
+                        });*/
+
+                //delete each assignment file from storage
+                /*for(DataSnapshot assignmentSnapshot: dataSnapshot.child(ASSIGNMENTS).getChildren()){
+                    //get assignment name
+                    final String assignmentName = assignmentSnapshot.getKey();
+                    //delete from storage
+                    mStorage.getReference(cid).child(assignmentName+".pdf")
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "onSuccess: removed assignment"
+                                            + assignmentName);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                }*/
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d(TAG, "onCancelled: " + databaseError.toString());
