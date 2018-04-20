@@ -5,8 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     private String curUserId;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,17 +35,22 @@ public class MainActivity extends AppCompatActivity {
         //Don't need to build this if they're only using emial.
         //new AuthUI.IdpConfig.EmailBuilder().build();
         /*******************Authorization, Registration Check**************************/
+
+
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
             // Start sign in/sign up activity
-            startActivityForResult(
+        /*    startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
+                            .setLogo(R.drawable.ic_classroom)      // Set logo drawable
                             .build(),
                     SIGN_IN_REQUEST_CODE);
 
+            mAuth = FirebaseAuth.getInstance();*/
+
             //Alternative
-            //Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
-            //startActivity(loginIntent);
+            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
             //Log.d("MAIN ACTIVITY", "onCreate: " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
         } else {
@@ -158,6 +167,41 @@ public class MainActivity extends AppCompatActivity {
         }
 
     } //onActivityResult
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        if(FirebaseAuth.getInstance().getCurrentUser() == null) {
+            // Start sign in/sign up activity
+        /*    startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setLogo(R.drawable.ic_classroom)      // Set logo drawable
+                            .build(),
+                    SIGN_IN_REQUEST_CODE);
+
+            mAuth = FirebaseAuth.getInstance();*/
+
+            //Alternative
+            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
+            //Log.d("MAIN ACTIVITY", "onCreate: " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+
+        } else {
+            // User is already signed in. Therefore, display
+            // a welcome Toast
+            Toast.makeText(this,
+                    "Welcome " + FirebaseAuth.getInstance()
+                            .getCurrentUser()
+                            .getDisplayName(),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+
 
     
 ////////////////////// deprecated moved to setting////////////////////////////

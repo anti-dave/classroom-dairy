@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class SettingActivity extends AppCompatActivity {
 
     private static final int SIGN_IN_REQUEST_CODE = 1;
+    final String TAG = SettingActivity.this.toString();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
 
         Button logoutButton = (Button) findViewById(R.id.logout);
+        //Button deleteAccountButton = (Button) findViewById(R.id.Delete);
 
         final User user = ((ClassManagerApp) SettingActivity.this.getApplication()).getCurUser();
 
@@ -51,15 +53,43 @@ public class SettingActivity extends AppCompatActivity {
                                         .show();
 
                                 // Start sign in/sign up activity
-                                startActivityForResult(
+                                /*startActivityForResult(
                                         AuthUI.getInstance()
                                                 .createSignInIntentBuilder()
                                                 .build(),
-                                        SIGN_IN_REQUEST_CODE);
+                                        SIGN_IN_REQUEST_CODE);*/
+                                finish();
                             }
                         });
             }
         });
+
+        //Nobody should be able to Delete their accounts. If need to however,this is the code.
+        /*deleteAccountButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                FirebaseUser Fireuser = FirebaseAuth.getInstance().getCurrentUser();
+
+                Fireuser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User account deleted.");
+
+                            //DatabaseHelper db = new DatabaseHelper();
+                            //db.deleteUser();
+
+                            // Start sign in/sign up activity
+                            startActivityForResult(
+                                    AuthUI.getInstance()
+                                            .createSignInIntentBuilder()
+                                            .build(),
+                                    SIGN_IN_REQUEST_CODE);
+                        }
+                    }
+                });
+            }
+        });*/
     }
 
     @Override
