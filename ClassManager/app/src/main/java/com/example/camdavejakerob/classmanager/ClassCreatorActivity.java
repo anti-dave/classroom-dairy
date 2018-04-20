@@ -89,18 +89,44 @@ public class ClassCreatorActivity extends AppCompatActivity {
                     int startHour = startTimepicker.getCurrentHour();
                     int startMinute = startTimepicker.getCurrentMinute();
 
+                    String startMinStr;
+                    if(startMinute > 9){
+                        startMinStr = String.valueOf(startMinute);
+                    } else {
+                        startMinStr = "0" + String.valueOf(startMinute);
+                    }
+
+                    String stateStart = "am";
+                    if(startHour > 12){
+                        startHour -= 12;
+                        stateStart = "pm";
+                    }
+                    startTime =
+                            String.valueOf(startHour)
+                                    + ":"
+                                    + startMinStr
+                                    + stateStart;
+
                     int endHour = endTimepicker.getCurrentHour();
                     int endMinute = endTimepicker.getCurrentMinute();
 
-                    startTime =
-                            String.valueOf(startHour)
-                            + ":"
-                            + String.valueOf(startMinute) ;
+                    String endMinStr;
+                    if(endMinute > 9){
+                        endMinStr = String.valueOf(startMinute);
+                    } else {
+                        endMinStr = "0" + String.valueOf(startMinute);
+                    }
 
+                    String stateEnd = "am";
+                    if(endHour > 12){
+                        endHour -= 12;
+                        stateEnd = "pm";
+                    }
                     endTime =
                             String.valueOf(endHour)
                                     + ":"
-                                    + String.valueOf(endMinute) ;
+                                    + endMinStr
+                                    + stateEnd;
 
                     database.writeNewClass(
                             classId,

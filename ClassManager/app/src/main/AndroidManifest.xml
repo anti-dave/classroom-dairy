@@ -100,7 +100,6 @@
 
         <activity android:name=".UploadSyllabusActivity"
             android:label="Upload Syllabus"
-            android:parentActivityName=".ClassInfoActivity"
             android:theme="@style/Tile0">
         </activity>
 
