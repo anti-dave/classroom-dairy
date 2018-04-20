@@ -39,11 +39,6 @@ public class MainActivity extends AppCompatActivity {
                             .build(),
                     SIGN_IN_REQUEST_CODE);
 
-            //Alternative
-            //Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
-            //startActivity(loginIntent);
-            //Log.d("MAIN ACTIVITY", "onCreate: " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-
         } else {
             // User is already signed in. Therefore, display
             // a welcome Toast
@@ -60,12 +55,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout myClassesButton = findViewById(R.id.my_classes);
 
         myClassesButton.setOnFocusChangeListener(new View.OnFocusChangeListener(){
-            public void onFocusChange(View v, boolean hasFocus){
-                //Toast.makeText(MainActivity.this,"hey i have focus", Toast.LENGTH_LONG).show();
-                //LinearLayout ln = (LinearLayout) findViewById(R.id.my_classes);
-                //ln.setBackgroundColor(0xfff);
-            }
-        });
+            public void onFocusChange(View v, boolean hasFocus){}});
 
         myClassesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -158,73 +148,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     } //onActivityResult
-
-    
-////////////////////// deprecated moved to setting////////////////////////////
-//    /**
-//     * Creates the menu with oncreate.
-//     *
-//     * @param menu
-//     * @return bool on whether it was successful.
-//     */
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_sign_in_dropdown, menu);
-//        return true;
-//    }//onCreateOptionsMenu
-//
-//
-//    /**
-//     * Logic for when menu is pressed.
-//     *
-//     * @param item
-//     * @return bool on whether it was successful.
-//     */
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if(item.getItemId() == R.id.action_sign_out) {
-//            AuthUI.getInstance().signOut(this)
-//                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {
-//                            Toast.makeText(MainActivity.this,
-//                                    "You have been signed out.",
-//                                    Toast.LENGTH_LONG)
-//                                    .show();
-//
-//                            // Close activity, isneatd of close activity, make go back
-//                            //finish();
-//                        }
-//                    });
-//            // Start sign in/sign up activity
-//            startActivityForResult(
-//                    AuthUI.getInstance()
-//                            .createSignInIntentBuilder()
-//                            .build(),
-//                    SIGN_IN_REQUEST_CODE);
-//        }
-//        if(item.getItemId() == R.id.action_change_account) {
-//            AuthUI.getInstance().signOut(this)
-//                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {
-//                            Toast.makeText(MainActivity.this,
-//                                    "You have been signed out.",
-//                                    Toast.LENGTH_LONG)
-//                                    .show();
-//
-//                            // Close activity, isneatd of close activity, make go back
-//                            //finish();
-//                        }
-//                    });
-//            // Start sign in/sign up activity
-//            startActivityForResult(
-//                    AuthUI.getInstance()
-//                            .createSignInIntentBuilder()
-//                            .build(),
-//                    SIGN_IN_REQUEST_CODE);
-//        }
-//        return true;
-//    }
 
 }//main
