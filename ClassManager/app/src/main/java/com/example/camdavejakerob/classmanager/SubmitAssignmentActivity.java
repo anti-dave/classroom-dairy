@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,6 +77,8 @@ public class SubmitAssignmentActivity extends AppCompatActivity {
 
                                 // hide the list view so that the user does not click something else while upload is happening
                                 mFiles.setVisibility(View.GONE);
+                                ((RelativeLayout) findViewById(R.id.submit_assignment_loading_panel))
+                                        .setVisibility(View.VISIBLE);
 
                                 Uri uri = Uri.fromFile(new File(filePath));
 
