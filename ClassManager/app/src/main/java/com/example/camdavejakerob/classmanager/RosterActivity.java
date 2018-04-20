@@ -3,12 +3,13 @@ package com.example.camdavejakerob.classmanager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Created by Rob on 3/26/2018.
@@ -29,15 +30,43 @@ public class RosterActivity extends AppCompatActivity{
         classId = getIntent().getStringExtra(CLASS_ID);
         mListView = (ListView) findViewById(R.id.roster_students);
         mDatabase = new DatabaseHelper();
-        mDatabase.getEnrolledStudents(this, mListView, classId);
+        mDatabase.getEnrolledMembers(this, mListView, classId, FirebaseAuth.getInstance().getCurrentUser().getUid() );
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, final long id) {
-                Toast.makeText(RosterActivity.this,
-                        "You have chosen: ",
-                        Toast.LENGTH_LONG)
-                        .show();
+
+                TextView uid = view.findViewById(R.id.uid);
+                String userSelectedId = uid.getText().toString();
+
+                TextView name = view.findViewById(R.id.roster_item_name);
+                String userSelectedName = name.getText().toString();
+
+                TextView chatIdKey = view.findViewById(R.id.chatId);
+                String chatId = chatIdKey.getText().toString();
+
+                // Create new intent to go to {@link ChatActivity}
+                Intent intent = new Intent(RosterActivity.this, ChatActivity.class);
+                intent.putExtra("chatId", chatId);
+                intent.putExtra("recipientUid", userSelectedId);
+                intent.putExtra("recipientName", userSelectedName);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        classId = getIntent().getStringExtra(CLASS_ID);
+        mListView = (ListView) findViewById(R.id.roster_students);
+        mDatabase = new DatabaseHelper();
+        mDatabase.getEnrolledMembers(this, mListView, classId, FirebaseAuth.getInstance().getCurrentUser().getUid() );
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, final long id) {
 
                 TextView uid = view.findViewById(R.id.uid);
                 String userSelectedId = uid.getText().toString();

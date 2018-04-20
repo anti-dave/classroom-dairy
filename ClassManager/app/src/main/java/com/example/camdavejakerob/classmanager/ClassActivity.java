@@ -106,21 +106,11 @@ public class ClassActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_add_class:
-                //add class action
-                Toast.makeText(ClassActivity.this,
-                        "Add Class",
-                        Toast.LENGTH_LONG)
-                        .show();
                 Intent removeClassIntent = new Intent(ClassActivity.this, ClassAddListActivity.class);
                 startActivity(removeClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
                 return true;
 
             case R.id.action_create_class:
-                //add class action
-                Toast.makeText(ClassActivity.this,
-                        "Create Class",
-                        Toast.LENGTH_LONG)
-                        .show();
                 Intent createClassIntent = new Intent(ClassActivity.this, ClassCreatorActivity.class);
                 startActivity(createClassIntent); // probaly should pass the class to so we can change the title but this is just a dummy
                 return true;

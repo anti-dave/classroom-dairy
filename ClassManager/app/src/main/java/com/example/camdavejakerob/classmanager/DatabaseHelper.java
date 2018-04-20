@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -309,8 +312,7 @@ public class DatabaseHelper {
      * @param listView ListView intended to display the information
      * @param cid the class id for the desired information
      */
-    public void getEnrolledStudents(final Context context, final ListView listView,
-                                    final String cid){
+    public void getEnrolledMembers(final Context context, final ListView listView, final String cid, final String uid){
 
         mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -322,16 +324,29 @@ public class DatabaseHelper {
                 for(DataSnapshot rosterData: dataSnapshot.child(CIDS)
                         .child(cid).child(ROSTER).getChildren()){
 
+                    String name, endUid, chatId;
+                    endUid = rosterData.getKey().toString();
+                    name = dataSnapshot.child(UIDS).child(endUid).child(USER_NAME).getValue().toString();
+
+                    if( dataSnapshot.child(UIDS).child(uid).child(MESSAGES).child(endUid).exists() ) {
+                        chatId = dataSnapshot
+                                .child(UIDS)
+                                .child(uid)
+                                .child(MESSAGES)
+                                .child(endUid)
+                                .getValue()
+                                .toString();
+                    } else {
+                        chatId = "";
+                    }
+
                     if((Boolean) rosterData.getValue()) {
-                        String name, uid;
-
-                        uid = rosterData.getKey().toString();
-                        name = dataSnapshot.child(UIDS).child(uid).child(USER_NAME)
-                                .getValue().toString();
-
-                        users.add(new User(uid, name, false));
+                        users.add(new User(endUid, name, false, chatId));
+                    } else {
+                        users.add(new User(endUid, name, true, chatId));
                     }
                 }
+
                 rosterAdapter = new RosterAdapter(context,users);
                 listView.setAdapter(rosterAdapter);
             }
