@@ -273,7 +273,6 @@ public class DatabaseHelper {
                         chatId = "";
                     }
 
-                    //
                     if((Boolean) rosterData.getValue()) {
                         users.add(new User(endUid, name, false, chatId));
                     } else {

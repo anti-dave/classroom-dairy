@@ -54,4 +54,36 @@ public class RosterActivity extends AppCompatActivity{
             }
         });
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        classId = getIntent().getStringExtra(CLASS_ID);
+        mListView = (ListView) findViewById(R.id.roster_students);
+        mDatabase = new DatabaseHelper();
+        mDatabase.getEnrolledMembers(this, mListView, classId, FirebaseAuth.getInstance().getCurrentUser().getUid() );
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, final long id) {
+
+                TextView uid = view.findViewById(R.id.uid);
+                String userSelectedId = uid.getText().toString();
+
+                TextView name = view.findViewById(R.id.roster_item_name);
+                String userSelectedName = name.getText().toString();
+
+                TextView chatIdKey = view.findViewById(R.id.chatId);
+                String chatId = chatIdKey.getText().toString();
+
+                // Create new intent to go to {@link ChatActivity}
+                Intent intent = new Intent(RosterActivity.this, ChatActivity.class);
+                intent.putExtra("chatId", chatId);
+                intent.putExtra("recipientUid", userSelectedId);
+                intent.putExtra("recipientName", userSelectedName);
+                startActivity(intent);
+            }
+        });
+    }
 }
