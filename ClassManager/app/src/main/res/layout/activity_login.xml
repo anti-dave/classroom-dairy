@@ -23,13 +23,13 @@
             android:id="@+id/title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="emailpassword_title_text" />
+            android:text="Registration" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/status"
-            android:text="signed_out" />
+            android:text="Status" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -48,7 +48,42 @@
         android:gravity="center_vertical">
 
         <LinearLayout
-            android:id="@+id/email_password_fields"
+            android:id="@+id/credential_fields"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:visibility="gone"
+            android:paddingRight="16dp">
+
+            <EditText
+                android:id="@+id/field_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Password"
+                android:inputType="textPassword" />
+
+            <EditText
+                android:id="@+id/firstName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="First Name"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/lastName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Last Name"
+                android:inputType="text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/email_field"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -60,23 +95,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="hint_email"
+                android:hint="Email"
                 android:inputType="textEmailAddress" />
-
-            <EditText
-                android:id="@+id/field_password"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="hint_password"
-                android:inputType="textPassword" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/email_password_buttons"
+            android:id="@+id/sign_in_buttons"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/email_password_fields"
+            android:layout_below="@+id/email_field"
             android:orientation="horizontal"
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
@@ -110,20 +137,20 @@
             android:weightSum="2.0">
 
             <Button
-                android:id="@+id/sign_out_button"
+                android:id="@+id/resend_verification_link"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0"
-                android:text="sign_out" />
+                android:text="Resend Verification" />
 
             <Button
-                android:id="@+id/verify_email_button"
+                android:id="@+id/finish_button"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1.0"
-                android:text="verify_email" />
+                android:text="Finish" />
 
         </LinearLayout>
 

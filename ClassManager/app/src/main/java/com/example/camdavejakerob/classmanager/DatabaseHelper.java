@@ -712,7 +712,6 @@ public class DatabaseHelper {
                 Log.d(TAG, "onCancelled: " + databaseError.toString());
             }
         });
-
     }
 
     /**

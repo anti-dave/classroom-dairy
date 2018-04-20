@@ -3,10 +3,12 @@ package com.example.camdavejakerob.classmanager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -37,6 +39,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.ProviderQueryResult;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +66,10 @@ public class LoginActivity extends AppCompatActivity{
     private TextView mDetailTextView;
     private EditText mEmailField;
     private EditText mPasswordField;
+    private EditText firstNameField;
+    private EditText lastNameField;
+
+    private String firstName, lastName;
 
     // [START declare_auth]
     private FirebaseAuth mAuth;
@@ -79,11 +87,32 @@ public class LoginActivity extends AppCompatActivity{
         mStatusTextView = findViewById(R.id.status);
         mDetailTextView = findViewById(R.id.detail);
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
+        final Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        final Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
+        final Button mResendVerificationButton = (Button) findViewById(R.id.resend_verification_link);
+        final Button mFinishButton = (Button) findViewById(R.id.finish_button);
+
+        mResendVerificationButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+                sendEmailVerification();
+            }
+        });
 
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
+
+                //see if user is already in DB
+                /*mAuth.fetchProvidersForEmail(user.getEmail()).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                        if(task.isSuccessful()){
+                            ///////// getProviders().size() will return size 1. if email ID is available.
+                            task.getResult().getProviders().size();
+                        }
+                    }
+                });
+                */
+
                 mEmailField = findViewById(R.id.field_email);
                 mPasswordField = findViewById(R.id.field_password);
 
@@ -106,7 +135,86 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
-        //sendEmailVerification();
+        mFinishButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mAuth.getCurrentUser().reload();
+
+                if ( mAuth.getCurrentUser().isEmailVerified() ) {
+                    if (credentialValidation()) {
+
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        String credentials = firstName + " " + lastName;
+
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(credentials).build();
+
+                        user.updateProfile(profileUpdates)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "User profile updated.");
+                                }
+                            }
+                        });
+
+                        DatabaseHelper databaseHelper = new DatabaseHelper();
+                        databaseHelper.addUser(LoginActivity.this, user);
+
+                        //finish();
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this, "Not Verified Yet",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private Boolean credentialValidation() {
+        boolean valid = true;
+
+        firstNameField = findViewById(R.id.firstName);
+        lastNameField = findViewById(R.id.lastName);
+
+        String firstName = firstNameField.getText().toString();
+        String lastName = lastNameField.getText().toString();
+
+        if (TextUtils.isEmpty(firstName)) {
+            firstNameField.setError("Required.");
+            valid = false;
+        } else if ( !isAlpha(firstName) ) {
+            firstNameField.setError("Only Letters.");
+            valid = false;
+        } else {
+            firstNameField.setError(null);
+        }
+
+        if (TextUtils.isEmpty(lastName)) {
+            lastNameField.setError("Required.");
+            valid = false;
+        } else if ( !isAlpha(lastName) ) {
+            lastNameField.setError("Only Letters.");
+            valid = false;
+        }  else {
+            lastNameField.setError(null);
+        }
+
+        return valid;
+    }
+
+    public boolean isAlpha(String name) {
+        char[] chars = name.toCharArray();
+
+        for (char c : chars) {
+            if(!Character.isLetter(c)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
@@ -118,24 +226,31 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private void updateUI(FirebaseUser user) {
+
         //hideProgressDialog();
+
         if (user != null) {
-            mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
-                    user.getEmail(), user.isEmailVerified()));
+            //mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
+            //        user.getEmail(), user.isEmailVerified()));
 
             mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
 
-            findViewById(R.id.email_password_buttons).setVisibility(View.GONE);
-            findViewById(R.id.email_password_fields).setVisibility(View.GONE);
+            findViewById(R.id.sign_in_buttons).setVisibility(View.GONE);
+            findViewById(R.id.email_field).setVisibility(View.GONE);
+
+            findViewById(R.id.field_password).setVisibility(View.VISIBLE);
+
+            findViewById(R.id.credential_fields).setVisibility(View.VISIBLE);
+
             findViewById(R.id.signed_in_buttons).setVisibility(View.VISIBLE);
+            findViewById(R.id.resend_verification_link).setEnabled(true);
+            findViewById(R.id.finish_button).setEnabled(true);
 
-            findViewById(R.id.verify_email_button).setEnabled(!user.isEmailVerified());
-
-            finish();
+            //finish();
 
         } else {
-            mStatusTextView.setText("Signed out");
-            mDetailTextView.setText(null);
+            //mStatusTextView.setText("Signed out");
+            //mDetailTextView.setText(null);
 
             findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);
             findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
@@ -159,16 +274,10 @@ public class LoginActivity extends AppCompatActivity{
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
+
                             FirebaseUser user = mAuth.getCurrentUser();
 
-
-                            //This is where we enter the user into the database
-                            //some checks will have to be done as well as prompting the user for the first time if they are an instructor or not
-                            //don't know how we do that last part yet
-                            ////////// every time we get here it prompts the user to choose student or teacher im done fighting with this for now so we will call it a feature /////////
-                            DatabaseHelper databaseHelper = new DatabaseHelper();
-                            databaseHelper.addUser(LoginActivity.this, user);
-
+                            sendEmailVerification();
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -203,7 +312,7 @@ public class LoginActivity extends AppCompatActivity{
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
+                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -225,7 +334,7 @@ public class LoginActivity extends AppCompatActivity{
 
     private void sendEmailVerification() {
         // Disable button
-        findViewById(R.id.verify_email_button).setEnabled(false);
+        findViewById(R.id.finish_button).setEnabled(false);
 
         // Send verification email
         // [START send_email_verification]
@@ -236,7 +345,7 @@ public class LoginActivity extends AppCompatActivity{
                     public void onComplete(@NonNull Task<Void> task) {
                         // [START_EXCLUDE]
                         // Re-enable button
-                        findViewById(R.id.verify_email_button).setEnabled(true);
+                        findViewById(R.id.finish_button).setEnabled(true);
 
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this,
@@ -269,11 +378,31 @@ public class LoginActivity extends AppCompatActivity{
         if (TextUtils.isEmpty(password)) {
             mPasswordField.setError("Required.");
             valid = false;
+        } else if ( password.length() < 6 ) {
+            mPasswordField.setError("Must be greater than 6 Characters.");
+            valid = false;
         } else {
             mPasswordField.setError(null);
         }
 
         return valid;
     }
+
+    /*Intent upIntent = NavUtils.getParentActivityIntent(this);
+                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+        // This activity is NOT part of this app's task, so create a new task
+        // when navigating up, with a synthesized back stack.
+        TaskStackBuilder.create(this)
+                // Add all of this activity's parents to the back stack
+                .addNextIntentWithParentStack(upIntent)
+                // Navigate up to the closest parent
+                .startActivities();
+    } else {
+        // This activity is part of this app's task, so simply
+        // navigate up to the logical parent activity.
+        NavUtils.navigateUpTo(this, upIntent);
+    }
+                return true;
+*/
 }
 
