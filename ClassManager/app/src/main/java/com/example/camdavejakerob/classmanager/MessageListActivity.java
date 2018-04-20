@@ -35,6 +35,10 @@ public class MessageListActivity extends AppCompatActivity {
         DatabaseHelper mDatabase = new DatabaseHelper();
         mDatabase.getAllChats(this, mListView, FirebaseAuth.getInstance().getUid().toString() );
 
+        // Hide loading indicator once chats recieved
+        View loadingIndicator = findViewById(R.id.loading_indicator);
+        loadingIndicator.setVisibility(View.GONE);
+
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, final long id) {

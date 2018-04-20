@@ -198,10 +198,10 @@ public class ClassInfoActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         DatabaseHelper database = new DatabaseHelper();
 
         switch (item.getItemId()) {
+
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 Intent upIntent = NavUtils.getParentActivityIntent(this);

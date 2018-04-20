@@ -50,16 +50,26 @@ public class DiscussionBoardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 EditText input = (EditText)findViewById(R.id.input);
 
+                String inputText = input.getText().toString();
+                String userName = FirebaseAuth
+                        .getInstance()
+                        .getCurrentUser()
+                        .getDisplayName();
+
+                final User user = ((ClassManagerApp) DiscussionBoardActivity.this.getApplication()).getCurUser();
+
+                //if instructor do instructor
+                if( user.isInstructor() ) {
+                    userName += " (Instructor)";
+                }
+
                 // Read the input field and push a new instance
                 // of ChatMessage to the Firebase database
                 FirebaseDatabase.getInstance()
                         .getReference(DiscussionBoards)
                         .child(classId)
                         .push()
-                        .setValue(new ChatMessage(input.getText().toString(),
-                                FirebaseAuth.getInstance()
-                                        .getCurrentUser()
-                                        .getDisplayName())
+                        .setValue(new ChatMessage(inputText, userName)
                         );
 
                 // Clear the input
@@ -68,7 +78,6 @@ public class DiscussionBoardActivity extends AppCompatActivity {
         });
 
     } //onCreate
-
 
 
     private void displayChatMessages(String classId) {
