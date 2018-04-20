@@ -40,6 +40,13 @@ public class User {
         mInstructor = instructor;
     }
 
+    public User(String userId, String name, Boolean instructor,  String chatId) {
+        mUserId = userId;
+        mName = name;
+        mInstructor = instructor;
+        mChatId = chatId;
+    }
+
     public User(String userId, String name, Boolean instructor,  String chatId, String lastMessage, String lastMessageTime) {
         mUserId = userId;
         mName = name;

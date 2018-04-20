@@ -9,6 +9,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 /**
  * Created by Rob on 3/26/2018.
  */
@@ -28,7 +30,7 @@ public class RosterActivity extends AppCompatActivity{
         classId = getIntent().getStringExtra(CLASS_ID);
         mListView = (ListView) findViewById(R.id.roster_students);
         mDatabase = new DatabaseHelper();
-        mDatabase.getEnrolledMembers(this, mListView, classId);
+        mDatabase.getEnrolledMembers(this, mListView, classId, FirebaseAuth.getInstance().getCurrentUser().getUid() );
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

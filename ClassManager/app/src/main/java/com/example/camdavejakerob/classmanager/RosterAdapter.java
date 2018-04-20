@@ -32,14 +32,9 @@ public class RosterAdapter extends ArrayAdapter<User> {
             if(user.isInstructor()) {
                 view = LayoutInflater.from(getContext()).inflate(
                         R.layout.roster_header,parent,false);
-                view.setBackgroundColor(Color.WHITE);
-
-                Log.d(TAG, "Instructor  Firing");
-
             } else {
                 view = LayoutInflater.from(getContext()).inflate(
                         R.layout.roster_item,parent,false);
-                Log.d(TAG, "Not Firing");
             }
         }
 
@@ -51,6 +46,8 @@ public class RosterAdapter extends ArrayAdapter<User> {
 
         TextView chatId = (TextView) view.findViewById(R.id.chatId);
         chatId.setText(user.getChatId());
+
+        Log.d(TAG, "chatId for" + user.getName() + " is " + user.getChatId());
 
         return view;
     }
