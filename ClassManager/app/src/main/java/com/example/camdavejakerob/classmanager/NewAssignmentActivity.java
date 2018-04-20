@@ -15,6 +15,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ public class NewAssignmentActivity extends AppCompatActivity {
     private ListView mFilesListView;
     private Button mFindFileButton, mSubmit;
     private Class mCurrentClass;
+    private RelativeLayout mProgressPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class NewAssignmentActivity extends AppCompatActivity {
         mFilesListView = (ListView) findViewById(R.id.new_assignment_file_list);
         mFindFileButton = (Button) findViewById(R.id.new_assignment_find_file);
         mSubmit = (Button) findViewById(R.id.new_assignment_submit);
+        mProgressPanel = (RelativeLayout) findViewById(R.id.new_assignment_loading_panel);
 
         populateListView();
         mFilesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -117,6 +120,8 @@ public class NewAssignmentActivity extends AppCompatActivity {
 
                     // don't let the user hit the button again
                     mSubmit.setVisibility(View.GONE);
+                    // show progress bar
+                    mProgressPanel.setVisibility(View.VISIBLE);
 
                     // upload file to storage
                     Uri uri = Uri.fromFile(new File(mFilePath.getText().toString()));

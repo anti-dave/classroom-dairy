@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,6 +89,11 @@ public class UploadSyllabusActivity extends AppCompatActivity {
                 builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
+                        // hide list of files and display progress bar
+                        mListView.setVisibility(View.GONE);
+                        ((RelativeLayout) findViewById(R.id.upload_syllabus_loading_panel))
+                                .setVisibility(View.VISIBLE);
 
                         Uri file = Uri.fromFile(new File(filePath));
                         StorageReference ref = FirebaseStorage.getInstance().getReference().

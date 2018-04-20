@@ -227,8 +227,8 @@ public class ClassInfoActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG)
                         .show();
 
-                database.deleteClass( mCurrentClass.getCourseID(), FirebaseAuth.getInstance().getCurrentUser().getUid() );
-                finish();
+                database.deleteClass(ClassInfoActivity.this, mCurrentClass.getCourseID(), FirebaseAuth.getInstance().getCurrentUser().getUid() );
+                //finish();
 
             case R.id.action_drop_class:
                 //add class action

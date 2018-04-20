@@ -11,4 +11,17 @@
         android:layout_height="match_parent">
     </ListView>
 
+    <RelativeLayout
+        android:id="@+id/submit_assignment_loading_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"/>
+
+    </RelativeLayout>
+
 </LinearLayout>

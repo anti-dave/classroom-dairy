@@ -571,7 +571,7 @@ public class DatabaseHelper {
         classRef.child(ROSTER).child(uid).removeValue();
         userRef.child(CLASSES).child(cid).removeValue();
 
-        /*mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // make sure user is a student
@@ -609,7 +609,8 @@ public class DatabaseHelper {
                                 });
 
                         // delete the link to the assignment in the database
-                        classRef.child(ASSIGNMENTS).child(SUBMISSIONS).child(uid).removeValue();
+                        classRef.child(ASSIGNMENTS).child(assignmentName)
+                                .child(SUBMISSIONS).child(uid).removeValue();
                     }
                 }
 
@@ -619,7 +620,7 @@ public class DatabaseHelper {
             public void onCancelled(DatabaseError databaseError) {
                 Log.d(TAG, "onCancelled: " + databaseError.toString());
             }
-        });*/
+        });
     }
 
     /**
@@ -629,9 +630,9 @@ public class DatabaseHelper {
      *  This method removes the entirity of the class and everything associated with it
      *
      */
-    public void deleteClass(final String cid, final String uid){
+    public void deleteClass(final Context context, final String cid, final String uid){
         DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
-        DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
+        //DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
 
         //Delete Discussion Board
         mDatabase.getReference(DISCUSSION_BOARD).child(cid).removeValue();
@@ -643,13 +644,14 @@ public class DatabaseHelper {
 
                 //remove the each student
                 for(DataSnapshot rosterSnapshot: dataSnapshot.child(ROSTER).getChildren()){
-
-                    deleteStudentFromClass(cid, rosterSnapshot.getKey());
+                    String deleteUid;
+                    deleteUid = rosterSnapshot.getKey();
+                    deleteStudentFromClass(cid, deleteUid);
                 }
 
 
                 //get syllabus file name
-                /*final String syllabusFileName = dataSnapshot.child(CLASS_NAME).getValue().toString()
+                final String syllabusFileName = dataSnapshot.child(CLASS_NAME).getValue().toString()
                         + " syllabus.pdf";
                 //Delete Syllabus
                 mStorage.getReference().child(cid).child(syllabusFileName).delete()
@@ -664,10 +666,10 @@ public class DatabaseHelper {
                             public void onSuccess(Void aVoid) {
                                 Log.d(TAG, "onSuccess: deleted file " + syllabusFileName);
                             }
-                        });*/
+                        });
 
                 //delete each assignment file from storage
-                /*for(DataSnapshot assignmentSnapshot: dataSnapshot.child(ASSIGNMENTS).getChildren()){
+                for(DataSnapshot assignmentSnapshot: dataSnapshot.child(ASSIGNMENTS).getChildren()){
                     //get assignment name
                     final String assignmentName = assignmentSnapshot.getKey();
                     //delete from storage
@@ -686,7 +688,13 @@ public class DatabaseHelper {
                                     e.printStackTrace();
                                 }
                             });
-                }*/
+                }
+
+
+                //Delete the CID
+                mDatabase.getReference(CIDS).child(cid).removeValue();
+
+                //((Activity) context).finish();
             }
 
             @Override
@@ -695,11 +703,6 @@ public class DatabaseHelper {
             }
         });
 
-        //Delete from Profs Classes
-        userRef.child(CLASSES).child(cid).removeValue();
-
-        //Delete the CID
-        mDatabase.getReference(CIDS).child(cid).removeValue();
     }
 
     /**
