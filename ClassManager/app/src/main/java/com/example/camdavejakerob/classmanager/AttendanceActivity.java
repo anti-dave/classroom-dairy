@@ -268,9 +268,12 @@ public class AttendanceActivity extends AppCompatActivity {
         if (endPM && endHour < 13)
             endHour += 12;
 
-        if (currentHour < startHour || currentHour > endHour) {
+        if (currentHour < startHour || currentHour > endHour)
+        {
             // Toast.makeText(this, "Class is not active yet.", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "c: " + currentHour + ", s: " + startHour + ", e: " + endHour, Toast.LENGTH_LONG).show();
+            Toast.makeText(this,
+                    "Class is between " + startHour + ":" + startMin + " and " + endHour + ":" + endMin,
+                    Toast.LENGTH_LONG).show();
             return false;
         }
 

@@ -174,7 +174,14 @@ public class CalendarActivity extends AppCompatActivity
 
     public static String getGoogleAccount(Context context)
     {
-        String accountName = null;
+        if (accountCredential == null)
+        {
+            accountCredential = GoogleAccountCredential.usingOAuth2(
+                context, Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff());
+        }
+        if (accountCredential == null)
+            return null;
 
         Account[] accounts = accountCredential.getAllAccounts();
         if (accounts == null || accounts.length < 1)
@@ -200,6 +207,13 @@ public class CalendarActivity extends AppCompatActivity
 
     public static void addCalendarEvent(Context context, Class course)
     {
+        if (accountCredential == null)
+        {
+            accountCredential = GoogleAccountCredential.usingOAuth2(
+                    context, Arrays.asList(SCOPES))
+                    .setBackOff(new ExponentialBackOff());
+        }
+
         prefs = context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         CALENDAR_EVENTS_ENABLED = prefs.getBoolean(CALENDAR_EVENT_PREF, true);
         editor = prefs.edit();
