@@ -2,6 +2,7 @@ package com.example.camdavejakerob.classmanager;
 
 import android.Manifest;
 import android.accounts.Account;
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -35,7 +37,11 @@ import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.EventReminder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -53,10 +59,13 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class CalendarActivity extends AppCompatActivity
 {
-    private static final String API_KEY   = "AIzaSyBAFZFCI5QWMjwAyTpzv51MU9395ZJl1jE";
-    private static final String CLIENT_ID = "421332567684-8jr80fpvcr5v4feegmt4en5qrsdgt4bk.apps.googleusercontent.com";
-    private static final String APP_NAME  = "ClassManager";
-    private static final String PREF_ACCOUNT_NAME = "accountName";
+    private static final String MY_PREFS_NAME = "CALENDAR_PREFS";
+    private static final String CALENDAR_EVENT_PREF = "CALENDAR_EVENT_PREF";
+    private static SharedPreferences prefs;
+    private static SharedPreferences.Editor editor;
+    private static boolean CALENDAR_EVENTS_ENABLED;
+
+    private static final String TAG   = "CALENDAR_ACTIVITY";
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
     private static GoogleAccountCredential accountCredential = null;
@@ -71,6 +80,20 @@ public class CalendarActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
+        if (!EasyPermissions.hasPermissions(getApplicationContext(), Manifest.permission.GET_ACCOUNTS))
+        {
+            // Request permission though a user dialog
+            EasyPermissions.requestPermissions(
+                    this,
+                    "This app needs to access your Google account (via Contacts).",
+                    1003,
+                    Manifest.permission.GET_ACCOUNTS);
+        }
+
+        prefs = getApplicationContext().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        CALENDAR_EVENTS_ENABLED = prefs.getBoolean(CALENDAR_EVENT_PREF, true);
+        editor = prefs.edit();
+
         // Initialize Google account credential
         accountCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
@@ -80,18 +103,13 @@ public class CalendarActivity extends AppCompatActivity
         if(accountCredential.getSelectedAccount() == null)
             setAccount();
 
-        // Initialize Google Calendar service
-        service = new Calendar.Builder(
-            HTTP_TRANSPORT, JSON_FACTORY, accountCredential)
-            .setApplicationName(APP_NAME)
-            .build();
-
-        String accountName = getGoogleAccount();
+        String accountName = getGoogleAccount(getApplicationContext());
         changeAccountButton = (Button) findViewById(R.id.cal_GoogleAccountButton);
         changeAccountButton.setText((accountName == null)? "Select Account" : accountName);
 
         Switch calendarToggle = (Switch) findViewById(R.id.cal_EnableSwitch);
-        calendarToggle.setChecked(true);
+        calendarToggle.setChecked(CALENDAR_EVENTS_ENABLED);
+        calendarToggle.setSelected(CALENDAR_EVENTS_ENABLED);
         onClick_CalendarToggle(calendarToggle.isChecked());
 
         calendarToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -103,9 +121,12 @@ public class CalendarActivity extends AppCompatActivity
 
     }
 
-    /* TODO: Requires implementation */
     public void onClick_CalendarToggle(boolean enabled)
     {
+        editor.putBoolean(CALENDAR_EVENT_PREF, enabled);
+        editor.apply();
+        CALENDAR_EVENTS_ENABLED = enabled;
+        Toast.makeText(this, "Calendar Events " + (enabled? "En" : "Dis") + "abled", Toast.LENGTH_LONG).show();
         // assign to a static member of relevant class for global use?
         // we could have a general 'Google' class to store account information and settings
     }
@@ -113,24 +134,14 @@ public class CalendarActivity extends AppCompatActivity
     /* Change Google Calendar button click */
     public void onClick_ChangeGoogleAccount(View view)
     {
-        changeGoogleAccount();
+        changeGoogleAccount(CalendarActivity.this);
     }
 
-    public void changeGoogleAccount()
+    public static void changeGoogleAccount(Context context)
     {
-        if (EasyPermissions.hasPermissions(this, Manifest.permission.GET_ACCOUNTS))
+        if (EasyPermissions.hasPermissions(context, Manifest.permission.GET_ACCOUNTS))
         {
-            startActivityForResult(
-                    accountCredential.newChooseAccountIntent(),
-                    1000);
-        }
-        else {
-            // Request permission though a user dialog
-            EasyPermissions.requestPermissions(
-                    this,
-                    "This app needs to access your Google account (via Contacts).",
-                    1003,
-                    Manifest.permission.GET_ACCOUNTS);
+            context.startActivity(accountCredential.newChooseAccountIntent());
         }
     }
 
@@ -144,7 +155,7 @@ public class CalendarActivity extends AppCompatActivity
         Intent intent = new Intent(Intent.ACTION_VIEW)
                 .setData(builder.build());
         startActivity(intent);
-        //example_code();
+        // example_code();
         // Toast.makeText(this, accountCredential.getSelectedAccount().name, Toast.LENGTH_LONG).show();
     }
 
@@ -153,7 +164,7 @@ public class CalendarActivity extends AppCompatActivity
         if (accounts == null || accounts.length < 1)
         {
             Toast.makeText(this, "You must select a Google Account", Toast.LENGTH_LONG).show();
-            changeGoogleAccount();
+            changeGoogleAccount(CalendarActivity.this);
             return;
         }
 
@@ -161,132 +172,231 @@ public class CalendarActivity extends AppCompatActivity
     }
 
 
-    public String getGoogleAccount()
+    public static String getGoogleAccount(Context context)
     {
         String accountName = null;
 
-        if (EasyPermissions.hasPermissions(this, Manifest.permission.GET_ACCOUNTS))
+        Account[] accounts = accountCredential.getAllAccounts();
+        if (accounts == null || accounts.length < 1)
         {
-            accountName = getPreferences(Context.MODE_PRIVATE)
-                    .getString("accountName", null);
-        }
-        else {
-            // Request permission though a user dialog
-            EasyPermissions.requestPermissions(
-                    this,
-                    "This app needs to access your Google account (via Contacts).",
-                    1003,
-                    Manifest.permission.GET_ACCOUNTS);
+            Toast.makeText(context, "You must select a Google Account", Toast.LENGTH_LONG).show();
+            changeGoogleAccount(context);
+            return null;
         }
 
-        return accountName;
+        return accounts[0].name;
     }
 
-    public Event buildEvent(String summary, String location, String description)
-    {
-        return new Event()
-                .setSummary(summary)
-                .setLocation(location)
-                .setDescription(description);
-    }
-
-    public GeneralTime buildTime(DateTime startTime, DateTime endTime, String timeZone)
-    {
-        return new GeneralTime(startTime, endTime, timeZone);
-    }
 
     void example_code()
     {
-        Event event = buildEvent(
-                "Mobile App Programming Class",
-                "Olsen 411 North Campus",
-                "Go to class");
+        // Used for testing. Call this method to prompt a calendar event
+        Class course = new Class("Mobile App II", "M W F", "3:30pm", "4:30pm", "Olsen 104", "classid12345");
 
-        GeneralTime time = buildTime(
-                new DateTime("2015-05-28T09:00:00-07:00"),
-                new DateTime("2015-05-28T17:00:00-07:00"),
-                "America/New_York"
-        );
+        addCalendarEvent(getApplicationContext(), course);
 
+    }
+
+
+    public static void addCalendarEvent(Context context, Class course)
+    {
+        prefs = context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        CALENDAR_EVENTS_ENABLED = prefs.getBoolean(CALENDAR_EVENT_PREF, true);
+        editor = prefs.edit();
+
+        if (!CALENDAR_EVENTS_ENABLED)
+            return;
+
+        if (course == null)
+            return;
+
+        String userEmail = getGoogleAccount(context);
+        if (userEmail == null || userEmail.isEmpty())
+            userEmail = "example@gmail.com";
+
+        TimeStruct time = parseClassTime(course);
+        if (time == null)
+        {
+            Log.e(TAG, "Bad time parse while adding Calendar Event");
+            return;
+        }
+
+        java.util.Calendar beginTime = java.util.Calendar.getInstance();
+        int year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+        int month = java.util.Calendar.getInstance().get(java.util.Calendar.MONTH);
+        int date = java.util.Calendar.getInstance().get(java.util.Calendar.DATE);
+        int dayOffset = daysFromNextClass(course);
+        Log.d(TAG, "dayOffset: " + dayOffset);
+        Log.d(TAG, "email: " + userEmail);
+
+        beginTime.set(year, month, 23, time.startHour, time.startMin);
+        long startTime = beginTime.getTimeInMillis();
+
+        java.util.Calendar finishTime = java.util.Calendar.getInstance();
+        finishTime.set(year, month, date + dayOffset, time.endHour, time.endMin);
+        long endTime = finishTime.getTimeInMillis();
+
+        String days = parseClassDays(course);
+
+        java.util.Calendar cal = new GregorianCalendar();
+
+        cal.setTimeZone(TimeZone.getDefault());
+        cal.setTime(new Date());
+        cal.add(java.util.Calendar.MONTH, 2);
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setData(CalendarContract.Events.CONTENT_URI);
+        intent.putExtra(CalendarContract.Events.TITLE, course.getName());
+        intent.putExtra(CalendarContract.Events.EVENT_LOCATION, course.getRoom());
+        intent.putExtra(CalendarContract.Events.RRULE, "FREQ=WEEKLY;BYDAY=" + days);
+
+        intent.putExtra(
+                CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                startTime);
+        intent.putExtra(
+                CalendarContract.EXTRA_EVENT_END_TIME,
+                endTime);
+        /*intent.putExtra(
+                Intent.EXTRA_EMAIL,
+                userEmail);*/
+        context.startActivity(intent);
+    }
+
+    static String parseClassDays(Class course)
+    {
+        if (course == null)
+            return null;
+
+        String days = course.getDaysOfClass();
+        String fmtDays = "";
+        if (days.contains("M"))
+            fmtDays = "MO";
+        if (days.contains("Tu"))
+            fmtDays += (fmtDays == null || fmtDays.isEmpty())? "TU" : ",TU";
+        if (days.contains("W"))
+            fmtDays += (fmtDays == null || fmtDays.isEmpty())? "WE" : ",WE";
+
+        String tmp = days.replaceAll("Tu", "");
+        if (tmp.contains("T"))
+            fmtDays += (fmtDays == null || fmtDays.isEmpty())? "TH" : ",TH";
+        if (days.contains("F"))
+            fmtDays += (fmtDays == null || fmtDays.isEmpty())? "FR" : ",FR";
+
+        fmtDays += ";";
+
+        return fmtDays;
+    }
+
+    /* Get the amount of days until the next class */
+    static int daysFromNextClass(Class course)
+    {
+        if (course == null)
+            return 0;
+
+        int day = java.util.Calendar.DAY_OF_WEEK;
+        String classDays = course.getDaysOfClass();
+        ArrayList<Integer> dayList = new ArrayList<Integer>();
+        if (classDays.contains("M"))
+            dayList.add(java.util.Calendar.MONDAY);
+
+        if (classDays.contains("Tu"))
+            dayList.add(java.util.Calendar.TUESDAY);
+        if (classDays.contains("W"))
+            dayList.add(java.util.Calendar.WEDNESDAY);
+        String tmp = classDays.replaceAll("Tu", "");
+        if (tmp.contains("T"))
+            dayList.add(java.util.Calendar.THURSDAY);
+        if (classDays.contains("F"))
+            dayList.add(java.util.Calendar.FRIDAY);
+
+        boolean found = false;
+        int nearest = 0;
+        for (int i = 0; i < dayList.size(); i++)
+        {
+            if (dayList.get(i) > day) {
+                nearest = dayList.get(i);
+                found = true;
+                break;
+            }
+        }
+        if (!found && dayList.size() > 0)
+        {
+            nearest = dayList.get(0);
+        }
+
+        int total;
+        if (nearest > day)
+            total = nearest - day;
+        else
+            total = day - nearest;
+
+        if (total == 0)
+            total = 14;
+
+        return (7 - total);
+    }
+
+    /* place to store start/end times */
+    static TimeStruct parseClassTime(Class course)
+    {
+        if (course == null) {
+            Log.e(TAG, "Null course being parsed in class time.");
+            return null;
+        }
+
+        TimeStruct time = new TimeStruct();
+
+        String sTime = course.getStartTime();
+        String eTime = course.getEndTime();
+        boolean isStartPM = sTime.toLowerCase().contains("pm");
+        boolean isEndPM = eTime.toLowerCase().contains("pm");
+
+        String[] sDiv = sTime.split(":");
+        if (sDiv.length < 2) {
+            Log.e(TAG, "Error parsing class start hour:minute.");
+            return null;
+        }
+        String[] eDiv = eTime.split(":");
+        if (eDiv.length < 2) {
+            Log.e(TAG, "Error parsing class end hour:minute.");
+            return null;
+        }
+        /* Remove anything that is not a number */
+        eDiv[0] = eDiv[0].replaceAll("[^\\d.]", "");
+        eDiv[1] = eDiv[1].replaceAll("[^\\d.]", "");
+        sDiv[0] = sDiv[0].replaceAll("[^\\d.]", "");
+        sDiv[1] = sDiv[1].replaceAll("[^\\d.]", "");
+
+        /* Parse the time to integers */
         try
         {
-            addCalendarEvent(CalendarActivity.this, event, time, "person@gmail.com");
-
-        } catch (IOException e)
+            time.startHour = Integer.parseInt(sDiv[0]);
+            time.startMin  = Integer.parseInt(sDiv[1]);
+            time.endHour   = Integer.parseInt(eDiv[0]);
+            time.endMin    = Integer.parseInt(eDiv[1]);
+        }
+        catch (NumberFormatException nfe)
         {
-            e.printStackTrace();
+            Log.e(TAG, "Error parsing class time for event.");
+            nfe.printStackTrace();
+            return null;
         }
 
+        if (isStartPM && time.startHour < 13)
+            time.startHour += 12;
+
+        if (isEndPM && time.endHour < 13)
+            time.endHour += 12;
+
+        return time;
     }
 
-    /*public GeneralTime buildGeneralTime(
-            int year, int month,  int day,
-            int hour, int minute, int second, int msec)
+    private static class TimeStruct
     {
-        DateTime t;
-        String startTimeStr =
-                year + "-"
-                + ((month>9)? month : "0" + month) + "-"
-                + ((day>9)? day : "0" + day) + "T"
-                + ((hour>9)? hour : "0" + hour) + ":";
-    }*/
+        int startHour, endHour, startMin, endMin;
 
-    public void addCalendarEvent(Context context, Event event, GeneralTime time, String userEmail) throws IOException
-    {
-            accountCredential = GoogleAccountCredential.usingOAuth2(
-                    context, Arrays.asList(SCOPES))
-                    .setBackOff(new ExponentialBackOff());
-
-        if(accountCredential.getSelectedAccount() == null)
-            setAccount();
-
-        if (service == null)
+        public TimeStruct()
         {
-            service = new Calendar.Builder(
-                    HTTP_TRANSPORT, JSON_FACTORY, accountCredential)
-                    .setApplicationName(APP_NAME)
-                    .build();
+
         }
-
-        event.setStart(time.getStart());
-        event.setEnd(time.getEnd());
-
-        String[] recurrence = new String[] { "RRULE:FREQ=DAILT;COUNT=2" };
-        event.setRecurrence(Arrays.asList(recurrence));
-
-        EventAttendee[] attendees = new EventAttendee[] {
-                new EventAttendee().setEmail(userEmail)
-        };
-
-        EventReminder[] reminderOverrides = new EventReminder[] {
-                new EventReminder().setMethod("email").setMinutes(24 * 60), // one day
-                new EventReminder().setMethod("popup").setMinutes(10)       // 10 min
-        };
-
-        Event.Reminders reminders = new Event.Reminders()
-                .setUseDefault(false)
-                .setOverrides(Arrays.asList(reminderOverrides));
-
-        String calendarID = "primary";
-        // The potential IOException
-        event = service.events().insert(calendarID, event).execute();
-    }
-
-    void initCredential(GoogleAccountCredential credential)
-    {
-        credential = GoogleAccountCredential.usingOAuth2(
-                getApplicationContext(), Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff());
-    }
-
-    void initCalendarService(Calendar srvc)
-    {
-        HttpTransport transport = AndroidHttp.newCompatibleTransport();
-        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-        srvc = new Calendar.Builder(
-                transport, jsonFactory, accountCredential)
-                .setApplicationName("Google Calendar API Android Quickstart")
-                .build();
     }
 }
