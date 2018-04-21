@@ -112,9 +112,9 @@ public class ClassCreatorActivity extends AppCompatActivity {
 
                     String endMinStr;
                     if(endMinute > 9){
-                        endMinStr = String.valueOf(startMinute);
+                        endMinStr = String.valueOf(endMinute);
                     } else {
-                        endMinStr = "0" + String.valueOf(startMinute);
+                        endMinStr = "0" + String.valueOf(endMinute);
                     }
 
                     String stateEnd = "am";
