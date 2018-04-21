@@ -44,6 +44,7 @@ public class DatabaseHelper {
             INSTRUCTOR_PROMPTED = "Instructor_Prompt_Bool";
     private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades",
             SUBMISSIONS = "submissions";
+    private String ATTENDANCE = "attendance";
     private String TAG = "DATABASE_HELPER";
     private String MESSAGE_ROOMS = "MessageRooms";
     private String MESSAGE_TEXT = "messageText";
@@ -113,9 +114,10 @@ public class DatabaseHelper {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-                CalendarActivity calendarActivity = new CalendarActivity();
+                CalendarActivity.addCalendarEvent(context, curClass);
+                //CalendarActivity calendarActivity = new CalendarActivity();
 
-                Event newAssignmentEvent = calendarActivity.buildEvent(
+                /*Event newAssignmentEvent = calendarActivity.buildEvent(
                         assignment, curClass.getRoom(),"assignment due");
 
                 DateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -139,7 +141,7 @@ public class DatabaseHelper {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
 
             @Override
@@ -715,6 +717,11 @@ public class DatabaseHelper {
             }
         });
 
+        //Delete from Profs Classes
+        //userRef.child(CLASSES).child(cid).removeValue();
+
+        //Delete the CID
+        mDatabase.getReference(CIDS).child(cid).removeValue();
     }
 
     /**
@@ -814,5 +821,67 @@ public class DatabaseHelper {
                                           String downloadUrl){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS).child(assignmentName)
                 .child(SUBMISSIONS).child(uid).setValue(downloadUrl);
+    }
+
+    /**
+     * adds the students submission to the database with the url to download
+     *
+     * @param uid the user id of the student submitting the work
+     * @param cid the class for which the assignment is being submitted
+     * @param isPresent whether or not the student is present
+     * @param date the current date
+     */
+    public void setTodayStudentAttendance(String uid, String cid, Boolean isPresent, String date){
+        mDatabase.getReference().child(CIDS).child(cid).child(ATTENDANCE)
+                .child(date).child(uid).setValue(isPresent);
+    }
+
+    /**
+     * adds the students submission to the database with the url to download
+     *
+     * @param context The application context
+     * @param listView the listView to store the present students
+     * @param cid the class ID to poll
+     * @param date the current date
+     */
+    public void getPresentStudents(final Context context, final ListView listView,
+                                   final String cid, final String date)
+    {
+        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                RosterAdapter rosterAdapter;
+                final ArrayList<User> users = new ArrayList<User>();
+
+                for(DataSnapshot rosterData: dataSnapshot.child(CIDS)
+                        .child(cid).child(ROSTER).getChildren()){
+
+                    String uid = rosterData.getKey();
+                    // prevents null exception
+                    if (dataSnapshot.child(CIDS).child(cid).child(ATTENDANCE).child(uid).exists()) {
+                        // if student is present
+                        if((Boolean) dataSnapshot.child(CIDS).child(cid)
+                                .child(ATTENDANCE).child(date).child(uid).getValue()){
+                            // get students name
+                            String name = dataSnapshot.child(UIDS)
+                                    .child(uid).child(USER_NAME).getValue().toString();
+                            // add them to the users array
+                            users.add(new User(uid,name,false));
+                        }
+                    }
+                    else {
+                        Log.d(TAG, "Not attendance entry found");
+                    }
+                }
+                rosterAdapter = new RosterAdapter(context, users);
+                listView.setAdapter(rosterAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
     }
 }
