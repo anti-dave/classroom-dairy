@@ -1,11 +1,13 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.Manifest;
 import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,13 +22,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.IOException;
 
 public class ClassInfoActivity extends AppCompatActivity {
 
@@ -64,9 +62,17 @@ public class ClassInfoActivity extends AppCompatActivity {
                             .setPositiveButton("Upload", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent uploadIntent = new Intent(ClassInfoActivity.this,UploadSyllabusActivity.class);
-                                    uploadIntent.putExtra("CURRENT_CLASS", mCurrentClass);
-                                    startActivity(uploadIntent);
+
+                                    if(ActivityCompat.checkSelfPermission(ClassInfoActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                            == PackageManager.PERMISSION_GRANTED) {
+                                        Intent uploadIntent = new Intent(ClassInfoActivity.this, UploadSyllabusActivity.class);
+                                        uploadIntent.putExtra("CURRENT_CLASS", mCurrentClass);
+                                        startActivity(uploadIntent);
+                                    } else {
+                                        ActivityCompat.requestPermissions(ClassInfoActivity.this,
+                                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1024);
+                                    }
+
                                 }
                             })
                             .setNeutralButton("View", new DialogInterface.OnClickListener() {
@@ -192,10 +198,10 @@ public class ClassInfoActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         DatabaseHelper database = new DatabaseHelper();
 
         switch (item.getItemId()) {
+
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 Intent upIntent = NavUtils.getParentActivityIntent(this);
@@ -221,8 +227,8 @@ public class ClassInfoActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG)
                         .show();
 
-                database.deleteClass( mCurrentClass.getCourseID(), FirebaseAuth.getInstance().getCurrentUser().getUid() );
-                finish();
+                database.deleteClass(ClassInfoActivity.this, mCurrentClass.getCourseID(), FirebaseAuth.getInstance().getCurrentUser().getUid() );
+                //finish();
 
             case R.id.action_drop_class:
                 //add class action

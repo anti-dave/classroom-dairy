@@ -78,6 +78,7 @@
     <string name="assignments">Assignments</string>
     <string name="grades">Grades</string>
     <string name="students">Students</string>
+    <string name="members">Members</string>
     <string name="by_line">Made By: Cam Cambell, Dave DaCosta, Jake Adamson, Rob Cucchiara</string>
     <string name="ncontact_info">\nContact Info:</string>
     <string name="emails">\tEmail: someone@classManager.com</string>

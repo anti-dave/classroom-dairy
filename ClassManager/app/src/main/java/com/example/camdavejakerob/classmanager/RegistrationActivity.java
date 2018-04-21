@@ -341,7 +341,6 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
                                 updateUI(null);
                             }
 
-                            // ...
                         }
                     });
 

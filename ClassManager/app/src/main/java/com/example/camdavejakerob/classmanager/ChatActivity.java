@@ -1,8 +1,10 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.view.View;
@@ -33,6 +35,7 @@ public class ChatActivity extends AppCompatActivity {
     private String Messages = "Messages";
     private String CIDS = "cids", UIDS = "uids";
     private String key = "";
+    private Boolean hasChatted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +63,7 @@ public class ChatActivity extends AppCompatActivity {
                         .child(endUserId);
 
         //Check if the recipient has been messaged prior
-        if( chatId == null || chatId.isEmpty()) {
+        if( chatId == null || chatId.isEmpty() ) {
 
             Integer rand = new Random().nextInt();
             key = rand.toString();

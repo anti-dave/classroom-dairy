@@ -1,26 +1,17 @@
 package com.example.camdavejakerob.classmanager;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.LightingColorFilter;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,11 +39,6 @@ public class MainActivity extends AppCompatActivity {
                             .build(),
                     SIGN_IN_REQUEST_CODE);
 
-            //Alternative
-            //Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
-            //startActivity(loginIntent);
-            //Log.d("MAIN ACTIVITY", "onCreate: " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-
         } else {
             // User is already signed in. Therefore, display
             // a welcome Toast
@@ -69,12 +55,7 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayout myClassesButton = findViewById(R.id.my_classes);
 
         myClassesButton.setOnFocusChangeListener(new View.OnFocusChangeListener(){
-            public void onFocusChange(View v, boolean hasFocus){
-                //Toast.makeText(MainActivity.this,"hey i have focus", Toast.LENGTH_LONG).show();
-                //LinearLayout ln = (LinearLayout) findViewById(R.id.my_classes);
-                //ln.setBackgroundColor(0xfff);
-            }
-        });
+            public void onFocusChange(View v, boolean hasFocus){}});
 
         myClassesButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -129,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(infoIntent);
             }
         });
-
     } //OnCreate
 
     private void updateCurUserData(){
@@ -168,73 +148,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     } //onActivityResult
-
-    
-////////////////////// deprecated moved to setting////////////////////////////
-//    /**
-//     * Creates the menu with oncreate.
-//     *
-//     * @param menu
-//     * @return bool on whether it was successful.
-//     */
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_sign_in_dropdown, menu);
-//        return true;
-//    }//onCreateOptionsMenu
-//
-//
-//    /**
-//     * Logic for when menu is pressed.
-//     *
-//     * @param item
-//     * @return bool on whether it was successful.
-//     */
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if(item.getItemId() == R.id.action_sign_out) {
-//            AuthUI.getInstance().signOut(this)
-//                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {
-//                            Toast.makeText(MainActivity.this,
-//                                    "You have been signed out.",
-//                                    Toast.LENGTH_LONG)
-//                                    .show();
-//
-//                            // Close activity, isneatd of close activity, make go back
-//                            //finish();
-//                        }
-//                    });
-//            // Start sign in/sign up activity
-//            startActivityForResult(
-//                    AuthUI.getInstance()
-//                            .createSignInIntentBuilder()
-//                            .build(),
-//                    SIGN_IN_REQUEST_CODE);
-//        }
-//        if(item.getItemId() == R.id.action_change_account) {
-//            AuthUI.getInstance().signOut(this)
-//                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {
-//                            Toast.makeText(MainActivity.this,
-//                                    "You have been signed out.",
-//                                    Toast.LENGTH_LONG)
-//                                    .show();
-//
-//                            // Close activity, isneatd of close activity, make go back
-//                            //finish();
-//                        }
-//                    });
-//            // Start sign in/sign up activity
-//            startActivityForResult(
-//                    AuthUI.getInstance()
-//                            .createSignInIntentBuilder()
-//                            .build(),
-//                    SIGN_IN_REQUEST_CODE);
-//        }
-//        return true;
-//    }
 
 }//main

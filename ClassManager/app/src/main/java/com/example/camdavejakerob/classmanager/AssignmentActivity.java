@@ -1,9 +1,13 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.*;
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -59,10 +63,17 @@ public class AssignmentActivity extends AppCompatActivity {
             mNewAssignmentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //launch newAssignmentActivity
-                    Intent newAssignmentIntent = new Intent(AssignmentActivity.this,NewAssignmentActivity.class);
-                    newAssignmentIntent.putExtra("CURRENT_CLASS",mCurrentClass);
-                    startActivity(newAssignmentIntent);
+
+                    if(ActivityCompat.checkSelfPermission(AssignmentActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        //launch newAssignmentActivity
+                        Intent newAssignmentIntent = new Intent(AssignmentActivity.this, NewAssignmentActivity.class);
+                        newAssignmentIntent.putExtra("CURRENT_CLASS", mCurrentClass);
+                        startActivity(newAssignmentIntent);
+                    } else {
+                        ActivityCompat.requestPermissions(AssignmentActivity.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1024);
+                    }
                 }
             });
 
@@ -93,16 +104,22 @@ public class AssignmentActivity extends AppCompatActivity {
                     AlertDialog.Builder studentAlertBuilder = new AlertDialog.Builder(AssignmentActivity.this);
                     studentAlertBuilder.setCancelable(true)
                             .setTitle(assignmentName.getText().toString())
-                            .setMessage("View assignment or submit work?")
+                            //.setMessage("View assignment or submit work?")
                             .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
-                                    //launch assignmentSubmission activity
-                                    Intent submitIntent = new Intent(AssignmentActivity.this,SubmitAssignmentActivity.class);
-                                    submitIntent.putExtra("CURRENT_CLASS", mCurrentClass);
-                                    submitIntent.putExtra("ASSIGNMENT_NAME", assignmentName.getText().toString());
-                                    startActivity(submitIntent);
+                                    if(ActivityCompat.checkSelfPermission(AssignmentActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                            == PackageManager.PERMISSION_GRANTED) {
+                                        //launch assignmentSubmission activity
+                                        Intent submitIntent = new Intent(AssignmentActivity.this, SubmitAssignmentActivity.class);
+                                        submitIntent.putExtra("CURRENT_CLASS", mCurrentClass);
+                                        submitIntent.putExtra("ASSIGNMENT_NAME", assignmentName.getText().toString());
+                                        startActivity(submitIntent);
+                                    } else {
+                                        ActivityCompat.requestPermissions(AssignmentActivity.this,
+                                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1024);
+                                    }
 
                                 }
                             })
@@ -127,10 +144,17 @@ public class AssignmentActivity extends AppCompatActivity {
                                             }
                                         });
                                 }
-                            });
-
-                    AlertDialog studentAlert = studentAlertBuilder.create();
-                    studentAlert.show();
+                            })
+                            .setNegativeButton("Set Reminder", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(AssignmentActivity.this, "Something went wrong. Failed to add reminder.", Toast.LENGTH_LONG).show();
+                                    ///////  This does not currently work
+                                    /////// if we can get the calendar working then remove the toast and uncomment the two lines below
+                                    //DatabaseHelper databaseHelper = new DatabaseHelper();
+                                    //databaseHelper.setAssignmentCalendarAlert(AssignmentActivity.this, mCurUser.getUserId(),mCurrentClass,assignmentName.getText().toString());
+                                }
+                            }).show();
                 }
             }
         });

@@ -1,20 +1,19 @@
 package com.example.camdavejakerob.classmanager;
 
-import android.app.TaskStackBuilder;
+import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +42,14 @@ public class UploadSyllabusActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_syllabus);
+
+        // remove the up arrow at the top
+        ActionBar actionBar = getActionBar();
+        if(actionBar != null){
+            actionBar.setHomeButtonEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(false);
+        }
 
         Intent intent = getIntent();
         //classId = getIntent().getStringExtra(CLASS_ID);
@@ -83,6 +90,11 @@ public class UploadSyllabusActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        // hide list of files and display progress bar
+                        mListView.setVisibility(View.GONE);
+                        ((RelativeLayout) findViewById(R.id.upload_syllabus_loading_panel))
+                                .setVisibility(View.VISIBLE);
+
                         Uri file = Uri.fromFile(new File(filePath));
                         StorageReference ref = FirebaseStorage.getInstance().getReference().
                                 child(mCurrentClass.getCourseID() + "/" + mCurrentClass.getName() + " syllabus.pdf");
@@ -107,6 +119,7 @@ public class UploadSyllabusActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 Toast.makeText(UploadSyllabusActivity.this, "Upload Complete!", Toast.LENGTH_SHORT).show();
+                                UploadSyllabusActivity.this.finish();
                             }
                         });
                     }
@@ -116,37 +129,9 @@ public class UploadSyllabusActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         //do nothing
                     }
-                });
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                }).show();
 
             }
         });
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if(item.getItemId() == android.R.id.home) {
-
-            Intent upIntent = NavUtils.getParentActivityIntent(this);
-            if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-                // This activity is NOT part of this app's task, so create a new task
-                // when navigating up, with a synthesized back stack.
-                TaskStackBuilder.create(this)
-                        // Add all of this activity's parents to the back stack
-                        .addNextIntentWithParentStack(upIntent)
-                        // Navigate up to the closest parent
-                        .startActivities();
-            } else {
-                // This activity is part of this app's task, so simply
-                // navigate up to the logical parent activity.
-                NavUtils.navigateUpTo(this, upIntent);
-            }
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 }
