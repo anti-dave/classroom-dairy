@@ -27,10 +27,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import pub.devrel.easypermissions.EasyPermissions;
-
-import static android.content.Context.LOCATION_SERVICE;
 
 public class AttendanceActivity extends AppCompatActivity {
     private final String TAG = "ATTENDANCE_ACTIVITY";
@@ -53,6 +53,7 @@ public class AttendanceActivity extends AppCompatActivity {
         user = ((ClassManagerApp) AttendanceActivity.this.getApplication()).getCurUser();
         Intent intent = getIntent();
         currentClass = (Class) intent.getParcelableExtra("CURRENT_CLASS");
+
 
 
         TextView checkinLabel = (TextView) findViewById(R.id.at_CheckinLabel);
@@ -87,36 +88,56 @@ public class AttendanceActivity extends AppCompatActivity {
     // M Tu W T F / TBA
     public void onClick_AttendanceCheckin(View view) {
         Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        int day = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         if (!hasDay(day)) {
             Toast.makeText(this, "You don't have this class today", Toast.LENGTH_LONG).show();
             return;
         }
 
-        if (!validTime(currentClass.getClassTime())) {
-            Toast.makeText(this, "Class is not active at this time", Toast.LENGTH_LONG).show();
+        String timeStr;
+        timeStr = currentClass.getClassTime();
+        //timeStr = "12:00am - 5:00pm";
+        if (!verifyTime(timeStr)) {
+            //Toast.makeText(this, "Class is not active at this time", Toast.LENGTH_LONG).show();
             return;
         }
 
         if (user.isInstructor())
             instructorPollClass();
         else
+        {
             studentCheckIn();
+        }
     }
 
     void instructorPollClass()
     {
-        // TODO: Instructor polls firebase to get all students who have checked in
+        SimpleDateFormat sdf = new SimpleDateFormat("MMdd");
+        String currentDate = sdf.format(new Date());
+        ListView checkinList = (ListView) findViewById(R.id.at_checkinList);
+
+        mDatabase.getPresentStudents(AttendanceActivity.this, checkinList,
+        currentClass.getCourseID(), currentDate);
     }
 
     void studentCheckIn()
     {
+
+        /*
         if (inNorthCampus())
-            Toast.makeText(this, "On Campus", Toast.LENGTH_LONG).show();
+        {
+        */
+            Toast.makeText(this, "Checked In", Toast.LENGTH_LONG).show();
+            SimpleDateFormat sdf = new SimpleDateFormat("MMdd");
+            String currentDate = sdf.format(new Date());
+
+            mDatabase.setTodayStudentAttendance(user.getUserId(), currentClass.getCourseID(), true, currentDate);
+        /*
+        }
         else
             Toast.makeText(this, "Not on Campus", Toast.LENGTH_LONG).show();
+        */
 
-        // TODO: Implement to firebase
     }
 
     boolean inNorthCampus()
@@ -138,6 +159,8 @@ public class AttendanceActivity extends AppCompatActivity {
     }
 
     boolean hasDay(int day) {
+        System.out.print("Day: " + day);
+        Log.d("TAG", "Day: " + day);
         String classDays = currentClass.getDaysOfClass();
         if (classDays.contains("TBA"))
             return false;
@@ -163,17 +186,26 @@ public class AttendanceActivity extends AppCompatActivity {
         return false;
     }
 
-    boolean validTime(String time) {
+    /*
+    * Validates the current classes time with the current system time
+    * */
+    boolean verifyTime(String time) {
         /* Sanitize input */
-        if (!time.contains("-"))
+        if (!time.contains("-")) {
+            Toast.makeText(this, "ERROR: no '-'", Toast.LENGTH_LONG).show();
             return false;
+        }
 
         String[] interval = time.split("-");
-        if (interval.length < 2)
+        if (interval.length < 2) {
+            Toast.makeText(this, "No start end", Toast.LENGTH_LONG).show();
             return false;
+        }
 
         Calendar calendar = Calendar.getInstance();
-        String currentHour = (new SimpleDateFormat("HH")).format(calendar.getTime());
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.setTimeZone(TimeZone.getTimeZone("EST"));
+        int currentHour = rightNow.get(Calendar.HOUR_OF_DAY) + 1;
         String currentMin = (new SimpleDateFormat("mm")).format(calendar.getTime());
 
         int startHour;
@@ -181,7 +213,6 @@ public class AttendanceActivity extends AppCompatActivity {
         int endHour;
         int endMin;
 
-        int cHour;
         int cMin;
 
         boolean
@@ -208,6 +239,7 @@ public class AttendanceActivity extends AppCompatActivity {
         if (startHHmm.length < 1 || endHHmm.length < 1) {
             Log.e(TAG, "Error occurred when parsing the current class time.\n" +
                     "No semicolon was found.");
+            Toast.makeText(this, "Semicolon parsing", Toast.LENGTH_LONG).show();
             return false;
         }
         try {
@@ -216,10 +248,10 @@ public class AttendanceActivity extends AppCompatActivity {
             endHour = Integer.parseInt(endHHmm[0]);
             endMin = Integer.parseInt(endHHmm[1]);
 
-            cHour = Integer.parseInt(currentHour);
             cMin = Integer.parseInt(currentMin);
         } catch (NumberFormatException nfe) {
             Log.e(TAG, "Error occurred when parsing the current class time.");
+            Toast.makeText(this, "String to Int", Toast.LENGTH_LONG).show();
             nfe.printStackTrace();
             return false;
         }
@@ -236,14 +268,22 @@ public class AttendanceActivity extends AppCompatActivity {
         if (endPM && endHour < 13)
             endHour += 12;
 
-        if (cHour < startHour || cHour > endHour)
+        if (currentHour < startHour || currentHour > endHour) {
+            // Toast.makeText(this, "Class is not active yet.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "c: " + currentHour + ", s: " + startHour + ", e: " + endHour, Toast.LENGTH_LONG).show();
             return false;
+        }
 
-        if (cHour == startHour && cMin < startMin)
+        // I think current hour is really all that is necessary
+        /*if (currentHour == startHour && cMin < startMin) {
+            Toast.makeText(this, "TWO", Toast.LENGTH_LONG).show();
             return false;
+        }
 
-        if (cHour == endHour && cMin > endMin)
+        if (currentHour == endHour && cMin > endMin) {
+            Toast.makeText(this, "THREE", Toast.LENGTH_LONG).show();
             return false;
+        }*/
 
         return true;
     }

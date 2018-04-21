@@ -4,117 +4,146 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/at_CheckinLabel"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/attendanceCheckinLabel"
-            android:textAlignment="center" />
-    </LinearLayout>
+            android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="15dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="15dp">
 
-        <Button
-            android:id="@+id/at_CheckinButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onClick_AttendanceCheckin"
-            android:text="@string/attendanceCheckinButton" />
+                <TextView
+                    android:id="@+id/at_CheckinLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendanceCheckinLabel"
+                    android:textAlignment="center" />
+            </LinearLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight=".10"
-        android:orientation="horizontal"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp">
+                <Button
+                    android:id="@+id/at_CheckinButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="onClick_AttendanceCheckin"
+                    android:text="@string/attendanceCheckinButton" />
 
-        <TextView
-            android:id="@+id/at_ClassLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/attendanceClassLabel"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/at_ClassText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/attendancePlaceHolderText" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight=".10"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/at_ClassLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendanceClassLabel"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight=".10"
-        android:orientation="horizontal"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp">
+                <TextView
+                    android:id="@+id/at_ClassText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendancePlaceHolderText" />
 
-        <TextView
-            android:id="@+id/at_TimeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/attendanceClassTime"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/at_TimeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/attendancePlaceHolderText" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight=".10"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/at_TimeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendanceClassTime"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight=".5"
-        android:orientation="horizontal"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp">
+                <TextView
+                    android:id="@+id/at_TimeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendancePlaceHolderText" />
 
-        <TextView
-            android:id="@+id/at_DaysLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/attendanceClassDays"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/at_DaysText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/attendancePlaceHolderText" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight=".10"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/at_DaysLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendanceClassDays"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/at_DaysText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/attendancePlaceHolderText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ListView
+                    android:id="@+id/at_checkinList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
 
 </LinearLayout>

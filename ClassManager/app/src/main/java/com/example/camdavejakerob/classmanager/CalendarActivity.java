@@ -1,9 +1,11 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.Manifest;
+import android.accounts.Account;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -17,8 +19,10 @@ import android.widget.Toast;
 
 import com.example.camdavejakerob.classmanager.R;
 import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
@@ -49,8 +53,14 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class CalendarActivity extends AppCompatActivity
 {
+    private static final String API_KEY   = "AIzaSyBAFZFCI5QWMjwAyTpzv51MU9395ZJl1jE";
+    private static final String CLIENT_ID = "421332567684-8jr80fpvcr5v4feegmt4en5qrsdgt4bk.apps.googleusercontent.com";
+    private static final String APP_NAME  = "ClassManager";
+    private static final String PREF_ACCOUNT_NAME = "accountName";
+    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+    private static final JsonFactory JSON_FACTORY = new JacksonFactory();
     private static GoogleAccountCredential accountCredential = null;
-    private static final String[] SCOPES = { CalendarScopes.CALENDAR_READONLY };
+    private static final String[] SCOPES = { CalendarScopes.CALENDAR };
     private static Button changeAccountButton;
 
     private static Calendar service = null;
@@ -65,12 +75,15 @@ public class CalendarActivity extends AppCompatActivity
         accountCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+
+        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+        if(accountCredential.getSelectedAccount() == null)
+            setAccount();
+
         // Initialize Google Calendar service
-        HttpTransport transport = AndroidHttp.newCompatibleTransport();
-        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
         service = new Calendar.Builder(
-            transport, jsonFactory, accountCredential)
-            .setApplicationName("Google Calendar API Android Quickstart")
+            HTTP_TRANSPORT, JSON_FACTORY, accountCredential)
+            .setApplicationName(APP_NAME)
             .build();
 
         String accountName = getGoogleAccount();
@@ -100,6 +113,11 @@ public class CalendarActivity extends AppCompatActivity
     /* Change Google Calendar button click */
     public void onClick_ChangeGoogleAccount(View view)
     {
+        changeGoogleAccount();
+    }
+
+    public void changeGoogleAccount()
+    {
         if (EasyPermissions.hasPermissions(this, Manifest.permission.GET_ACCOUNTS))
         {
             startActivityForResult(
@@ -114,9 +132,6 @@ public class CalendarActivity extends AppCompatActivity
                     1003,
                     Manifest.permission.GET_ACCOUNTS);
         }
-
-        String accountName = getGoogleAccount();
-        changeAccountButton.setText((accountName == null)? "Select Account" : accountName);
     }
 
     /* ViewGoogleCalendar button click */
@@ -129,6 +144,20 @@ public class CalendarActivity extends AppCompatActivity
         Intent intent = new Intent(Intent.ACTION_VIEW)
                 .setData(builder.build());
         startActivity(intent);
+        //example_code();
+        // Toast.makeText(this, accountCredential.getSelectedAccount().name, Toast.LENGTH_LONG).show();
+    }
+
+    public void setAccount(){
+        Account[] accounts = accountCredential.getAllAccounts();
+        if (accounts == null || accounts.length < 1)
+        {
+            Toast.makeText(this, "You must select a Google Account", Toast.LENGTH_LONG).show();
+            changeGoogleAccount();
+            return;
+        }
+
+        accountCredential.setSelectedAccount(accounts[0]);
     }
 
 
@@ -181,7 +210,7 @@ public class CalendarActivity extends AppCompatActivity
 
         try
         {
-            addCalendarEvent(event, time, "person@gmail.com");
+            addCalendarEvent(CalendarActivity.this, event, time, "person@gmail.com");
 
         } catch (IOException e)
         {
@@ -202,20 +231,20 @@ public class CalendarActivity extends AppCompatActivity
                 + ((hour>9)? hour : "0" + hour) + ":";
     }*/
 
-    public void addCalendarEvent(Event event, GeneralTime time, String userEmail) throws IOException
+    public void addCalendarEvent(Context context, Event event, GeneralTime time, String userEmail) throws IOException
     {
-        if (accountCredential == null)
             accountCredential = GoogleAccountCredential.usingOAuth2(
-            getApplicationContext(), Arrays.asList(SCOPES))
-            .setBackOff(new ExponentialBackOff());
+                    context, Arrays.asList(SCOPES))
+                    .setBackOff(new ExponentialBackOff());
+
+        if(accountCredential.getSelectedAccount() == null)
+            setAccount();
 
         if (service == null)
         {
-            HttpTransport transport = AndroidHttp.newCompatibleTransport();
-            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             service = new Calendar.Builder(
-                    transport, jsonFactory, accountCredential)
-                    .setApplicationName("Google Calendar API Android Quickstart")
+                    HTTP_TRANSPORT, JSON_FACTORY, accountCredential)
+                    .setApplicationName(APP_NAME)
                     .build();
         }
 

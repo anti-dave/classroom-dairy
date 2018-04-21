@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +31,7 @@ public class DatabaseHelper {
     private String SYLLABUS = "syllabus", MESSAGES = "Messages", CLASS_NAME = "name", ROOM = "room";
     private String CLASSES = "classes", USER_NAME = "name", INSTRUCTOR = "instructor", INSTRUCTOR_PROMPTED = "Instructor_Prompt_Bool";
     private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades", SUBMISSIONS = "submissions";
+    private String ATTENDANCE = "attendance";
     private String TAG = "DATABASE_HELPER";
     private String MESSAGE_ROOMS = "MessageRooms";
     private String MESSAGE_TEXT = "messageText";
@@ -631,5 +633,67 @@ public class DatabaseHelper {
     public void writeAssignmentSubmission(String uid, String cid, String assignmentName, String downloadUrl){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS).child(assignmentName)
                 .child(SUBMISSIONS).child(uid).setValue(downloadUrl);
+    }
+
+    /**
+     * adds the students submission to the database with the url to download
+     *
+     * @param uid the user id of the student submitting the work
+     * @param cid the class for which the assignment is being submitted
+     * @param isPresent whether or not the student is present
+     * @param date the current date
+     */
+    public void setTodayStudentAttendance(String uid, String cid, Boolean isPresent, String date){
+        mDatabase.getReference().child(CIDS).child(cid).child(ATTENDANCE)
+                .child(date).child(uid).setValue(isPresent);
+    }
+
+    /**
+     * adds the students submission to the database with the url to download
+     *
+     * @param context The application context
+     * @param listView the listView to store the present students
+     * @param cid the class ID to poll
+     * @param date the current date
+     */
+    public void getPresentStudents(final Context context, final ListView listView,
+                                   final String cid, final String date)
+    {
+        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                RosterAdapter rosterAdapter;
+                final ArrayList<User> users = new ArrayList<User>();
+
+                for(DataSnapshot rosterData: dataSnapshot.child(CIDS)
+                        .child(cid).child(ROSTER).getChildren()){
+
+                    String uid = rosterData.getKey();
+                    // prevents null exception
+                    if (dataSnapshot.child(CIDS).child(cid).child(ATTENDANCE).child(uid).exists()) {
+                        // if student is present
+                        if((Boolean) dataSnapshot.child(CIDS).child(cid)
+                                .child(ATTENDANCE).child(date).child(uid).getValue()){
+                            // get students name
+                            String name = dataSnapshot.child(UIDS)
+                                    .child(uid).child(USER_NAME).getValue().toString();
+                            // add them to the users array
+                            users.add(new User(uid,name,false));
+                        }
+                    }
+                    else {
+                        Log.d(TAG, "Not attendance entry found");
+                    }
+                }
+                rosterAdapter = new RosterAdapter(context, users);
+                listView.setAdapter(rosterAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
     }
 }
