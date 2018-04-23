@@ -104,53 +104,6 @@ public class DatabaseHelper {
         });
     }
 
-
-    public void setAssignmentCalendarAlert(final Context context, final String uid,
-                                           final Class curClass, final String assignment){
-
-        mDatabase.getReference(CIDS).child(curClass.getCourseID())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-                CalendarActivity.addCalendarEvent(context, curClass);
-                //CalendarActivity calendarActivity = new CalendarActivity();
-
-                /*Event newAssignmentEvent = calendarActivity.buildEvent(
-                        assignment, curClass.getRoom(),"assignment due");
-
-                DateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy");
-                DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String dueDate = dataSnapshot.child(ASSIGNMENTS).child(assignment)
-                        .child(DUE_DATE).getValue().toString();
-                try {
-
-                    Date date = inputFormat.parse(dueDate);
-                    String outputDateStr = outputFormat.format(date);
-                    DateTime start = new DateTime(outputDateStr + "T09:00:00-07:00");
-                    DateTime end = new DateTime(outputDateStr + "T17:00:00-07:00");
-
-                    GeneralTime alertTime = calendarActivity.buildTime(start, end,
-                            TimeZone.getDefault().toString());
-
-                    calendarActivity.addCalendarEvent(context, newAssignmentEvent, alertTime,
-                            FirebaseAuth.getInstance().getCurrentUser().getEmail());
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }*/
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: " + databaseError.toString());
-            }
-        });
-    }
-
     /**
      * Gathers all the recipients the user has chats with and sets an adapter to populate a listview with them
      *
@@ -565,11 +518,36 @@ public class DatabaseHelper {
      *  This method adds the user id to the roster list and the class id to the classes list of the user
      *
      */
-    public void enrollUserToClass(final String cid, final String uid){
+    public void enrollUserToClass(final Context context, final String cid, final String uid, Boolean setReminder){
         DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
         DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
         classRef.child(ROSTER).child(uid).setValue(true);
         userRef.child(CLASSES).child(cid).setValue(true);
+        //set reminder in calendar
+        if(setReminder) {
+            mDatabase.getReference().child(CIDS).child(cid)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String name, daysOfClass, startTime, endTime, room;
+                            name = dataSnapshot.child(CLASS_NAME).getValue().toString();
+                            daysOfClass = dataSnapshot.child(DAYS).getValue().toString();
+                            startTime = dataSnapshot.child(TIME_START).getValue().toString();
+                            endTime = dataSnapshot.child(TIME_END).getValue().toString();
+                            room = dataSnapshot.child(ROOM).getValue().toString();
+                            String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+                            CalendarActivity.addCalendarEvent(context,
+                                    new Class(name, daysOfClass, startTime, endTime, room, cid));
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d(TAG, "onCancelled: " + databaseError.toString());
+                        }
+                    });
+        }
     }
 
     /**
