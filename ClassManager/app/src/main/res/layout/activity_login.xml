@@ -46,6 +46,18 @@
             android:textColor="@color/black"
             android:text="@string/finish_registration_text"/>
 
+        <TextView
+            android:id="@+id/finish_signIn_text"
+            android:visibility="gone"
+            android:layout_weight=".5"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textSize="20sp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@color/black"
+            android:text="@string/finish_registration_text"/>
+
     </LinearLayout>
 
     <RelativeLayout
@@ -96,21 +108,13 @@
                 android:layout_height="0dp"
                 android:orientation="horizontal"
                 android:layout_weight="1"
-                android:weightSum="2.0">
+                android:gravity="center">
                 <Button
                     android:id="@+id/register_button"
                     style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.0"
                     android:text="Register" />
-                <Button
-                    android:id="@+id/resend_verification_link"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.0"
-                    android:text="Re-Verify" />
             </LinearLayout>
 
         </LinearLayout>
@@ -141,15 +145,16 @@
                 android:layout_height="0dp"
                 android:orientation="horizontal"
                 android:layout_weight="1"
-                android:weightSum="2">
+                android:gravity="center"
+                android:weightSum="3">
 
                 <Button
-                android:id="@+id/sign_in_button"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Sign In"/>
+                    android:id="@+id/sign_in_button"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sign In"/>
 
                 <Button
                     android:id="@+id/send_verification_link"
@@ -157,7 +162,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Verify" />
+                    android:text="@string/Verify" />
             </LinearLayout>
         </LinearLayout>
 
@@ -193,14 +198,24 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:visibility="gone"
-            android:gravity="center" >
+            android:gravity="clip_vertical"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/resend_verification_link"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/ReVerify" />
 
             <Button
                 android:id="@+id/finish_button"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/finish"
+                android:layout_weight="1"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"/>
         </LinearLayout>
