@@ -37,10 +37,6 @@ public class MessageListActivity extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, final long id) {
-            Toast.makeText(MessageListActivity.this,
-                    "You have chosen: ",
-                    Toast.LENGTH_LONG)
-                    .show();
 
             TextView uid = view.findViewById(R.id.uid);
             String userSelectedId = uid.getText().toString();
