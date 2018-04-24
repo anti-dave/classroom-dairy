@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity{
 
         final Button mEmailEntry = (Button) findViewById(R.id.email_entry_button);
         final Button mResendVerificationButton = (Button) findViewById(R.id.resend_verification_link);
+        final Button mSendVerificationButton = (Button) findViewById(R.id.send_verification_link);
         final Button mFinishButton = (Button) findViewById(R.id.finish_button);
         final Button mSigninButton = (Button) findViewById(R.id.sign_in_button);
         final Button mRegisterButton = (Button) findViewById(R.id.register_button);
@@ -62,11 +63,24 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
+        mSendVerificationButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+                //if current user signed in send verification
+                if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    sendEmailVerification();
+                    finishUI();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Sign in First",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         mEmailEntry.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
 
                 if( validateEmail() ) {
-                   updateUI();
+                    updateUI();
                 }
             }
         });
@@ -77,20 +91,13 @@ public class LoginActivity extends AppCompatActivity{
                 String email = mEmailField.getText().toString();
                 String pass = mSignInPasswordField.getText().toString();
 
-                if(validateEmail()) {
+                Toast.makeText(LoginActivity.this, "return false?",
+                        Toast.LENGTH_SHORT).show();
+
+                if(!pass.isEmpty() ) {
                     signIn(email, pass );
-                }
-
-                mAuth = FirebaseAuth.getInstance();
-
-                if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    mAuth.getCurrentUser().reload();
-                    if ( mAuth.getCurrentUser().isEmailVerified() ) {
-                        finish();
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Not Verified Yet",
-                                Toast.LENGTH_SHORT).show();
-                    }
+                } else {
+                    mSignInPasswordField.setError("Required.");
                 }
             }
         });
@@ -101,7 +108,7 @@ public class LoginActivity extends AppCompatActivity{
                 mAuth.getCurrentUser().reload();
 
                 if ( mAuth.getCurrentUser().isEmailVerified() ) {
-                    finish();
+                    LoginActivity.this.finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "Not Verified Yet",
                             Toast.LENGTH_SHORT).show();
@@ -116,11 +123,11 @@ public class LoginActivity extends AppCompatActivity{
                 String email = mEmailField.getText().toString();
                 String pass = mRegistrationPasswordField.getText().toString();
 
-                    if (credentialValidation()) {
-                        createAccount(email, pass);
-                    }
+                if (credentialValidation()) {
+                    createAccount(email, pass);
                 }
-            });
+            }
+        });
     }
 
     @Override
@@ -138,21 +145,46 @@ public class LoginActivity extends AppCompatActivity{
 
         if ( user != null ) {
 
-                if ( mAuth.getCurrentUser().isEmailVerified() ) {
-                    super.onBackPressed();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Email Not Verified",
-                            Toast.LENGTH_SHORT).show();
-                }
+            if ( mAuth.getCurrentUser().isEmailVerified() ) {
+                super.onBackPressed();
             } else {
-                Toast.makeText(LoginActivity.this, "Login Incomplete",
+                Toast.makeText(LoginActivity.this, "Email Not Verified",
                         Toast.LENGTH_SHORT).show();
             }
+        } else {
+            Toast.makeText(LoginActivity.this, "Login Incomplete",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     /******************************************/
     /*************UI Update********************/
     /******************************************/
+
+    private void createRegistrationForm() {
+
+        findViewById(R.id.registration_form).setVisibility(View.VISIBLE);
+        findViewById(R.id.registration_buttons).setVisibility(View.VISIBLE);
+        findViewById(R.id.sign_in_form).setVisibility(View.GONE);
+        findViewById(R.id.email_form).setVisibility(View.GONE);
+        findViewById(R.id.finish_button_form).setVisibility(View.GONE);
+
+        findViewById(R.id.register_button).setEnabled(true);
+        findViewById(R.id.resend_verification_link).setEnabled(true);
+
+    }
+
+    private void finishUI() {
+
+        findViewById(R.id.registration_form).setVisibility(View.GONE);
+        findViewById(R.id.registration_buttons).setVisibility(View.GONE);
+        findViewById(R.id.sign_in_form).setVisibility(View.GONE);
+        findViewById(R.id.email_form).setVisibility(View.GONE);
+        findViewById(R.id.finish_button_form).setVisibility(View.VISIBLE);
+
+        findViewById(R.id.register_button).setEnabled(true);
+        findViewById(R.id.resend_verification_link).setEnabled(true);
+    }
 
     //This is after inputting an email
     private void updateUI() {
@@ -172,7 +204,6 @@ public class LoginActivity extends AppCompatActivity{
                         findViewById(R.id.sign_in_form).setVisibility(View.VISIBLE);
                         findViewById(R.id.email_form).setVisibility(View.GONE);
                         findViewById(R.id.sign_in_button).setEnabled(true);
-                        findViewById(R.id.send_verification_link).setEnabled(true);
                         findViewById(R.id.sign_In_buttons).setVisibility(View.VISIBLE);
                     }
                     //Register
@@ -207,28 +238,59 @@ public class LoginActivity extends AppCompatActivity{
         findViewById(R.id.finish_button).setEnabled(true);
     }
 
+    private void updateSignInUi() {
+
+        findViewById(R.id.finish_signIn_text).setVisibility(View.VISIBLE);
+
+        firstName = firstNameField.getText().toString();
+        lastName = lastNameField.getText().toString();
+
+        TextView finishSignInText = findViewById(R.id.finish_signIn_text);
+        String nameString = "<b>" + firstName + " " + lastName + "</b> ";
+
+        finishSignInText.setText((getString(R.string.finish_signIn_text,
+                Html.fromHtml(nameString)  ) ) );
+
+        findViewById(R.id.sign_in_form).setVisibility(View.GONE);
+        findViewById(R.id.sign_In_buttons).setVisibility(View.GONE);
+        findViewById(R.id.registration_form).setVisibility(View.GONE);
+        findViewById(R.id.registration_buttons).setVisibility(View.GONE);
+        findViewById(R.id.finish_button_form).setVisibility(View.VISIBLE);
+        findViewById(R.id.finish_button).setEnabled(true);
+    }
+
     //Is onStart and if signIn Fails
     private void updateUIOnStart(FirebaseUser user) {
 
-        //Already a user, inflate password and sign in button
+        //Already a user, inflate verification if is not verified and signed in and sign in button
         if (user != null) {
+
             findViewById(R.id.registration_form).setVisibility(View.GONE);
             findViewById(R.id.registration_buttons).setVisibility(View.GONE);
             findViewById(R.id.sign_in_form).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_In_buttons).setVisibility(View.VISIBLE);
-            findViewById(R.id.send_verification_link).setVisibility(View.VISIBLE);
             findViewById(R.id.email_form).setVisibility(View.GONE);
             findViewById(R.id.finish_button_form).setVisibility(View.GONE);
-
-            findViewById(R.id.send_verification_link).setEnabled(true);
             findViewById(R.id.sign_in_button).setEnabled(true);
+
+            //Is email verified
+            if(user.isEmailVerified()) {
+                findViewById(R.id.send_verification_link).setVisibility(View.GONE);
+                findViewById(R.id.sign_in_button).setEnabled(true);
+            }
+            //not email verified
+            else {
+                //inflate verifiy button
+                findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+                findViewById(R.id.send_verification_link).setVisibility(View.VISIBLE);
+            }
             //Not a user, inflate email form
         } else {
             findViewById(R.id.email_form).setVisibility(View.VISIBLE);
         }
     }
 
-    //Is onStart and if signIn Fails
+    //If signIn Fails
     private void updateUI(FirebaseUser user) {
 
         //Already a user, inflate password and sign in button
@@ -237,11 +299,9 @@ public class LoginActivity extends AppCompatActivity{
             findViewById(R.id.registration_buttons).setVisibility(View.GONE);
             findViewById(R.id.sign_in_form).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_In_buttons).setVisibility(View.VISIBLE);
-            findViewById(R.id.send_verification_link).setVisibility(View.VISIBLE);
             findViewById(R.id.email_form).setVisibility(View.GONE);
             findViewById(R.id.finish_button_form).setVisibility(View.GONE);
 
-            findViewById(R.id.send_verification_link).setEnabled(true);
             findViewById(R.id.sign_in_button).setEnabled(true);
 
             //Not a user, inflate password, firstname, lastname, and register button
@@ -324,8 +384,7 @@ public class LoginActivity extends AppCompatActivity{
                             if ( mAuth.getCurrentUser().isEmailVerified() ) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "signInWithEmail:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                finish();
+                                updateSignInUi();
                             } else {
                                 Toast.makeText(LoginActivity.this, "Not Verified Yet",
                                         Toast.LENGTH_SHORT).show();
@@ -344,6 +403,13 @@ public class LoginActivity extends AppCompatActivity{
     private void sendEmailVerification() {
         // Disable button
         findViewById(R.id.finish_button).setEnabled(false);
+
+
+        mAuth = FirebaseAuth.getInstance();
+
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+
+        }
 
         // Send verification email
         final FirebaseUser user = mAuth.getCurrentUser();
@@ -414,9 +480,11 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private Boolean validateEmail() {
+
         boolean valid = true;
 
         String email = mEmailField.getText().toString();
+
         if (TextUtils.isEmpty(email)) {
             mEmailField.setError("Required.");
             valid = false;
