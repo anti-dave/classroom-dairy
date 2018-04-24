@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                                 .getDisplayName(),
                         Toast.LENGTH_SHORT).show();
                 Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                loginIntent.putExtra("Verify", true);
                 startActivity(loginIntent);
             }
         }
@@ -166,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
 

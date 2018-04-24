@@ -1,11 +1,14 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -136,28 +139,38 @@ public class LoginActivity extends AppCompatActivity{
         updateUIOnStart(currentUser);
     }
 
-    @Override
+   @Override
     public void onBackPressed()
     {
         final FirebaseUser user = mAuth.getCurrentUser();
 
         if ( user != null ) {
-
             if ( mAuth.getCurrentUser().isEmailVerified() ) {
                 super.onBackPressed();
             } else {
+
                 Toast.makeText(LoginActivity.this, "Email Not Verified",
                         Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(LoginActivity.this, "Login Incomplete",
-                    Toast.LENGTH_SHORT).show();
+        }
+        // user is nulll
+        else {
+            emailUI();
         }
     }
+
 
     /******************************************/
     /*************UI Update********************/
     /******************************************/
+
+     private void emailUI() {
+        findViewById(R.id.email_form).setVisibility(View.VISIBLE);
+        findViewById(R.id.registration_form).setVisibility(View.GONE);
+        findViewById(R.id.registration_buttons).setVisibility(View.GONE);
+        findViewById(R.id.finish_button_form).setVisibility(View.GONE);
+        findViewById(R.id.sign_in_form).setVisibility(View.GONE);
+    }
 
     private void createRegistrationForm() {
 
