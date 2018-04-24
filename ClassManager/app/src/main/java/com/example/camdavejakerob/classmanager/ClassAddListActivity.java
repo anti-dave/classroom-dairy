@@ -85,8 +85,8 @@ public class ClassAddListActivity  extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //enroll the student
-                                database.enrollUserToClass(classId.getText().toString(),
-                                        FirebaseAuth.getInstance().getUid());
+                                database.enrollUserToClass(ClassAddListActivity.this, classId.getText().toString(),
+                                        FirebaseAuth.getInstance().getUid(), false);
                                 // tell student it was success
                                 Toast.makeText(ClassAddListActivity.this,
                                         "You are enrolled in " +
@@ -100,6 +100,21 @@ public class ClassAddListActivity  extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //do nothing
+                            }
+                        })
+                        .setNeutralButton("Yes, and add to calendar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //enroll the student
+                                database.enrollUserToClass(ClassAddListActivity.this, classId.getText().toString(),
+                                        FirebaseAuth.getInstance().getUid(), true);
+                                // tell student it was success
+                                Toast.makeText(ClassAddListActivity.this,
+                                        "You are enrolled in " +
+                                                className.getText().toString(),
+                                        Toast.LENGTH_SHORT);
+                                // exit activity
+                                ClassAddListActivity.this.finish();
                             }
                         }).show();
             }

@@ -44,6 +44,7 @@ public class DatabaseHelper {
             INSTRUCTOR_PROMPTED = "Instructor_Prompt_Bool";
     private String ASSIGNMENTS = "assignments", DUE_DATE = "dueDate", GRADES = "grades",
             SUBMISSIONS = "submissions";
+    private String ATTENDANCE = "attendance";
     private String TAG = "DATABASE_HELPER";
     private String MESSAGE_ROOMS = "MessageRooms";
     private String MESSAGE_TEXT = "messageText";
@@ -94,52 +95,6 @@ public class DatabaseHelper {
 
                 User user = new User(uid,name,instructor);
                 ((ClassManagerApp) context.getApplicationContext()).setCurUser(user);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: " + databaseError.toString());
-            }
-        });
-    }
-
-
-    public void setAssignmentCalendarAlert(final Context context, final String uid,
-                                           final Class curClass, final String assignment){
-
-        mDatabase.getReference(CIDS).child(curClass.getCourseID())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-                CalendarActivity calendarActivity = new CalendarActivity();
-
-                Event newAssignmentEvent = calendarActivity.buildEvent(
-                        assignment, curClass.getRoom(),"assignment due");
-
-                DateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy");
-                DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String dueDate = dataSnapshot.child(ASSIGNMENTS).child(assignment)
-                        .child(DUE_DATE).getValue().toString();
-                try {
-
-                    Date date = inputFormat.parse(dueDate);
-                    String outputDateStr = outputFormat.format(date);
-                    DateTime start = new DateTime(outputDateStr + "T09:00:00-07:00");
-                    DateTime end = new DateTime(outputDateStr + "T17:00:00-07:00");
-
-                    GeneralTime alertTime = calendarActivity.buildTime(start, end,
-                            TimeZone.getDefault().toString());
-
-                    calendarActivity.addCalendarEvent(context, newAssignmentEvent, alertTime,
-                            FirebaseAuth.getInstance().getCurrentUser().getEmail());
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
 
             @Override
@@ -563,11 +518,36 @@ public class DatabaseHelper {
      *  This method adds the user id to the roster list and the class id to the classes list of the user
      *
      */
-    public void enrollUserToClass(final String cid, final String uid){
+    public void enrollUserToClass(final Context context, final String cid, final String uid, Boolean setReminder){
         DatabaseReference classRef = mDatabase.getReference(CIDS).child(cid);
         DatabaseReference userRef = mDatabase.getReference(UIDS).child(uid);
         classRef.child(ROSTER).child(uid).setValue(true);
         userRef.child(CLASSES).child(cid).setValue(true);
+        //set reminder in calendar
+        if(setReminder) {
+            mDatabase.getReference().child(CIDS).child(cid)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String name, daysOfClass, startTime, endTime, room;
+                            name = dataSnapshot.child(CLASS_NAME).getValue().toString();
+                            daysOfClass = dataSnapshot.child(DAYS).getValue().toString();
+                            startTime = dataSnapshot.child(TIME_START).getValue().toString();
+                            endTime = dataSnapshot.child(TIME_END).getValue().toString();
+                            room = dataSnapshot.child(ROOM).getValue().toString();
+                            String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+                            CalendarActivity.addCalendarEvent(context,
+                                    new Class(name, daysOfClass, startTime, endTime, room, cid));
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d(TAG, "onCancelled: " + databaseError.toString());
+                        }
+                    });
+        }
     }
 
     /**
@@ -715,6 +695,11 @@ public class DatabaseHelper {
             }
         });
 
+        //Delete from Profs Classes
+        //userRef.child(CLASSES).child(cid).removeValue();
+
+        //Delete the CID
+        mDatabase.getReference(CIDS).child(cid).removeValue();
     }
 
     /**
@@ -814,5 +799,67 @@ public class DatabaseHelper {
                                           String downloadUrl){
         mDatabase.getReference(CIDS).child(cid).child(ASSIGNMENTS).child(assignmentName)
                 .child(SUBMISSIONS).child(uid).setValue(downloadUrl);
+    }
+
+    /**
+     * adds the students submission to the database with the url to download
+     *
+     * @param uid the user id of the student submitting the work
+     * @param cid the class for which the assignment is being submitted
+     * @param isPresent whether or not the student is present
+     * @param date the current date
+     */
+    public void setTodayStudentAttendance(String uid, String cid, Boolean isPresent, String date){
+        mDatabase.getReference().child(CIDS).child(cid).child(ATTENDANCE)
+                .child(date).child(uid).setValue(isPresent);
+    }
+
+    /**
+     * adds the students submission to the database with the url to download
+     *
+     * @param context The application context
+     * @param listView the listView to store the present students
+     * @param cid the class ID to poll
+     * @param date the current date
+     */
+    public void getPresentStudents(final Context context, final ListView listView,
+                                   final String cid, final String date)
+    {
+        mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                RosterAdapter rosterAdapter;
+                final ArrayList<User> users = new ArrayList<User>();
+
+                for(DataSnapshot rosterData: dataSnapshot.child(CIDS)
+                        .child(cid).child(ROSTER).getChildren()){
+
+                    String uid = rosterData.getKey();
+                    // prevents null exception
+                    if (dataSnapshot.child(CIDS).child(cid).child(ATTENDANCE).child(uid).exists()) {
+                        // if student is present
+                        if((Boolean) dataSnapshot.child(CIDS).child(cid)
+                                .child(ATTENDANCE).child(date).child(uid).getValue()){
+                            // get students name
+                            String name = dataSnapshot.child(UIDS)
+                                    .child(uid).child(USER_NAME).getValue().toString();
+                            // add them to the users array
+                            users.add(new User(uid,name,false));
+                        }
+                    }
+                    else {
+                        Log.d(TAG, "Not attendance entry found");
+                    }
+                }
+                rosterAdapter = new RosterAdapter(context, users);
+                listView.setAdapter(rosterAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.toString());
+            }
+        });
     }
 }
