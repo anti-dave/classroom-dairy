@@ -1,8 +1,10 @@
 package com.example.camdavejakerob.classmanager;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ListView;
@@ -689,8 +691,6 @@ public class DatabaseHelper {
 
                 //Delete the CID
                 mDatabase.getReference(CIDS).child(cid).removeValue();
-
-                //((Activity) context).finish();
             }
 
             @Override
@@ -698,12 +698,6 @@ public class DatabaseHelper {
                 Log.d(TAG, "onCancelled: " + databaseError.toString());
             }
         });
-
-        //Delete from Profs Classes
-        //userRef.child(CLASSES).child(cid).removeValue();
-
-        //Delete the CID
-        mDatabase.getReference(CIDS).child(cid).removeValue();
     }
 
     /**
