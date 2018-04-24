@@ -134,14 +134,14 @@
                 android:layout_weight="1"
                 android:inputType="textPassword" />
 
-            <!-- Registration Buttons-->
+            <!-- Sign in Buttons-->
             <LinearLayout
                 android:id="@+id/sign_In_buttons"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:orientation="horizontal"
                 android:layout_weight="1"
-                android:weightSum="2.0">
+                android:weightSum="2">
 
                 <Button
                 android:id="@+id/sign_in_button"
@@ -157,7 +157,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:visibility="gone"
                     android:text="Verify" />
             </LinearLayout>
         </LinearLayout>

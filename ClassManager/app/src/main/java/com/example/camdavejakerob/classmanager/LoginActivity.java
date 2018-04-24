@@ -77,17 +77,21 @@ public class LoginActivity extends AppCompatActivity{
                 String email = mEmailField.getText().toString();
                 String pass = mSignInPasswordField.getText().toString();
 
-                signIn(email, pass );
-
-                mAuth.getCurrentUser().reload();
-
-                if ( mAuth.getCurrentUser().isEmailVerified() ) {
-                    finish();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Not Verified Yet",
-                            Toast.LENGTH_SHORT).show();
+                if(validateEmail()) {
+                    signIn(email, pass );
                 }
 
+                mAuth = FirebaseAuth.getInstance();
+
+                if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    mAuth.getCurrentUser().reload();
+                    if ( mAuth.getCurrentUser().isEmailVerified() ) {
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Not Verified Yet",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
 
@@ -168,6 +172,8 @@ public class LoginActivity extends AppCompatActivity{
                         findViewById(R.id.sign_in_form).setVisibility(View.VISIBLE);
                         findViewById(R.id.email_form).setVisibility(View.GONE);
                         findViewById(R.id.sign_in_button).setEnabled(true);
+                        findViewById(R.id.send_verification_link).setEnabled(true);
+                        findViewById(R.id.sign_In_buttons).setVisibility(View.VISIBLE);
                     }
                     //Register
                     else {
