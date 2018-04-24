@@ -23,7 +23,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="finish_signIn_text">Welcome %s! Thank you for registering with Class Manager, click finish to get Started!</string>
+    <string name="finish_signIn_text">Welcome back %s! Click finish to get Started!</string>
     <string name="finish_registration_text">Welcome %s! Thank you for registering with Class Manager, click finish to get Started!</string>
     <string name="finish">Finish</string>
     <string name="Verify">Verify</string>

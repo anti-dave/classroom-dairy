@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity{
                     sendEmailVerification();
                     finishUI();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Sign in First",
+                    Toast.makeText(LoginActivity.this, "Enter Password First",
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -91,9 +91,6 @@ public class LoginActivity extends AppCompatActivity{
                 String email = mEmailField.getText().toString();
                 String pass = mSignInPasswordField.getText().toString();
 
-                Toast.makeText(LoginActivity.this, "return false?",
-                        Toast.LENGTH_SHORT).show();
-
                 if(!pass.isEmpty() ) {
                     signIn(email, pass );
                 } else {
@@ -109,6 +106,7 @@ public class LoginActivity extends AppCompatActivity{
 
                 if ( mAuth.getCurrentUser().isEmailVerified() ) {
                     LoginActivity.this.finish();
+                    return;
                 } else {
                     Toast.makeText(LoginActivity.this, "Not Verified Yet",
                             Toast.LENGTH_SHORT).show();
@@ -201,6 +199,7 @@ public class LoginActivity extends AppCompatActivity{
 
                     //signIn
                     if( (num > 0) ) {
+
                         findViewById(R.id.sign_in_form).setVisibility(View.VISIBLE);
                         findViewById(R.id.email_form).setVisibility(View.GONE);
                         findViewById(R.id.sign_in_button).setEnabled(true);
@@ -242,11 +241,8 @@ public class LoginActivity extends AppCompatActivity{
 
         findViewById(R.id.finish_signIn_text).setVisibility(View.VISIBLE);
 
-        firstName = firstNameField.getText().toString();
-        lastName = lastNameField.getText().toString();
-
         TextView finishSignInText = findViewById(R.id.finish_signIn_text);
-        String nameString = "<b>" + firstName + " " + lastName + "</b> ";
+        String nameString = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
         finishSignInText.setText((getString(R.string.finish_signIn_text,
                 Html.fromHtml(nameString)  ) ) );
