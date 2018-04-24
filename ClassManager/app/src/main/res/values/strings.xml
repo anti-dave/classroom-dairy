@@ -23,6 +23,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="finish_registration_text">Welcome %s! Thank you for registering with Class Manager, click finish to get Started!</string>
+    <string name="finish">Finish</string>
+
     <!-- Strings related to Class Creation -->
     <string name="title_activity_creator">Class Add</string>
     <string name="class_id_prompt">Class ID</string>

@@ -32,35 +32,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Don't need to build this if they're only using emial.
-        //new AuthUI.IdpConfig.EmailBuilder().build();
         /*******************Authorization, Registration Check**************************/
 
-
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
-            // Start sign in/sign up activity
-        /*    startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setLogo(R.drawable.ic_classroom)      // Set logo drawable
-                            .build(),
-                    SIGN_IN_REQUEST_CODE);
 
-            mAuth = FirebaseAuth.getInstance();*/
-
-            //Alternative
             Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(loginIntent);
-            //Log.d("MAIN ACTIVITY", "onCreate: " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
         } else {
-            // User is already signed in. Therefore, display
-            // a welcome Toast
-            Toast.makeText(this,
-                    "Welcome " + FirebaseAuth.getInstance()
-                            .getCurrentUser()
-                            .getDisplayName(),
-                    Toast.LENGTH_SHORT).show();
+            //User isn't verified yet
+            if ( FirebaseAuth.getInstance()
+                    .getCurrentUser().isEmailVerified() ) {
+
+                // User is already signed in. Therefore, display
+                // a welcome Toast
+                Toast.makeText(this,
+                        "Welcome " + FirebaseAuth.getInstance()
+                                .getCurrentUser()
+                                .getDisplayName(),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this,
+                        "Verify Email: " + FirebaseAuth.getInstance()
+                                .getCurrentUser()
+                                .getDisplayName(),
+                        Toast.LENGTH_SHORT).show();
+                Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+            }
         }
 
         // update the global user variable
