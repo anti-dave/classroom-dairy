@@ -198,7 +198,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:visibility="gone"
-            android:gravity="clip_vertical"
+            android:gravity="fill_vertical"
             android:weightSum="2">
 
             <Button

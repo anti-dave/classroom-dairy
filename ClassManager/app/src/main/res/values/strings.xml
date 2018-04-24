@@ -25,7 +25,7 @@
     </string>
     <string name="finish_signIn_text">Welcome back %s! Click finish to get Started!</string>
     <string name="finish_registration_text">Welcome %s! Thank you for registering with Class Manager, click finish to get Started!</string>
-    <string name="finish">Finish</string>
+    <string name="finish">Proceed</string>
     <string name="quit">quit</string>
     <string name="yes">yes</string>
     <string name="really_quit">really_quit</string>
