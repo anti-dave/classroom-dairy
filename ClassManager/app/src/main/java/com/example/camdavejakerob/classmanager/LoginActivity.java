@@ -1,6 +1,7 @@
 package com.example.camdavejakerob.classmanager;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -113,8 +114,8 @@ public class LoginActivity extends AppCompatActivity{
                             @Override
                             public void onSuccess(Void aVoid) {
                                 if (mAuth.getCurrentUser().isEmailVerified()) {
-                                    LoginActivity.this.finish();
-                                    LoginActivity.this.finish();
+                                    Intent mainIntent = new Intent(LoginActivity.this,MainActivity.class);
+                                    startActivity(mainIntent);
                                     return;
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Not Verified Yet",
@@ -128,7 +129,7 @@ public class LoginActivity extends AppCompatActivity{
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Verification failed.",
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+                            //updateUI(null);
                             Log.e(TAG, e.getMessage());
                     }
                 });
