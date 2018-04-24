@@ -114,6 +114,7 @@ public class LoginActivity extends AppCompatActivity{
                             public void onSuccess(Void aVoid) {
                                 if (mAuth.getCurrentUser().isEmailVerified()) {
                                     LoginActivity.this.finish();
+                                    LoginActivity.this.finish();
                                     return;
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Not Verified Yet",
