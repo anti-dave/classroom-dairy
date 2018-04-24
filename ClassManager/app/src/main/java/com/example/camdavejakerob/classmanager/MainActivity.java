@@ -5,8 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -23,30 +25,41 @@ public class MainActivity extends AppCompatActivity {
 
     private String curUserId;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Don't need to build this if they're only using emial.
-        //new AuthUI.IdpConfig.EmailBuilder().build();
         /*******************Authorization, Registration Check**************************/
+
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
-            // Start sign in/sign up activity
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .build(),
-                    SIGN_IN_REQUEST_CODE);
+
+            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
 
         } else {
-            // User is already signed in. Therefore, display
-            // a welcome Toast
-            Toast.makeText(this,
-                    "Welcome " + FirebaseAuth.getInstance()
-                            .getCurrentUser()
-                            .getDisplayName(),
-                    Toast.LENGTH_SHORT).show();
+            //User isn't verified yet
+            if ( FirebaseAuth.getInstance()
+                    .getCurrentUser().isEmailVerified() ) {
+
+                // User is already signed in. Therefore, display
+                // a welcome Toast
+                Toast.makeText(this,
+                        "Welcome " + FirebaseAuth.getInstance()
+                                .getCurrentUser()
+                                .getDisplayName(),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this,
+                        "Verify Email: " + FirebaseAuth.getInstance()
+                                .getCurrentUser()
+                                .getDisplayName(),
+                        Toast.LENGTH_SHORT).show();
+                Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+            }
         }
 
         // update the global user variable
@@ -148,5 +161,108 @@ public class MainActivity extends AppCompatActivity {
         }
 
     } //onActivityResult
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        if(FirebaseAuth.getInstance().getCurrentUser() == null) {
+            // Start sign in/sign up activity
+        /*    startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setLogo(R.drawable.ic_classroom)      // Set logo drawable
+                            .build(),
+                    SIGN_IN_REQUEST_CODE);
+
+            mAuth = FirebaseAuth.getInstance();*/
+
+            //Alternative
+            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
+            //Log.d("MAIN ACTIVITY", "onCreate: " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+
+        } else {
+            // User is already signed in. Therefore, display
+            // a welcome Toast
+            Toast.makeText(this,
+                    "Welcome " + FirebaseAuth.getInstance()
+                            .getCurrentUser()
+                            .getDisplayName(),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+
+
+
+////////////////////// deprecated moved to setting////////////////////////////
+//    /**
+//     * Creates the menu with oncreate.
+//     *
+//     * @param menu
+//     * @return bool on whether it was successful.
+//     */
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_sign_in_dropdown, menu);
+//        return true;
+//    }//onCreateOptionsMenu
+//
+//
+//    /**
+//     * Logic for when menu is pressed.
+//     *
+//     * @param item
+//     * @return bool on whether it was successful.
+//     */
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if(item.getItemId() == R.id.action_sign_out) {
+//            AuthUI.getInstance().signOut(this)
+//                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            Toast.makeText(MainActivity.this,
+//                                    "You have been signed out.",
+//                                    Toast.LENGTH_LONG)
+//                                    .show();
+//
+//                            // Close activity, isneatd of close activity, make go back
+//                            //finish();
+//                        }
+//                    });
+//            // Start sign in/sign up activity
+//            startActivityForResult(
+//                    AuthUI.getInstance()
+//                            .createSignInIntentBuilder()
+//                            .build(),
+//                    SIGN_IN_REQUEST_CODE);
+//        }
+//        if(item.getItemId() == R.id.action_change_account) {
+//            AuthUI.getInstance().signOut(this)
+//                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            Toast.makeText(MainActivity.this,
+//                                    "You have been signed out.",
+//                                    Toast.LENGTH_LONG)
+//                                    .show();
+//
+//                            // Close activity, isneatd of close activity, make go back
+//                            //finish();
+//                        }
+//                    });
+//            // Start sign in/sign up activity
+//            startActivityForResult(
+//                    AuthUI.getInstance()
+//                            .createSignInIntentBuilder()
+//                            .build(),
+//                    SIGN_IN_REQUEST_CODE);
+//        }
+//        return true;
+//    }
 
 }//main

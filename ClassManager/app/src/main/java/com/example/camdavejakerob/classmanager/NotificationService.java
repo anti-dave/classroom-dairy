@@ -17,7 +17,7 @@ public class NotificationService extends FirebaseMessagingService {
 
     //@Override
     //public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
+        //TO DO: Return the communication channel to the service.
     //    throw new UnsupportedOperationException("Not yet implemented");
     //}
 
@@ -25,7 +25,7 @@ public class NotificationService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // ...
 
-        // TODO(developer): Handle FCM messages here.
+        // TO DO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 

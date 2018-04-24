@@ -145,6 +145,10 @@ public class DatabaseHelper {
                         Iterator<DataSnapshot> lastMessageIter = messages.iterator();
                         DataSnapshot lastMessage = lastMessageIter.next();
 
+                        while(lastMessageIter.hasNext()) {
+                            lastMessage=lastMessageIter.next();
+                        }
+
                         lastMessageText = lastMessage.child(MESSAGE_TEXT).getValue().toString();
                         lastMessageTime = lastMessage.child(MESSAGE_TIME).getValue().toString();
                     }
@@ -784,7 +788,6 @@ public class DatabaseHelper {
                 Log.d(TAG, "onCancelled: " + databaseError.toString());
             }
         });
-
     }
 
     /**

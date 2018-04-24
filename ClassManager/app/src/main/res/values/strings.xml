@@ -8,6 +8,10 @@
     <string name="title_discussion_board">Discussion Board</string>
 
     <!-- Strings related to login -->
+    <string name="firebase_status_fmt">Firebase User: %s</string>
+    <string name="firebase_user_management">Firebase User Management</string>
+    <string name="emailpassword_status_fmt">Email User: %1$s (verified: %2$b)</string>
+    <string name="emailpassword_title_text">Email and Password</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -19,6 +23,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="finish_registration_text">Welcome %s! Thank you for registering with Class Manager, click finish to get Started!</string>
+    <string name="finish">Finish</string>
+
     <!-- Strings related to Class Creation -->
     <string name="title_activity_creator">Class Add</string>
     <string name="class_id_prompt">Class ID</string>
