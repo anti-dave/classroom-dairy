@@ -17,7 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -105,15 +108,29 @@ public class LoginActivity extends AppCompatActivity{
         mFinishButton.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
 
-                mAuth.getCurrentUser().reload();
-
-                if ( mAuth.getCurrentUser().isEmailVerified() ) {
-                    LoginActivity.this.finish();
-                    return;
-                } else {
-                    Toast.makeText(LoginActivity.this, "Not Verified Yet",
-                            Toast.LENGTH_SHORT).show();
-                }
+                mAuth.getCurrentUser().reload()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                if (mAuth.getCurrentUser().isEmailVerified()) {
+                                    LoginActivity.this.finish();
+                                    return;
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "Not Verified Yet",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .addOnFailureListener( new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(LoginActivity.this, "Verification failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                            Log.e(TAG, e.getMessage());
+                    }
+                });
             }
         });
 
@@ -153,12 +170,23 @@ public class LoginActivity extends AppCompatActivity{
                         Toast.LENGTH_SHORT).show();
             }
         }
-        // user is nulll
+        // user is null
         else {
             emailUI();
         }
     }
 
+    public void handleFirebaseAuthResult(AuthResult result) {
+        if(result != null) {
+            if (mAuth.getCurrentUser().isEmailVerified()) {
+                LoginActivity.this.finish();
+                return;
+            } else {
+                Toast.makeText(LoginActivity.this, "Not Verified Yet",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     /******************************************/
     /*************UI Update********************/
