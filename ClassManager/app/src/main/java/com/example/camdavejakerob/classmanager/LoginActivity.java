@@ -174,6 +174,14 @@ public class LoginActivity extends AppCompatActivity{
 
     private void finishUI() {
 
+        findViewById(R.id.finish_signIn_text).setVisibility(View.VISIBLE);
+
+        TextView finishSignInText = findViewById(R.id.finish_signIn_text);
+        String nameString = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+
+        finishSignInText.setText((getString(R.string.finish_signIn_text,
+                Html.fromHtml(nameString)  ) ) );
+
         findViewById(R.id.registration_form).setVisibility(View.GONE);
         findViewById(R.id.registration_buttons).setVisibility(View.GONE);
         findViewById(R.id.sign_in_form).setVisibility(View.GONE);
