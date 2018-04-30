@@ -196,26 +196,41 @@
             android:id="@+id/finish_button_form"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:gravity="fill_vertical"
-            android:weightSum="2">
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:visibility="gone">
 
-            <Button
-                android:id="@+id/resend_verification_link"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/ReVerify" />
+                android:orientation="horizontal"
+                android:gravity="fill_vertical"
+                android:weightSum="2">
 
+                <Button
+                    android:id="@+id/resend_verification_link"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/ReVerify" />
+
+                <Button
+                    android:id="@+id/finish_button"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/finish"
+                    android:layout_weight="1"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"/>
+            </LinearLayout>
             <Button
-                android:id="@+id/finish_button"
+                android:id="@+id/sign_out_button"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/finish"
-                android:layout_weight="1"
+                android:text="@string/sign_out"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"/>
         </LinearLayout>

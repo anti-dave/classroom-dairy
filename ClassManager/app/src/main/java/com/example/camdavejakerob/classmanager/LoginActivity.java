@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -63,6 +64,24 @@ public class LoginActivity extends AppCompatActivity{
         final Button mFinishButton = (Button) findViewById(R.id.finish_button);
         final Button mSigninButton = (Button) findViewById(R.id.sign_in_button);
         final Button mRegisterButton = (Button) findViewById(R.id.register_button);
+        final Button mSignOutButton = (Button) findViewById(R.id.sign_out_button);
+
+        mSignOutButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                AuthUI.getInstance().signOut(LoginActivity.this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(LoginActivity.this,
+                                        "You have been signed out.",
+                                        Toast.LENGTH_LONG)
+                                        .show();
+                                finish();
+                            }
+                        });
+            }
+        });
 
         mResendVerificationButton.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {

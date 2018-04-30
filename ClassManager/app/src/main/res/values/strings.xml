@@ -32,6 +32,7 @@
     <string name="Verify">Verify</string>
     <string name="ReVerify">Resend Link</string>
     <string name="no">no</string>
+    <string name="sign_out">Sign Out</string>
 
     <!-- Strings related to Class Creation -->
     <string name="title_activity_creator">Class Add</string>
