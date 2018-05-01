@@ -96,7 +96,7 @@ public class AttendanceActivity extends AppCompatActivity {
 
         String timeStr;
         timeStr = currentClass.getClassTime();
-        //timeStr = "12:00am - 5:00pm";
+        //timeStr = "12:00am - 7:00pm";
         if (!verifyTime(timeStr)) {
             //Toast.makeText(this, "Class is not active at this time", Toast.LENGTH_LONG).show();
             return;
@@ -124,6 +124,7 @@ public class AttendanceActivity extends AppCompatActivity {
     {
 
         /*
+        // commented out for testing at home
         if (inNorthCampus())
         {
         */
