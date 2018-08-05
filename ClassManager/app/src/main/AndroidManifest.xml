@@ -47,10 +47,6 @@
         </service>
 
         <activity
-            android:name=".RegistrationActivity"
-            android:label="@string/title_activity_login" />
-
-        <activity
             android:name=".ClassAddListActivity"
             android:label="@string/title_activity_class_add_list"
             android:theme="@style/Tile0"/>

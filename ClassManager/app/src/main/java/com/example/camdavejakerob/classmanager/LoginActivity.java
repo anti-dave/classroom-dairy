@@ -1,15 +1,12 @@
 package com.example.camdavejakerob.classmanager;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -22,23 +19,27 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+/*
+* Class for administration of UI to properly register new user and login existing users
+*/
 public class LoginActivity extends AppCompatActivity{
 
     private static final String TAG = "LoginActivity";
 
-    private EditText mEmailField;
-    private EditText mSignInPasswordField;
-    private EditText mRegistrationPasswordField;
-    private EditText firstNameField;
-    private EditText lastNameField;
+    private EditText mSignInEmailField,
+            mRegistrationEmailField,
+            mSignInPasswordField,
+            mRegistrationPasswordField,
+            firstNameField,
+            lastNameField;
 
     private String firstName, lastName;
 
@@ -51,20 +52,92 @@ public class LoginActivity extends AppCompatActivity{
 
         mAuth = FirebaseAuth.getInstance();
 
-        // Set up the login form.
-        mEmailField = findViewById(R.id.email_field);
+        // Bind form fields and buttons
+        mSignInEmailField = findViewById(R.id.login_email_field);
+        mRegistrationEmailField = findViewById(R.id.registration_email_field);
         mSignInPasswordField = findViewById(R.id.signIn_password);
         mRegistrationPasswordField = findViewById(R.id.registration_password);
         firstNameField = findViewById(R.id.firstName);
         lastNameField = findViewById(R.id.lastName);
 
-        final Button mEmailEntry = (Button) findViewById(R.id.email_entry_button);
-        final Button mResendVerificationButton = (Button) findViewById(R.id.resend_verification_link);
-        final Button mSendVerificationButton = (Button) findViewById(R.id.send_verification_link);
-        final Button mFinishButton = (Button) findViewById(R.id.finish_button);
-        final Button mSigninButton = (Button) findViewById(R.id.sign_in_button);
-        final Button mRegisterButton = (Button) findViewById(R.id.register_button);
-        final Button mSignOutButton = (Button) findViewById(R.id.sign_out_button);
+        //consider making final
+        TextView mVerificationLink = (TextView) findViewById(R.id.verification_link);
+        TextView mSwitchToRegistration = (TextView) findViewById(R.id.switch_to_registration);
+        TextView mPassReset = (TextView) findViewById(R.id.password_reset);
+        Button mRegistrationButton = (Button) findViewById(R.id.register_button);
+        Button mSigninButton = (Button) findViewById(R.id.sign_in_button);
+        Button mSignOutButton = (Button) findViewById(R.id.sign_out_button);
+        Button mVerifyButton = (Button) findViewById(R.id.verify_button);
+
+        /********************
+        * LOGIN UI Buttons
+         ********************/
+
+        mSigninButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+
+                String email = mSignInEmailField.getText().toString();
+                String pass = mSignInPasswordField.getText().toString();
+
+                if(pass.isEmpty()) {
+                    mSignInPasswordField.setError("Required.");
+                }
+                else if(email.isEmpty() ) {
+                    mSignInEmailField.setError("Required.");
+                }
+                else {
+                    signIn(email, pass );
+                }
+            }
+        });
+
+        mPassReset.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                String email = mSignInEmailField.getText().toString();
+
+                if ( validateEmail(mSignInEmailField) ) {
+                    FirebaseAuth.getInstance()
+                            .sendPasswordResetEmail(email)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "Email sent.");
+                                    }
+                                }
+                            });
+                }
+            }
+        });
+
+        mSwitchToRegistration.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RegistrationUI();
+            }
+        });
+
+        /*
+        * Registration UI Buttons
+        */
+
+        mRegistrationButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(credentialValidation()) {
+                    String email = mRegistrationEmailField.getText().toString();
+                    String pass = mRegistrationPasswordField.getText().toString();
+
+                    createAccount(email, pass);
+                    VerificationUI();
+                }
+            }
+        });
+
+        /*
+        * Verification UI Buttons
+        */
 
         mSignOutButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -77,55 +150,23 @@ public class LoginActivity extends AppCompatActivity{
                                         "You have been signed out.",
                                         Toast.LENGTH_LONG)
                                         .show();
+
                                 finish();
                             }
                         });
             }
         });
 
-        mResendVerificationButton.setOnClickListener(new OnClickListener() {
+        mVerificationLink.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
-                sendEmailVerification();
-            }
-        });
 
-        mSendVerificationButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View view) {
-                //if current user signed in send verification
                 if(FirebaseAuth.getInstance().getCurrentUser() != null) {
                     sendEmailVerification();
-                    finishUI();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Enter Password First",
-                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        mEmailEntry.setOnClickListener(new OnClickListener() {
-            public void onClick(View view) {
-
-                if( validateEmail() ) {
-                    updateUI();
-                }
-            }
-        });
-
-        mSigninButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View view) {
-
-                String email = mEmailField.getText().toString();
-                String pass = mSignInPasswordField.getText().toString();
-
-                if(!pass.isEmpty() ) {
-                    signIn(email, pass );
-                } else {
-                    mSignInPasswordField.setError("Required.");
-                }
-            }
-        });
-
-        mFinishButton.setOnClickListener(new OnClickListener() {
+        mVerifyButton.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
 
                 mAuth.getCurrentUser().reload()
@@ -145,28 +186,15 @@ public class LoginActivity extends AppCompatActivity{
                         .addOnFailureListener( new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "Verification failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
-                            Log.e(TAG, e.getMessage());
-                    }
-                });
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(LoginActivity.this, "Not Verified Yet",
+                                        Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, e.getMessage());
+                            }
+                        });
             }
         });
 
-        mRegisterButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String email = mEmailField.getText().toString();
-                String pass = mRegistrationPasswordField.getText().toString();
-
-                if (credentialValidation()) {
-                    createAccount(email, pass);
-                }
-            }
-        });
     }
 
     @Override
@@ -174,7 +202,27 @@ public class LoginActivity extends AppCompatActivity{
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUIOnStart(currentUser);
+
+        //If is logged
+        if (currentUser != null) {
+
+            //Is not verified, verify
+            if(!currentUser.isEmailVerified()) {
+
+                TextView finishSignInText = findViewById(R.id.finish_signIn_text);
+                String nameString = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+
+                finishSignInText.setText((getString(R.string.finish_signIn_text,
+                        Html.fromHtml(nameString)  ) ) );
+
+                VerificationUI();
+            } else {
+                finish();
+            }
+
+        }
+
+        LoginUI();
     }
 
    @Override
@@ -193,7 +241,7 @@ public class LoginActivity extends AppCompatActivity{
         }
         // user is null
         else {
-            emailUI();
+            LoginUI();
         }
     }
 
@@ -213,181 +261,35 @@ public class LoginActivity extends AppCompatActivity{
     /*************UI Update********************/
     /******************************************/
 
-     private void emailUI() {
-        findViewById(R.id.email_form).setVisibility(View.VISIBLE);
+     private void LoginUI() {
+        findViewById(R.id.sign_in_form).setVisibility(View.VISIBLE);
         findViewById(R.id.registration_form).setVisibility(View.GONE);
-        findViewById(R.id.registration_buttons).setVisibility(View.GONE);
-        findViewById(R.id.finish_button_form).setVisibility(View.GONE);
-        findViewById(R.id.sign_in_form).setVisibility(View.GONE);
+        findViewById(R.id.verification_ui).setVisibility(View.GONE);
     }
 
-    private void createRegistrationForm() {
-
+    private void RegistrationUI() {
         findViewById(R.id.registration_form).setVisibility(View.VISIBLE);
-        findViewById(R.id.registration_buttons).setVisibility(View.VISIBLE);
         findViewById(R.id.sign_in_form).setVisibility(View.GONE);
-        findViewById(R.id.email_form).setVisibility(View.GONE);
-        findViewById(R.id.finish_button_form).setVisibility(View.GONE);
-
-        findViewById(R.id.register_button).setEnabled(true);
-        findViewById(R.id.resend_verification_link).setEnabled(true);
-
+        findViewById(R.id.verification_ui).setVisibility(View.GONE);
     }
 
-    private void finishUI() {
+    private void VerificationUI() {
 
-        findViewById(R.id.finish_signIn_text).setVisibility(View.VISIBLE);
-
-        TextView finishSignInText = findViewById(R.id.finish_signIn_text);
-        String nameString = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-
-        finishSignInText.setText((getString(R.string.finish_signIn_text,
-                Html.fromHtml(nameString)  ) ) );
-
-        findViewById(R.id.registration_form).setVisibility(View.GONE);
-        findViewById(R.id.registration_buttons).setVisibility(View.GONE);
+        findViewById(R.id.verification_ui).setVisibility(View.VISIBLE);
         findViewById(R.id.sign_in_form).setVisibility(View.GONE);
-        findViewById(R.id.email_form).setVisibility(View.GONE);
-        findViewById(R.id.finish_button_form).setVisibility(View.VISIBLE);
-
-        findViewById(R.id.register_button).setEnabled(true);
-        findViewById(R.id.resend_verification_link).setEnabled(true);
-    }
-
-    //This is after inputting an email
-    private void updateUI() {
-
-        String email = mEmailField.getText().toString();
-
-        //see if email is already registered
-        mAuth.fetchProvidersForEmail( email ).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
-            @Override
-            public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                if(task.isSuccessful()){
-                    ///////// getProviders().size() will return size 1. if email ID is available.
-                    int num = task.getResult().getProviders().size();
-
-                    //signIn
-                    if( (num > 0) ) {
-
-                        findViewById(R.id.sign_in_form).setVisibility(View.VISIBLE);
-                        findViewById(R.id.email_form).setVisibility(View.GONE);
-                        findViewById(R.id.sign_in_button).setEnabled(true);
-                        findViewById(R.id.sign_In_buttons).setVisibility(View.VISIBLE);
-                    }
-                    //Register
-                    else {
-                        findViewById(R.id.email_form).setVisibility(View.GONE);
-                        findViewById(R.id.registration_form).setVisibility(View.VISIBLE);
-                        findViewById(R.id.registration_buttons).setVisibility(View.VISIBLE);
-                        findViewById(R.id.register_button).setEnabled(true);
-                        findViewById(R.id.resend_verification_link).setEnabled(true);
-                    }
-                }
-            }
-        });
-    }
-
-    private void updateRegistrationUi() {
-
-        findViewById(R.id.finish_registration_text).setVisibility(View.VISIBLE);
-
-        firstName = firstNameField.getText().toString();
-        lastName = lastNameField.getText().toString();
-
-        TextView finishSignInText = findViewById(R.id.finish_registration_text);
-        String nameString = "<b>" + firstName + " " + lastName + "</b> ";
-
-        finishSignInText.setText((getString(R.string.finish_registration_text,
-                Html.fromHtml(nameString)  ) ) );
-
         findViewById(R.id.registration_form).setVisibility(View.GONE);
-        findViewById(R.id.registration_buttons).setVisibility(View.GONE);
-        findViewById(R.id.finish_button_form).setVisibility(View.VISIBLE);
-        findViewById(R.id.finish_button).setEnabled(true);
-    }
-
-    private void updateSignInUi() {
-
-        findViewById(R.id.finish_signIn_text).setVisibility(View.VISIBLE);
-
-        TextView finishSignInText = findViewById(R.id.finish_signIn_text);
-        String nameString = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-
-        finishSignInText.setText((getString(R.string.finish_signIn_text,
-                Html.fromHtml(nameString)  ) ) );
-
-        findViewById(R.id.sign_in_form).setVisibility(View.GONE);
-        findViewById(R.id.sign_In_buttons).setVisibility(View.GONE);
-        findViewById(R.id.registration_form).setVisibility(View.GONE);
-        findViewById(R.id.registration_buttons).setVisibility(View.GONE);
-        findViewById(R.id.finish_button_form).setVisibility(View.VISIBLE);
-        findViewById(R.id.finish_button).setEnabled(true);
-    }
-
-    //Is onStart and if signIn Fails
-    private void updateUIOnStart(FirebaseUser user) {
-
-        //Already a user, inflate verification if is not verified and signed in and sign in button
-        if (user != null) {
-
-            findViewById(R.id.registration_form).setVisibility(View.GONE);
-            findViewById(R.id.registration_buttons).setVisibility(View.GONE);
-            findViewById(R.id.sign_in_form).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_In_buttons).setVisibility(View.VISIBLE);
-            findViewById(R.id.email_form).setVisibility(View.GONE);
-            findViewById(R.id.finish_button_form).setVisibility(View.GONE);
-            findViewById(R.id.sign_in_button).setEnabled(true);
-
-            //Is email verified
-            if(user.isEmailVerified()) {
-                findViewById(R.id.send_verification_link).setVisibility(View.GONE);
-                findViewById(R.id.sign_in_button).setEnabled(true);
-            }
-            //not email verified
-            else {
-                //inflate verifiy button
-                findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-                findViewById(R.id.send_verification_link).setVisibility(View.VISIBLE);
-            }
-            //Not a user, inflate email form
-        } else {
-            findViewById(R.id.email_form).setVisibility(View.VISIBLE);
-        }
-    }
-
-    //If signIn Fails
-    private void updateUI(FirebaseUser user) {
-
-        //Already a user, inflate password and sign in button
-        if (user != null) {
-            findViewById(R.id.registration_form).setVisibility(View.GONE);
-            findViewById(R.id.registration_buttons).setVisibility(View.GONE);
-            findViewById(R.id.sign_in_form).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_In_buttons).setVisibility(View.VISIBLE);
-            findViewById(R.id.email_form).setVisibility(View.GONE);
-            findViewById(R.id.finish_button_form).setVisibility(View.GONE);
-
-            findViewById(R.id.sign_in_button).setEnabled(true);
-
-            //Not a user, inflate password, firstname, lastname, and register button
-        } else {
-
-            findViewById(R.id.registration_form).setVisibility(View.VISIBLE);
-            findViewById(R.id.registration_buttons).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_in_form).setVisibility(View.GONE);
-            findViewById(R.id.email_form).setVisibility(View.GONE);
-            findViewById(R.id.finish_button_form).setVisibility(View.GONE);
-
-            findViewById(R.id.register_button).setEnabled(true);
-            findViewById(R.id.resend_verification_link).setEnabled(true);
-        }
     }
 
     /**************************************************/
     /*************Signin / Register********************/
     /**************************************************/
 
+    /**
+     * method is used for creating account
+     * @param  email users email
+     * @param  password users password
+     * @return boolean true for valid false for invalid
+     */
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount:" + email);
         if (!validateRegistration()) {
@@ -426,19 +328,32 @@ public class LoginActivity extends AppCompatActivity{
                             DatabaseHelper databaseHelper = new DatabaseHelper();
                             databaseHelper.addUser(LoginActivity.this, user);
 
+
                             sendEmailVerification();
-                            updateRegistrationUi();
+
+                            TextView finishSignInText = findViewById(R.id.finish_registration_text);
+                            String nameString = "<b>" + firstName + " " + lastName + "</b> ";
+
+                            finishSignInText.setText((getString(R.string.finish_registration_text,
+                                    Html.fromHtml(nameString)  ) ) );
+
+                            VerificationUI();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
                         }
                     }
                 });
     }
 
+    /**
+     * method is used for creating account
+     * @param  email users email
+     * @param  password users password
+     * @return boolean true for valid false for invalid
+     */
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
 
@@ -450,26 +365,23 @@ public class LoginActivity extends AppCompatActivity{
                             if ( mAuth.getCurrentUser().isEmailVerified() ) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "signInWithEmail:success");
-                                updateSignInUi();
+                                finish();
                             } else {
                                 Toast.makeText(LoginActivity.this, "Not Verified Yet",
                                         Toast.LENGTH_SHORT).show();
+                                VerificationUI();
                             }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, "Incorrect Username / Password Match",
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
                         }
                     }
                 });
     }
 
     private void sendEmailVerification() {
-        // Disable button
-        findViewById(R.id.finish_button).setEnabled(false);
-
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -483,8 +395,6 @@ public class LoginActivity extends AppCompatActivity{
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        // Re-enable button
-                        findViewById(R.id.finish_button).setEnabled(true);
 
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this,
@@ -545,23 +455,41 @@ public class LoginActivity extends AppCompatActivity{
         return true;
     }
 
-    private Boolean validateEmail() {
+    /**
+     * method is used for checking valid email id format
+     * @param  editEmail is email field to be checkec
+     * @return boolean true for valid false for invalid
+     */
+    private Boolean validateEmail(EditText editEmail) {
 
         boolean valid = true;
 
-        String email = mEmailField.getText().toString();
+        String email = editEmail.getText().toString();
 
         if (TextUtils.isEmpty(email)) {
-            mEmailField.setError("Required.");
+            editEmail.setError("Required.");
             valid = false;
         } else {
-            mEmailField.setError(null);
+            editEmail.setError(null);
         }
+
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        // do if here to check this
+        // return matcher.matches();
+
         return valid;
     }
 
+    /**
+     * method is used for checking valid email id format
+     * @return boolean true for valid false for invalid
+     */
     private boolean validateRegistration() {
         boolean valid = true;
+
+        validateEmail(mRegistrationEmailField);
 
         String password = mRegistrationPasswordField.getText().toString();
         if (TextUtils.isEmpty(password)) {

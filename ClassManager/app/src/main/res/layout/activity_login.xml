@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:weightSum="5">
 
-    <!-- Title-->
+    <!-- Title and Icon-->
     <LinearLayout
         android:id="@+id/title_box"
         android:layout_width="match_parent"
@@ -60,13 +60,71 @@
 
     </LinearLayout>
 
+    <!-- Body-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
         android:gravity="center_vertical">
 
-        <!-- Registration Form-->
+        <!-- Login UI - sign_in_form-->
+        <LinearLayout
+            android:id="@+id/sign_in_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:visibility="gone"
+            android:paddingRight="16dp">
+
+            <EditText
+                android:id="@+id/login_email_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/signIn_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword" />
+
+            <Button
+                android:id="@+id/sign_in_button"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sign In"/>
+
+            <!-- Pass Reset and Registration UI Switch-->
+            <LinearLayout
+                android:id="@+id/mis_buttons"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+                <TextView
+                    android:id="@+id/password_reset"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Reset Password" />
+
+                <TextView
+                    android:id="@+id/switch_to_registration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Sign Up" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Registration UI - registration_form-->
         <LinearLayout
             android:id="@+id/registration_form"
             android:layout_width="fill_parent"
@@ -75,7 +133,15 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:visibility="gone"
-            android:weightSum="4.0">
+            android:weightSum="5">
+
+            <EditText
+                android:id="@+id/registration_email_field"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:hint="Email"
+                android:layout_weight="1"
+                android:inputType="textEmailAddress" />
 
             <EditText
                 android:id="@+id/registration_password"
@@ -112,88 +178,16 @@
                 <Button
                     android:id="@+id/register_button"
                     style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Register" />
             </LinearLayout>
 
         </LinearLayout>
 
-        <!-- SignIn form-->
+        <!-- Verify UI - verification_ui-->
         <LinearLayout
-            android:id="@+id/sign_in_form"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="16dp"
-            android:visibility="gone"
-            android:weightSum="2"
-            android:paddingRight="16dp">
-
-            <EditText
-                android:id="@+id/signIn_password"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:hint="Password"
-                android:layout_weight="1"
-                android:inputType="textPassword" />
-
-            <!-- Sign in Buttons-->
-            <LinearLayout
-                android:id="@+id/sign_In_buttons"
-                android:layout_width="fill_parent"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:weightSum="3">
-
-                <Button
-                    android:id="@+id/sign_in_button"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Sign In"/>
-
-                <Button
-                    android:id="@+id/send_verification_link"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/Verify" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Email Form-->
-        <LinearLayout
-            android:id="@+id/email_form"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
-
-            <EditText
-                android:id="@+id/email_field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Email"
-                android:inputType="textEmailAddress" />
-
-            <Button
-                android:id="@+id/email_entry_button"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="submit" />
-        </LinearLayout>
-
-        <!-- Finish Button -->
-        <LinearLayout
-            android:id="@+id/finish_button_form"
+            android:id="@+id/verification_ui"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -208,15 +202,17 @@
                 android:weightSum="2">
 
                 <Button
-                    android:id="@+id/resend_verification_link"
+                    android:id="@+id/sign_out_button"
                     style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/ReVerify" />
+                    android:text="@string/sign_out"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"/>
 
                 <Button
-                    android:id="@+id/finish_button"
+                    android:id="@+id/verify_button"
                     style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -225,14 +221,12 @@
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"/>
             </LinearLayout>
-            <Button
-                android:id="@+id/sign_out_button"
-                style="@style/Widget.AppCompat.Button.Colored"
+            <TextView
+                android:id="@+id/verification_link"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sign_out"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"/>
+                android:text="@string/ReVerify"
+                android:clickable="true" />
         </LinearLayout>
 
     </RelativeLayout>

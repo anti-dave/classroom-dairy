@@ -1,43 +1,27 @@
 {
   "project_info": {
-    "project_number": "421332567684",
-    "firebase_url": "https://classmanager-38435.firebaseio.com",
-    "project_id": "classmanager-38435",
-    "storage_bucket": "classmanager-38435.appspot.com"
+    "project_number": "631433219339",
+    "firebase_url": "https://classroomtesting-8abd6.firebaseio.com",
+    "project_id": "classroomtesting-8abd6",
+    "storage_bucket": "classroomtesting-8abd6.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:421332567684:android:769bc70822b82863",
+        "mobilesdk_app_id": "1:631433219339:android:769bc70822b82863",
         "android_client_info": {
           "package_name": "com.example.camdavejakerob.classmanager"
         }
       },
       "oauth_client": [
         {
-          "client_id": "421332567684-8jr80fpvcr5v4feegmt4en5qrsdgt4bk.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.camdavejakerob.classmanager",
-            "certificate_hash": "330844e111c03761b9d36eb7313c7cc372ddab18"
-          }
-        },
-        {
-          "client_id": "421332567684-jtu57qfhi4cbqocap6b6rdp17cj0oh5g.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.camdavejakerob.classmanager",
-            "certificate_hash": "892ee10ee8cc954c8ce6624f3e195e4463f7d2be"
-          }
-        },
-        {
-          "client_id": "421332567684-jmvhujnpnjqae9hrp9ckt1dkcvf75fm7.apps.googleusercontent.com",
+          "client_id": "631433219339-6e15mrjaqojqlrcq9kil50blm99fh86m.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBAFZFCI5QWMjwAyTpzv51MU9395ZJl1jE"
+          "current_key": "AIzaSyAt-wjhUkQPLcl3mU_SdjvQ7hi8rRTarOc"
         }
       ],
       "services": {
@@ -45,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "421332567684-jmvhujnpnjqae9hrp9ckt1dkcvf75fm7.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2
