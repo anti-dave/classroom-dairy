@@ -1,5 +1,5 @@
 # Class Manager
-by: [Jake Adamson](#https://github.com/Jake-The-Human), [Rob Cucchiara](#https://github.com/rcucchiara), [Dave Dacosta](#https://github.com/anti-dave), [Cam Cambell](#https://github.com/ccamj)
+by: [Jake Adamson](https://github.com/Jake-The-Human), [Rob Cucchiara](https://github.com/rcucchiara), [Dave Dacosta](https://github.com/anti-dave), [Cam Cambell](https://github.com/ccamj)
 
 Final project for Umass Lowell Mobile Apps 1 Course. 
 
