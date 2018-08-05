@@ -8,10 +8,7 @@ To run it feel free to clone the directory
 git clone https://github.com/anti-dave/classroom-dairy.git
 ```
 
-and then import the internal RestaurantDiaryApp in android studio 
+and then import the internal ClassManager in android studio 
 
-:file_folder:Restaurant Diary
-- :file_folder: final_week_12_7
-- :file_folder: progress
-- :file_folder: proposal
-- :file_folder: **RestaurantDiaryApp**
+:file_folder:classroom-dairy
+- :file_folder: **ClassManager**
