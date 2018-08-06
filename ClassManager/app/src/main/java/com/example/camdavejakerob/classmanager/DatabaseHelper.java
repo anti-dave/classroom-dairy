@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ListView;
@@ -750,11 +751,15 @@ public class DatabaseHelper {
      */
     public void addUser(final Context context, final FirebaseUser user){
 
+        Log.d("addUser has launched" , TAG);
+
         mDatabase.getReference(UIDS).addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if(!dataSnapshot.child(user.getUid()).exists()){
+                    Log.d("inside datasnapshot" , TAG);
 
                     AlertDialog.Builder promptUser = new AlertDialog.Builder(context);
                     promptUser.setTitle("First Time Login")

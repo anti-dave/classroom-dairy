@@ -51,8 +51,4 @@ dependencies {
     compile 'com.google.http-client:google-http-client-gson:1.23.0' exclude module: 'httpclient' exclude group: 'com.google.guava'
 }
 
-
-
-
-
 apply plugin: 'com.google.gms.google-services'

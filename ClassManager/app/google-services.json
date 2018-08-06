@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "631433219339",
-    "firebase_url": "https://classroomtesting-8abd6.firebaseio.com",
-    "project_id": "classroomtesting-8abd6",
-    "storage_bucket": "classroomtesting-8abd6.appspot.com"
+    "project_number": "573156516605",
+    "firebase_url": "https://testbase-3a623.firebaseio.com",
+    "project_id": "testbase-3a623",
+    "storage_bucket": "testbase-3a623.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:631433219339:android:769bc70822b82863",
+        "mobilesdk_app_id": "1:573156516605:android:769bc70822b82863",
         "android_client_info": {
           "package_name": "com.example.camdavejakerob.classmanager"
         }
       },
       "oauth_client": [
         {
-          "client_id": "631433219339-6e15mrjaqojqlrcq9kil50blm99fh86m.apps.googleusercontent.com",
+          "client_id": "573156516605-kk9oinkndvspbm3ntdh0jsoe563789u1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAt-wjhUkQPLcl3mU_SdjvQ7hi8rRTarOc"
+          "current_key": "AIzaSyCyQtooQQmCeb045nmcvis3P3sMxascajM"
         }
       ],
       "services": {

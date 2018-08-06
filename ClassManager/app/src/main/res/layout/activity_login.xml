@@ -191,7 +191,8 @@
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:gravity="center_horizontal"
+            android:gravity="bottom"
+            android:layout_alignParentBottom="true"
             android:visibility="gone">
 
             <LinearLayout
@@ -223,9 +224,10 @@
             </LinearLayout>
             <TextView
                 android:id="@+id/verification_link"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/ReVerify"
+                android:gravity="center"
                 android:clickable="true" />
         </LinearLayout>
 

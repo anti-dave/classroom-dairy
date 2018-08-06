@@ -33,16 +33,13 @@ import java.util.regex.Pattern;
 public class LoginActivity extends AppCompatActivity{
 
     private static final String TAG = "LoginActivity";
-
     private EditText mSignInEmailField,
             mRegistrationEmailField,
             mSignInPasswordField,
             mRegistrationPasswordField,
             firstNameField,
             lastNameField;
-
     private String firstName, lastName;
-
     private FirebaseAuth mAuth;
 
     @Override
@@ -103,7 +100,10 @@ public class LoginActivity extends AppCompatActivity{
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Log.d(TAG, "Email sent.");
+                                        Toast.makeText(LoginActivity.this,
+                                                "Password Reset Link Sent!",
+                                                Toast.LENGTH_LONG)
+                                                .show();
                                     }
                                 }
                             });
@@ -130,7 +130,6 @@ public class LoginActivity extends AppCompatActivity{
                     String pass = mRegistrationPasswordField.getText().toString();
 
                     createAccount(email, pass);
-                    VerificationUI();
                 }
             }
         });
@@ -174,9 +173,7 @@ public class LoginActivity extends AppCompatActivity{
                             @Override
                             public void onSuccess(Void aVoid) {
                                 if (mAuth.getCurrentUser().isEmailVerified()) {
-                                    Intent mainIntent = new Intent(LoginActivity.this,MainActivity.class);
-                                    startActivity(mainIntent);
-                                    return;
+                                    finish();
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Not Verified Yet",
                                             Toast.LENGTH_SHORT).show();
@@ -194,7 +191,6 @@ public class LoginActivity extends AppCompatActivity{
                         });
             }
         });
-
     }
 
     @Override
@@ -203,26 +199,26 @@ public class LoginActivity extends AppCompatActivity{
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        //If is logged
+        //If user is logged in
         if (currentUser != null) {
 
             //Is not verified, verify
             if(!currentUser.isEmailVerified()) {
 
+                //Inflate Welcome Back Greeting and Switch UI
                 TextView finishSignInText = findViewById(R.id.finish_signIn_text);
                 String nameString = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-
-                finishSignInText.setText((getString(R.string.finish_signIn_text,
-                        Html.fromHtml(nameString)  ) ) );
-
+                finishSignInText.setText((getString(R.string.finish_signIn_text, nameString  ) ) );
+                finishSignInText.setVisibility(View.VISIBLE);
                 VerificationUI();
+
             } else {
                 finish();
             }
 
+        } else {
+            LoginUI();
         }
-
-        LoginUI();
     }
 
    @Override
@@ -234,31 +230,19 @@ public class LoginActivity extends AppCompatActivity{
             if ( mAuth.getCurrentUser().isEmailVerified() ) {
                 super.onBackPressed();
             } else {
-
                 Toast.makeText(LoginActivity.this, "Email Not Verified",
                         Toast.LENGTH_SHORT).show();
             }
         }
+
         // user is null
         else {
             LoginUI();
         }
     }
 
-    public void handleFirebaseAuthResult(AuthResult result) {
-        if(result != null) {
-            if (mAuth.getCurrentUser().isEmailVerified()) {
-                LoginActivity.this.finish();
-                return;
-            } else {
-                Toast.makeText(LoginActivity.this, "Not Verified Yet",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    /******************************************/
-    /*************UI Update********************/
+    /******************************************
+    /*************UI Update********************
     /******************************************/
 
      private void LoginUI() {
@@ -326,8 +310,8 @@ public class LoginActivity extends AppCompatActivity{
                                     });
 
                             DatabaseHelper databaseHelper = new DatabaseHelper();
-                            databaseHelper.addUser(LoginActivity.this, user);
 
+                            databaseHelper.addUser(LoginActivity.this, user);
 
                             sendEmailVerification();
 
@@ -337,11 +321,14 @@ public class LoginActivity extends AppCompatActivity{
                             finishSignInText.setText((getString(R.string.finish_registration_text,
                                     Html.fromHtml(nameString)  ) ) );
 
+                            finishSignInText.setVisibility(View.VISIBLE);
+
                             VerificationUI();
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -349,10 +336,9 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     /**
-     * method is used for creating account
-     * @param  email users email
-     * @param  password users password
-     * @return boolean true for valid false for invalid
+     * method is used for signing in to an existing account using firebase authentication
+     * @param  email users email to log in with
+     * @param  password to log in
      */
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
@@ -381,13 +367,12 @@ public class LoginActivity extends AppCompatActivity{
                 });
     }
 
+    /**
+     * method is used for signing in to an existing account using firebase authentication
+     */
     private void sendEmailVerification() {
 
         mAuth = FirebaseAuth.getInstance();
-
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-
-        }
 
         // Send verification email
         final FirebaseUser user = mAuth.getCurrentUser();
@@ -403,7 +388,7 @@ public class LoginActivity extends AppCompatActivity{
                         } else {
                             Log.e(TAG, "sendEmailVerification", task.getException());
                             Toast.makeText(LoginActivity.this,
-                                    "Failed to send verification email.",
+                                    task.getException().getLocalizedMessage(),
                                     Toast.LENGTH_LONG).show();
                         }
                     }
@@ -414,6 +399,9 @@ public class LoginActivity extends AppCompatActivity{
     /*************Validations**************************/
     /**************************************************/
 
+    /**
+     * method is used for signing in to an existing account using firebase authentication
+     */
     private Boolean credentialValidation() {
         boolean valid = true;
 
@@ -443,6 +431,11 @@ public class LoginActivity extends AppCompatActivity{
         return valid;
     }
 
+    /**
+     * method is used for checking valid email id format
+     * @param  name string to be checked
+     * @return boolean true for valid false for invalid
+     */
     public boolean isAlpha(String name) {
         char[] chars = name.toCharArray();
 
